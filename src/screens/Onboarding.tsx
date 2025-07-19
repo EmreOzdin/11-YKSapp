@@ -16,20 +16,20 @@ const ONBOARDING_DATA = [
   {
     key: '1',
     image: require('../../assets/onboarding1.png'),
-    title: 'Sınır Tanımayan Eğitim',
-    description: 'Bilgi dünyasını keşfet, kendi hızında yeni beceriler kazan.',
+    title: 'Hayalini Yaşa',
+    description: 'Hayaline bir adım daha yaklaş! Tüm dersler, tek uygulamada',
   },
   {
     key: '2',
     image: require('../../assets/onboarding2.png'),
-    title: 'İlerlemeni Takip Et',
-    description: 'Günlük istatistikler ve net hesaplama ile gelişimini anlık olarak gör.',
+    title: 'Başarıyı Takip Et',
+    description: 'Netlerin ve ilerlemen her an gözünün önünde.',
   },
   {
     key: '3',
     image: require('../../assets/onboarding3.png'),
-    title: 'Başarıya Birlikte Ulaş',
-    description: 'Yapay zekâ destekli öneriler ve offline destek her zaman yanında!',
+    title: 'Senin Zamanın!',
+    description: 'Sana özel öneriler ve offline çalışma. Hemen başla!',
   },
 ];
 
