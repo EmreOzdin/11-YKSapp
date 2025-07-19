@@ -1,20 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import Onboarding from './src/screens/Onboarding';
+import LogoScreen from './src/screens/LogoScreen';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+  const [showLogo, setShowLogo] = useState(true);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  useEffect(() => {
+    const timer = setTimeout(() => setShowLogo(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showLogo) {
+    return <LogoScreen />;
+  }
+  return <Onboarding />;
+}
