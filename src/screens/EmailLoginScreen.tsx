@@ -132,10 +132,11 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   metaLogo: {
-    width: 280,
-    height: 130,
+    width: 180,
+    height: 80,
     resizeMode: 'contain',
     marginRight: 0,
+    marginTop: 24,
     zIndex: 0,
   },
   obenText: {

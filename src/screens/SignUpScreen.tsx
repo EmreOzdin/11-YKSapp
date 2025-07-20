@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     width: '100%',
-    backgroundColor: '#222',
+    backgroundColor: '#1877f2',
     borderRadius: 24,
     paddingVertical: 14,
     alignItems: 'center',
