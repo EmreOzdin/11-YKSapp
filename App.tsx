@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Onboarding from './src/screens/Onboarding';
 import LogoScreen from './src/screens/LogoScreen';
-import LoginScreen from './src/screens/LoginScreen';
 import EmailLoginScreen from './src/screens/EmailLoginScreen';
+import SignUpScreen from './src/screens/SignUpScreen';
+import TermsOfServiceScreen from './src/screens/TermsOfServiceScreen';
+import PaymentTermsScreen from './src/screens/PaymentTermsScreen';
+import PrivacyPolicyScreen from './src/screens/PrivacyPolicyScreen';
+// Yasal ekranlar eklenecek
+
+const Stack = createStackNavigator();
 
 export default function App() {
-  const [showLogo, setShowLogo] = useState(true);
-  const [showEmailLogin, setShowEmailLogin] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowLogo(false), 1500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (showLogo) {
-    return <LogoScreen />;
-  }
-  if (showEmailLogin) {
-    return <EmailLoginScreen onLogin={() => setShowLogin(true)} />;
-  }
-  if (showLogin) {
-    return <LoginScreen />;
-  }
-  return <Onboarding onDone={() => setShowEmailLogin(true)} />;
+  return (
+    <NavigationContainer>
+      <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Logo">
+        <Stack.Screen name="Logo" component={LogoScreen} />
+        <Stack.Screen name="Onboarding" component={Onboarding} />
+        <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} />
+        <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
+        <Stack.Screen name="PaymentTerms" component={PaymentTermsScreen} />
+        <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        {/* Yasal ekranlar burada olacak */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }

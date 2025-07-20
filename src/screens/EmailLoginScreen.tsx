@@ -1,13 +1,16 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 
 const { height } = Dimensions.get('window');
 
 interface EmailLoginScreenProps {
   onLogin?: () => void;
+  onCreateAccount?: () => void;
 }
 
-const EmailLoginScreen: React.FC<EmailLoginScreenProps> = ({ onLogin }) => {
+const EmailLoginScreen: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -25,7 +28,7 @@ const EmailLoginScreen: React.FC<EmailLoginScreenProps> = ({ onLogin }) => {
           placeholderTextColor="#888"
           secureTextEntry
         />
-        <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+        <TouchableOpacity style={styles.loginButton}>
           <Text style={styles.loginButtonText}>Giriş Yap</Text>
         </TouchableOpacity>
         <TouchableOpacity>
@@ -33,7 +36,7 @@ const EmailLoginScreen: React.FC<EmailLoginScreenProps> = ({ onLogin }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.createAccountButton} onPress={onLogin}>
+        <TouchableOpacity style={styles.createAccountButton} onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.createAccountText}>Yeni hesap oluştur</Text>
         </TouchableOpacity>
         <Image source={require('../../assets/meta.png')} style={styles.metaLogo} />

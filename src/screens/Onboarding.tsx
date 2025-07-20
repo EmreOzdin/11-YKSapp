@@ -9,6 +9,7 @@ import {
   FlatList,
   ViewToken,
 } from 'react-native';
+import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,12 +34,13 @@ const ONBOARDING_DATA = [
   },
 ];
 
-const Onboarding: React.FC<{ onDone?: () => void }> = ({ onDone }) => {
+const Onboarding: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const handleSignUp = () => {
-    onDone && onDone();
+    navigation.navigate('EmailLogin');
   };
 
   const handleLogin = () => {
