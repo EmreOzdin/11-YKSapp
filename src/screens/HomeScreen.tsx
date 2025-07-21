@@ -14,25 +14,25 @@ const CARD_DATA = [
 const HomeScreen: React.FC = () => {
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity>
-          <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Merhaba! Emre</Text>
-        <View style={styles.headerIcons}>
-          <TouchableOpacity style={{ marginRight: 12 }}>
-            <Ionicons name="search" size={22} color="#222" />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 90 }}>
+        {/* Header */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity>
+            <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginRight: 12 }}>
-            <Ionicons name="notifications-outline" size={22} color="#222" />
-            <View style={styles.notificationDot} />
-          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Merhaba! Emre</Text>
+          <View style={styles.headerIcons}>
+            <TouchableOpacity style={{ marginRight: 12 }}>
+              <Ionicons name="search" size={22} color="#222" />
+            </TouchableOpacity>
+            <TouchableOpacity style={{ marginRight: 12 }}>
+              <Ionicons name="notifications-outline" size={22} color="#222" />
+              <View style={styles.notificationDot} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Öne çıkan kartlar */}
-        <View style={{ marginHorizontal: 0, marginTop: -130, marginBottom: 8, height: 200, alignItems: 'flex-start', justifyContent: 'center', pointerEvents: 'box-only' }}>
+        {/* Swiper sadece kendi bölgesinde */}
+        <View style={{ marginHorizontal: 0, marginTop: -130, marginBottom: 8, height: 200, alignItems: 'flex-start', justifyContent: 'center' }}>
           <View style={{ width: '90%', maxWidth: 420, overflow: 'visible', alignSelf: 'flex-start', marginLeft: 0, marginRight: 'auto' }}>
             <Swiper
               cards={CARD_DATA}
@@ -99,14 +99,14 @@ const HomeScreen: React.FC = () => {
         </View>
         {/* Dersler Grid */}
         <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Dersler</Text>
+          <Text style={styles.sectionTitle}>Çalışma Soruları</Text>
           <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
         <View style={styles.subjectGrid}>
           {/* Fen Bilimleri */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#e0f2fe' }]}> 
-            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={{ width: 48, height: 48, marginBottom: 4 }} />
-            <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
+            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={{ width: 48, height: 48, marginBottom: 0, marginTop: -10 }} />
+            <Text style={[styles.subjectGridLabel, { marginTop: 7 }]}>Fen Bilimleri</Text>
           </View>
           {/* Türkçe */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#f3e8ff' }]}> 
@@ -126,19 +126,25 @@ const HomeScreen: React.FC = () => {
         </View>
         {/* Video kurs */}
         <View style={styles.sectionRow}>
-          <Text style={styles.sectionTitle}>Video Kurs</Text>
+          <Text style={styles.sectionTitle}>Sınav Denemesi</Text>
           <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
-        <View style={styles.videoCard}>
-          <Image source={require('../../assets/onboarding1.png')} style={styles.videoImage} />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.videoTitle}>Bilim Teknolojisi</Text>
-            <Text style={styles.videoTeacher}>Öğr. Ayşe Yılmaz</Text>
-            <View style={styles.videoRow}>
-              <MaterialCommunityIcons name="star" size={16} color="#f7b731" />
-              <Text style={styles.videoRating}>4.6</Text>
-              <Text style={styles.videoLive}>Canlı</Text>
-            </View>
+        {/* Sınav Denemesi Grid */}
+        <View style={styles.sınavDenemesiGrid}>
+          {/* TYT */}
+          <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
+            <Text style={styles.subjectGridLabel}>TYT</Text>
+          </View>
+          {/* AYT */}
+          <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
+            <Text style={styles.subjectGridLabel}>AYT</Text>
+          </View>
+          {/* YDT */}
+          <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
+            <Text style={styles.subjectGridLabel}>YDT</Text>
           </View>
         </View>
       </ScrollView>
@@ -193,6 +199,8 @@ const styles = StyleSheet.create({
   streakInfo: { fontSize: 12, color: '#aaa', textAlign: 'center', marginTop: 2 },
   subjectGrid: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 8, marginTop: 10, marginBottom: 8 },
   subjectGridItem: { flex: 1, marginHorizontal: 4, aspectRatio: 0.85, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 12, minWidth: 64, maxWidth: 90 },
+  sınavDenemesiGrid: { flexDirection: 'row', justifyContent: 'center', marginHorizontal: 0, marginTop: 16, marginBottom: 16 },
+  sınavDenemesiGridItem: { width: 112, height: 112, borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginHorizontal: 8, marginBottom: 12 },
   subjectGridLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', marginTop: 8 },
 });
 
