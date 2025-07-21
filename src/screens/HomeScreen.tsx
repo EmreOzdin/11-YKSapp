@@ -1,6 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import Swiper from 'react-native-deck-swiper';
+
+const CARD_DATA = [
+  { title: 'Fen Bilimleri Sınavı', color: '#4F5DFF', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341025.png' } },
+  { title: 'Türkçe Sınavı', color: '#6c47ff', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' } },
+  { title: 'Matematik Sınavı', color: '#f7b731', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' } },
+  { title: 'Sosyal Bilimler Sınavı', color: '#ff6b81', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' } },
+];
 
 const HomeScreen: React.FC = () => {
   return (
@@ -22,16 +30,36 @@ const HomeScreen: React.FC = () => {
         </View>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Öne çıkan kart */}
-        <View style={styles.featureCard}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.featureTitle}>Kimya Final Sınavı</Text>
-            <View style={styles.featureRow}>
-              <MaterialCommunityIcons name="bell-outline" size={18} color="#fff" />
-              <Text style={styles.featureTime}>45 dakika</Text>
-            </View>
-          </View>
-          <Image source={require('../../assets/onboarding3.png')} style={styles.featureImage} />
+        {/* Öne çıkan kartlar */}
+        <View style={{ marginHorizontal: 0, marginTop: 0, marginBottom: 8, height: 160 }}>
+          <Swiper
+            cards={CARD_DATA}
+            renderCard={(item) => (
+              <View style={[styles.featureCardStacked, { backgroundColor: item.color, position: 'relative' }]}> 
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.featureTitle}>{item.title}</Text>
+                  <View style={styles.featureRow}>
+                    <MaterialCommunityIcons name="bell-outline" size={18} color="#fff" />
+                    <Text style={styles.featureTime}>45 dakika</Text>
+                  </View>
+                </View>
+                <Image source={item.image} style={styles.featureImageIcon} />
+              </View>
+            )}
+            stackSize={3}
+            stackSeparation={18}
+            backgroundColor="transparent"
+            cardHorizontalMargin={8}
+            cardIndex={0}
+            infinite
+            showSecondCard
+            disableTopSwipe
+            disableBottomSwipe
+            onSwipedAll={() => {}}
+            onSwiped={(cardIndex) => {}}
+            onSwipedLeft={(cardIndex) => {}}
+            onSwipedRight={(cardIndex) => {}}
+          />
         </View>
         {/* Streak Bar */}
         <View style={styles.streakContainer}>
@@ -119,10 +147,12 @@ const styles = StyleSheet.create({
   notificationDot: { position: 'absolute', top: -2, right: -2, width: 12, height: 12, borderRadius: 6, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff' },
   avatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#eee' },
   featureCard: { flexDirection: 'row', backgroundColor: '#ff6b81', borderRadius: 24, padding: 20, margin: 20, alignItems: 'center', marginTop: 28 },
+  featureCardStacked: { flexDirection: 'row', borderRadius: 24, padding: 28, alignItems: 'center', height: 120, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 6, elevation: 3, borderWidth: 1, borderColor: '#f2f2f2' },
   featureTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
   featureRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   featureTime: { color: '#fff', fontSize: 15, marginLeft: 6 },
   featureImage: { width: 80, height: 80, marginLeft: 16, borderRadius: 16, backgroundColor: '#fff' },
+  featureImageIcon: { width: 64, height: 64, position: 'relative', right: 0, top: 0, marginLeft: 16, alignSelf: 'center', opacity: 1, resizeMode: 'contain' },
   sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, marginHorizontal: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
   seeAll: { color: '#1877f2', fontWeight: 'bold', fontSize: 15 },
@@ -139,7 +169,7 @@ const styles = StyleSheet.create({
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  streakContainer: { marginTop: 18, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
+  streakContainer: { marginTop: 32, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
   streakLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   streakLabel: { fontSize: 13, color: '#888', fontWeight: '500' },
   streakBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
