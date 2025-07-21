@@ -5,7 +5,7 @@ import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-ico
 import Swiper from 'react-native-deck-swiper';
 
 const CARD_DATA = [
-  { title: 'Fen Bilimleri Sınavı', gradient: ['#4F5DFF', '#38b6ff'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341025.png' } },
+  { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: { uri: 'https://img.icons8.com/3d-fluency/94/physics.png' } },
   { title: 'Türkçe Sınavı', gradient: ['#6c47ff', '#b983ff'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' } },
   { title: 'Matematik Sınavı', gradient: ['#f7b731', '#ffb347'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' } },
   { title: 'Sosyal Bilimler Sınavı', gradient: ['#ff6b81', '#ffb6b9'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' } },
@@ -103,24 +103,24 @@ const HomeScreen: React.FC = () => {
           <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
         <View style={styles.subjectGrid}>
-          {/* Chemistry */}
-          <View style={[styles.subjectGridItem, { backgroundColor: '#eaf0ff' }]}>
-            <MaterialCommunityIcons name="beaker-check" size={36} color="#4F5DFF" />
+          {/* Fen Bilimleri */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#e0f2fe' }]}> 
+            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={{ width: 48, height: 48, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
           </View>
-          {/* Science */}
-          <View style={[styles.subjectGridItem, { backgroundColor: '#f3f0ff' }]}>
-            <MaterialCommunityIcons name="format-text-variant" size={36} color="#6c47ff" />
+          {/* Türkçe */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#f3e8ff' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Türkçe</Text>
           </View>
-          {/* Math */}
-          <View style={[styles.subjectGridItem, { backgroundColor: '#fff9e5' }]}>
-            <MaterialCommunityIcons name="math-compass" size={36} color="#f7b731" />
+          {/* Matematik */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#fff9db' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Matematik</Text>
           </View>
-          {/* History */}
-          <View style={[styles.subjectGridItem, { backgroundColor: '#ffeef3' }]}>
-            <MaterialCommunityIcons name="account-group-outline" size={36} color="#ff6b81" />
+          {/* Sosyal Bilimler */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#ffeaea' }]}> 
+            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </View>
         </View>
@@ -144,6 +144,7 @@ const HomeScreen: React.FC = () => {
       </ScrollView>
       {/* Alt Tab Bar (Mock) */}
       <View style={styles.tabBar}>
+        <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="credit-card-outline" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="home-variant" size={26} color="#1877f2" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="clipboard-list-outline" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="chart-bar" size={26} color="#bbb" /></TouchableOpacity>
