@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 
 const CARD_DATA = [
-  { title: 'Fen Bilimleri Sınavı', color: '#4F5DFF', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341025.png' } },
-  { title: 'Türkçe Sınavı', color: '#6c47ff', image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' } },
-  { title: 'Matematik Sınavı', color: '#f7b731', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' } },
-  { title: 'Sosyal Bilimler Sınavı', color: '#ff6b81', image: { uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' } },
+  { title: 'Fen Bilimleri Sınavı', gradient: ['#4F5DFF', '#38b6ff'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341025.png' } },
+  { title: 'Türkçe Sınavı', gradient: ['#6c47ff', '#b983ff'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' } },
+  { title: 'Matematik Sınavı', gradient: ['#f7b731', '#ffb347'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' } },
+  { title: 'Sosyal Bilimler Sınavı', gradient: ['#ff6b81', '#ffb6b9'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' } },
 ];
 
 const HomeScreen: React.FC = () => {
@@ -31,35 +32,48 @@ const HomeScreen: React.FC = () => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Öne çıkan kartlar */}
-        <View style={{ marginHorizontal: 0, marginTop: 0, marginBottom: 8, height: 160 }}>
-          <Swiper
-            cards={CARD_DATA}
-            renderCard={(item) => (
-              <View style={[styles.featureCardStacked, { backgroundColor: item.color, position: 'relative' }]}> 
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.featureTitle}>{item.title}</Text>
-                  <View style={styles.featureRow}>
-                    <MaterialCommunityIcons name="bell-outline" size={18} color="#fff" />
-                    <Text style={styles.featureTime}>45 dakika</Text>
-                  </View>
-                </View>
-                <Image source={item.image} style={styles.featureImageIcon} />
-              </View>
-            )}
-            stackSize={3}
-            stackSeparation={18}
-            backgroundColor="transparent"
-            cardHorizontalMargin={8}
-            cardIndex={0}
-            infinite
-            showSecondCard
-            disableTopSwipe
-            disableBottomSwipe
-            onSwipedAll={() => {}}
-            onSwiped={(cardIndex) => {}}
-            onSwipedLeft={(cardIndex) => {}}
-            onSwipedRight={(cardIndex) => {}}
-          />
+        <View style={{ marginHorizontal: 0, marginTop: -130, marginBottom: 8, height: 200, alignItems: 'flex-start', justifyContent: 'center', pointerEvents: 'box-only' }}>
+          <View style={{ width: '90%', maxWidth: 420, overflow: 'visible', alignSelf: 'flex-start', marginLeft: 0, marginRight: 'auto' }}>
+            <Swiper
+              cards={CARD_DATA}
+              renderCard={(item) => {
+                // Kart ikonunu kaldır, sadece alarm ikonu göster
+                return (
+                  <LinearGradient
+                    colors={item.gradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={[styles.featureCardStacked, { position: 'relative' }]}
+                  >
+                    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                      <Text style={styles.featureTitle}>{item.title}</Text>
+                      <View style={styles.featureRow}>
+                        <MaterialCommunityIcons name="alarm" size={18} color="#fff" />
+                        <Text style={styles.featureTime}>45 dakika</Text>
+                      </View>
+                    </View>
+                    <Image source={item.image} style={styles.featureImageIcon} />
+                  </LinearGradient>
+                );
+              }}
+              stackSize={3}
+              stackSeparation={10}
+              backgroundColor="transparent"
+              cardHorizontalMargin={8}
+              cardIndex={0}
+              infinite
+              showSecondCard
+              disableTopSwipe
+              disableBottomSwipe
+              verticalSwipe={false}
+              horizontalSwipe={true}
+              pointerEvents="auto"
+              onSwipedAll={() => {}}
+              onSwiped={(cardIndex) => {}}
+              onSwipedLeft={(cardIndex) => {}}
+              onSwipedRight={(cardIndex) => {}}
+            />
+          </View>
         </View>
         {/* Streak Bar */}
         <View style={styles.streakContainer}>
@@ -142,17 +156,17 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: 56 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 20 },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#222', marginLeft: 12, flex: 1 },
+  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#222', marginLeft: 12, flex: 1 },
   headerIcons: { flexDirection: 'row', alignItems: 'center' },
   notificationDot: { position: 'absolute', top: -2, right: -2, width: 12, height: 12, borderRadius: 6, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff' },
-  avatar: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#eee' },
+  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#eee' },
   featureCard: { flexDirection: 'row', backgroundColor: '#ff6b81', borderRadius: 24, padding: 20, margin: 20, alignItems: 'center', marginTop: 28 },
-  featureCardStacked: { flexDirection: 'row', borderRadius: 24, padding: 28, alignItems: 'center', height: 120, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 6, elevation: 3, borderWidth: 1, borderColor: '#f2f2f2' },
-  featureTitle: { color: '#fff', fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
-  featureRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  featureTime: { color: '#fff', fontSize: 15, marginLeft: 6 },
+  featureCardStacked: { flexDirection: 'row', borderRadius: 24, padding: 12, alignItems: 'center', height: 135, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 6, elevation: 3, borderWidth: 1, borderColor: '#f2f2f2' },
+  featureTitle: { color: '#fff', fontSize: 22, fontWeight: 'bold', marginBottom: 2, marginTop: 0 },
+  featureRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6, marginBottom: 4 },
+  featureTime: { color: '#fff', fontSize: 16, marginLeft: 6 },
   featureImage: { width: 80, height: 80, marginLeft: 16, borderRadius: 16, backgroundColor: '#fff' },
-  featureImageIcon: { width: 64, height: 64, position: 'relative', right: 0, top: 0, marginLeft: 16, alignSelf: 'center', opacity: 1, resizeMode: 'contain' },
+  featureImageIcon: { width: 90, height: 90, position: 'relative', right: 0, top: 0, marginLeft: 12, alignSelf: 'center', opacity: 1, resizeMode: 'contain' },
   sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, marginHorizontal: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
   seeAll: { color: '#1877f2', fontWeight: 'bold', fontSize: 15 },
@@ -169,7 +183,7 @@ const styles = StyleSheet.create({
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  streakContainer: { marginTop: 32, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
+  streakContainer: { marginTop: 160, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
   streakLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   streakLabel: { fontSize: 13, color: '#888', fontWeight: '500' },
   streakBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
