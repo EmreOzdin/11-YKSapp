@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 const CARD_DATA = [
-  { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: { uri: 'https://img.icons8.com/3d-fluency/94/physics.png' } },
-  { title: 'Türkçe Sınavı', gradient: ['#6c47ff', '#b983ff'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' } },
-  { title: 'Matematik Sınavı', gradient: ['#f7b731', '#ffb347'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' } },
-  { title: 'Sosyal Bilimler Sınavı', gradient: ['#ff6b81', '#ffb6b9'] as const, image: { uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' } },
+  { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: require('../../assets/physicsexam.png') },
+  { title: 'Türkçe Sınavı', gradient: ['#6c47ff', '#b983ff'] as const, image: require('../../assets/turkishexam.png') },
+  { title: 'Matematik Sınavı', gradient: ['#f7b731', '#ffb347'] as const, image: require('../../assets/mathexam.png') },
+  { title: 'Sosyal Bilimler Sınavı', gradient: ['#ff6b81', '#ffb6b9'] as const, image: require('../../assets/socialexam.png') },
 ];
 
 const HomeScreen: React.FC = () => {
@@ -43,16 +45,21 @@ const HomeScreen: React.FC = () => {
                     colors={item.gradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={[styles.featureCardStacked, { position: 'relative' }]}
+                    style={[styles.featureCardStacked, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }]}
                   >
-                    <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
                       <Text style={styles.featureTitle}>{item.title}</Text>
                       <View style={styles.featureRow}>
                         <MaterialCommunityIcons name="alarm" size={18} color="#fff" />
                         <Text style={styles.featureTime}>45 dakika</Text>
                       </View>
                     </View>
-                    <Image source={item.image} style={styles.featureImageIcon} />
+                    <View style={{ minWidth: 130, maxWidth: 220, width: '50%', height: '145%', alignItems: 'flex-end', justifyContent: 'center', marginRight: -18 }}>
+                      <Image
+                        source={item.image}
+                        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                      />
+                    </View>
                   </LinearGradient>
                 );
               }}
@@ -110,17 +117,17 @@ const HomeScreen: React.FC = () => {
           </View>
           {/* Türkçe */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#f3e8ff' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/turkish.png')} style={{ width: 36, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Türkçe</Text>
           </View>
           {/* Matematik */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#fff9db' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/math.png')} style={{ width: 49, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Matematik</Text>
           </View>
           {/* Sosyal Bilimler */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#ffeaea' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' }} style={{ width: 36, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/social.png')} style={{ width: 50, height: 36, marginBottom: 4 }} />
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </View>
         </View>
@@ -133,18 +140,18 @@ const HomeScreen: React.FC = () => {
         <View style={styles.sınavDenemesiGrid}>
           {/* TYT */}
           <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4341/4341139.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
-            <Text style={styles.subjectGridLabel}>TYT</Text>
+            <Image source={require('../../assets/tyt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
+            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>TYT</Text>
           </View>
           {/* AYT */}
           <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/4149/4149643.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
-            <Text style={styles.subjectGridLabel}>AYT</Text>
+            <Image source={require('../../assets/ayt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
+            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>AYT</Text>
           </View>
           {/* YDT */}
           <View style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}> 
-            <Image source={{ uri: 'https://cdn-icons-png.flaticon.com/512/2991/2991108.png' }} style={{ width: 56, height: 56, marginBottom: 10 }} />
-            <Text style={styles.subjectGridLabel}>YDT</Text>
+            <Image source={require('../../assets/ydt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
+            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>YDT</Text>
           </View>
         </View>
       </ScrollView>
