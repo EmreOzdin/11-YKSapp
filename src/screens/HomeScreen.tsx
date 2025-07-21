@@ -10,7 +10,7 @@ const HomeScreen: React.FC = () => {
         <TouchableOpacity>
           <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Merhaba Emre</Text>
+        <Text style={styles.headerTitle}>Merhaba! Emre</Text>
         <View style={styles.headerIcons}>
           <TouchableOpacity style={{ marginRight: 12 }}>
             <Ionicons name="search" size={22} color="#222" />
@@ -33,16 +33,54 @@ const HomeScreen: React.FC = () => {
           </View>
           <Image source={require('../../assets/onboarding3.png')} style={styles.featureImage} />
         </View>
-        {/* Ders ikonları */}
+        {/* Streak Bar */}
+        <View style={styles.streakContainer}>
+          <View style={styles.streakLabelRow}>
+            <Text style={styles.streakLabel}>current streak <Text style={{ color: '#ff4757', fontWeight: 'bold' }}>2</Text></Text>
+            <Text style={styles.streakLabel}>longest streak <Text style={{ color: '#ffa502', fontWeight: 'bold' }}>18</Text></Text>
+          </View>
+          <View style={styles.streakBar}>
+            {[17, 18, 1, 2, 3, 4, 5, 6, 7].map((num, idx) => (
+              <View key={idx} style={styles.streakBox}>
+                {idx < 2 ? (
+                  <MaterialCommunityIcons name="flash" size={20} color="#ddd" />
+                ) : idx < 4 ? (
+                  <MaterialCommunityIcons name="flash" size={20} color="#ff4757" />
+                ) : (
+                  <MaterialCommunityIcons name="flash-outline" size={20} color="#eee" />
+                )}
+                <Text style={styles.streakDay}>{num}</Text>
+              </View>
+            ))}
+          </View>
+          <Text style={styles.streakInfo}>Her gün giriş yap, serini kaybetme!</Text>
+        </View>
+        {/* Dersler Grid */}
         <View style={styles.sectionRow}>
           <Text style={styles.sectionTitle}>Dersler</Text>
           <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
-        <View style={styles.subjectRow}>
-          <View style={styles.subjectIconBox}><MaterialCommunityIcons name="atom" size={28} color="#ff6b81" /><Text style={styles.subjectText}>Fizik</Text></View>
-          <View style={styles.subjectIconBox}><MaterialCommunityIcons name="flask-outline" size={28} color="#f7b731" /><Text style={styles.subjectText}>Kimya</Text></View>
-          <View style={styles.subjectIconBox}><MaterialCommunityIcons name="dna" size={28} color="#70a1ff" /><Text style={styles.subjectText}>Biyoloji</Text></View>
-          <View style={styles.subjectIconBox}><FontAwesome5 name="book" size={26} color="#2ed573" /><Text style={styles.subjectText}>Matematik</Text></View>
+        <View style={styles.subjectGrid}>
+          {/* Chemistry */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#eaf0ff' }]}>
+            <MaterialCommunityIcons name="atom-variant" size={36} color="#4F5DFF" />
+            <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
+          </View>
+          {/* Science */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#f3f0ff' }]}>
+            <MaterialCommunityIcons name="alphabetical-variant" size={36} color="#6c47ff" />
+            <Text style={styles.subjectGridLabel}>Türkçe</Text>
+          </View>
+          {/* Math */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#fff9e5' }]}>
+            <MaterialCommunityIcons name="function-variant" size={36} color="#f7b731" />
+            <Text style={styles.subjectGridLabel}>Matematik</Text>
+          </View>
+          {/* History */}
+          <View style={[styles.subjectGridItem, { backgroundColor: '#ffeef3' }]}>
+            <MaterialCommunityIcons name="earth" size={36} color="#ff6b81" />
+            <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
+          </View>
         </View>
         {/* Video kurs */}
         <View style={styles.sectionRow}>
@@ -88,9 +126,10 @@ const styles = StyleSheet.create({
   sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, marginHorizontal: 20 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
   seeAll: { color: '#1877f2', fontWeight: 'bold', fontSize: 15 },
-  subjectRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: 14, marginBottom: 8 },
-  subjectIconBox: { alignItems: 'center', backgroundColor: '#f8fafd', borderRadius: 16, padding: 14, width: 70 },
-  subjectText: { fontSize: 13, color: '#222', marginTop: 6, fontWeight: '500' },
+  subjectGroup: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: 14, marginBottom: 8, flex: 1 },
+  subjectIconBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd', borderRadius: 16, padding: 14, marginHorizontal: 4 },
+  subjectLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginBottom: 8 },
+  subjectLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', flex: 1 },
   videoCard: { flexDirection: 'row', backgroundColor: '#f8fafd', borderRadius: 18, padding: 14, marginHorizontal: 20, marginTop: 10, alignItems: 'center' },
   videoImage: { width: 60, height: 60, borderRadius: 12, backgroundColor: '#fff' },
   videoTitle: { fontSize: 16, fontWeight: 'bold', color: '#222' },
@@ -100,6 +139,16 @@ const styles = StyleSheet.create({
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  streakContainer: { marginTop: 18, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
+  streakLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
+  streakLabel: { fontSize: 13, color: '#888', fontWeight: '500' },
+  streakBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
+  streakBox: { alignItems: 'center', justifyContent: 'center', width: 32 },
+  streakDay: { fontSize: 12, color: '#bbb', marginTop: 2 },
+  streakInfo: { fontSize: 12, color: '#aaa', textAlign: 'center', marginTop: 2 },
+  subjectGrid: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 8, marginTop: 10, marginBottom: 8 },
+  subjectGridItem: { flex: 1, marginHorizontal: 4, aspectRatio: 0.85, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 12, minWidth: 64, maxWidth: 90 },
+  subjectGridLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', marginTop: 8 },
 });
 
 export default HomeScreen; 
