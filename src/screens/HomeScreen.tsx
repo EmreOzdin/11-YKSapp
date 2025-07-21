@@ -157,8 +157,8 @@ const HomeScreen: React.FC = () => {
       </ScrollView>
       {/* Alt Tab Bar (Mock) */}
       <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="credit-card-outline" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="home-variant" size={26} color="#1877f2" /></TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="cards" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="clipboard-list-outline" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="chart-bar" size={26} color="#bbb" /></TouchableOpacity>
         <TouchableOpacity style={styles.tabItem}><MaterialCommunityIcons name="account-circle-outline" size={26} color="#bbb" /></TouchableOpacity>
