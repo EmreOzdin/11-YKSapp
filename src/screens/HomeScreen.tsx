@@ -43,11 +43,11 @@ const HomeScreen: React.FC = () => {
             {[17, 18, 1, 2, 3, 4, 5, 6, 7].map((num, idx) => (
               <View key={idx} style={styles.streakBox}>
                 {idx < 2 ? (
-                  <MaterialCommunityIcons name="flash" size={20} color="#ddd" />
+                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
                 ) : idx < 4 ? (
-                  <MaterialCommunityIcons name="flash" size={20} color="#ff4757" />
+                  <MaterialCommunityIcons name="fire" size={20} color="#ff4757" />
                 ) : (
-                  <MaterialCommunityIcons name="flash-outline" size={20} color="#eee" />
+                  <MaterialCommunityIcons name="fire-off" size={20} color="#eee" />
                 )}
                 <Text style={styles.streakDay}>{num}</Text>
               </View>
@@ -63,22 +63,22 @@ const HomeScreen: React.FC = () => {
         <View style={styles.subjectGrid}>
           {/* Chemistry */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#eaf0ff' }]}>
-            <MaterialCommunityIcons name="atom-variant" size={36} color="#4F5DFF" />
+            <MaterialCommunityIcons name="beaker-check" size={36} color="#4F5DFF" />
             <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
           </View>
           {/* Science */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#f3f0ff' }]}>
-            <MaterialCommunityIcons name="alphabetical-variant" size={36} color="#6c47ff" />
+            <MaterialCommunityIcons name="format-text-variant" size={36} color="#6c47ff" />
             <Text style={styles.subjectGridLabel}>Türkçe</Text>
           </View>
           {/* Math */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#fff9e5' }]}>
-            <MaterialCommunityIcons name="function-variant" size={36} color="#f7b731" />
+            <MaterialCommunityIcons name="math-compass" size={36} color="#f7b731" />
             <Text style={styles.subjectGridLabel}>Matematik</Text>
           </View>
           {/* History */}
           <View style={[styles.subjectGridItem, { backgroundColor: '#ffeef3' }]}>
-            <MaterialCommunityIcons name="earth" size={36} color="#ff6b81" />
+            <MaterialCommunityIcons name="account-group-outline" size={36} color="#ff6b81" />
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </View>
         </View>
@@ -112,7 +112,7 @@ const HomeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 32 },
+  container: { flex: 1, backgroundColor: '#fff', paddingTop: 56 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 20 },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#222', marginLeft: 12, flex: 1 },
   headerIcons: { flexDirection: 'row', alignItems: 'center' },
