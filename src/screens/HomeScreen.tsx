@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  streakContainer: { marginTop: 160, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
+  streakContainer: { marginTop: 140, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
   streakLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   streakLabel: { fontSize: 13, color: '#888', fontWeight: '500' },
   streakBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
