@@ -18,19 +18,19 @@ const ONBOARDING_DATA = [
     key: '1',
     image: require('../../assets/onboarding1.png'),
     title: 'Hayalini Yaşa',
-    description: 'Hayaline bir adım daha yaklaş! Tüm dersler, tek uygulamada',
+    description: 'TYT–AYT yolculuğunda seni başarıya taşıyacak akıllı bir rehber artık yanında.',
   },
   {
     key: '2',
     image: require('../../assets/onboarding2.png'),
-    title: 'Başarıyı Takip Et',
-    description: 'Netlerin ve ilerlemen her an gözünün önünde.',
+    title: 'Konu Takibi ve Akıllı Öneriler',
+    description: 'Zayıf olduğun konuları belirle, sana özel çalışma planı ile zamanını verimli kullan.',
   },
   {
     key: '3',
     image: require('../../assets/onboarding3.png'),
-    title: 'Senin Zamanın!',
-    description: 'Sana özel öneriler ve offline çalışma. Hemen başla!',
+    title: 'Deneme Sınavlarıyla Gerçeği Yaşa',
+    description: 'Gerçek sınav deneyimini yaşa, gelişimini anlık takip et, her gün bir adım ileri git.',
   },
 ];
 

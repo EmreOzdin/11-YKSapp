@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, Modal, FlatList, Pressable, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -91,11 +92,79 @@ const HomeScreen: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
+  const [streakDays, setStreakDays] = useState<number[]>([]);
+  
   // Arama sonuçlarını filtrele
   const searchResults = searchText.length > 0
     ? CARD_DATA.filter(card => card.title.toLowerCase().includes(searchText.toLowerCase()))
     : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  // Streak sistemini yönet
+  const updateStreak = async () => {
+    try {
+      const today = new Date().toDateString();
+      const storedStreakData = await AsyncStorage.getItem('streakData');
+      let streakData = storedStreakData ? JSON.parse(storedStreakData) : { 
+        lastLoginDate: null, 
+        currentStreak: 0, 
+        longestStreak: 0, 
+        streakDays: [] 
+      };
+
+      // Bugün daha önce giriş yapılmamışsa
+      if (streakData.lastLoginDate !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayString = yesterday.toDateString();
+
+        if (streakData.lastLoginDate === yesterdayString) {
+          // Ardışık gün - streak devam ediyor
+          streakData.currentStreak += 1;
+        } else if (streakData.lastLoginDate !== today) {
+          // Streak kırıldı - yeniden başla
+          streakData.currentStreak = 1;
+        }
+
+        // En uzun streak'i güncelle
+        if (streakData.currentStreak > streakData.longestStreak) {
+          streakData.longestStreak = streakData.currentStreak;
+        }
+
+        // Son 9 günü takip et
+        const todayNum = new Date().getDate();
+        streakData.streakDays = [];
+        for (let i = 8; i >= 0; i--) {
+          const checkDate = new Date();
+          checkDate.setDate(checkDate.getDate() - i);
+          const checkDateString = checkDate.toDateString();
+          
+          if (streakData.lastLoginDate === checkDateString || 
+              (i === 0 && streakData.lastLoginDate === today)) {
+            streakData.streakDays.push(checkDate.getDate());
+          } else {
+            streakData.streakDays.push(0);
+          }
+        }
+
+        streakData.lastLoginDate = today;
+        await AsyncStorage.setItem('streakData', JSON.stringify(streakData));
+      }
+
+      setCurrentStreak(streakData.currentStreak);
+      setLongestStreak(streakData.longestStreak);
+      setStreakDays(streakData.streakDays);
+    } catch (error) {
+      console.error('Streak güncellenirken hata:', error);
+    }
+  };
+
+  // Component mount olduğunda streak'i güncelle
+  useEffect(() => {
+    updateStreak();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -135,26 +204,46 @@ const HomeScreen: React.FC = () => {
               renderCard={(item) => {
                 // Kart ikonunu kaldır, sadece alarm ikonu göster
                 return (
-                  <LinearGradient
-                    colors={item.gradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
-                    style={[styles.featureCardStacked, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }]}
+                  <TouchableOpacity
+                    onPress={() => {
+                      switch (item.title) {
+                        case 'Fen Bilimleri Sınavı':
+                          navigation.navigate('Fen Bilimleri');
+                          break;
+                        case 'Türkçe Sınavı':
+                          navigation.navigate('Türkçe');
+                          break;
+                        case 'Matematik Sınavı':
+                          navigation.navigate('Matematik');
+                          break;
+                        case 'Sosyal Bilimler Sınavı':
+                          navigation.navigate('Sosyal Bilimler');
+                          break;
+                      }
+                    }}
+                    activeOpacity={1}
                   >
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
-                      <Text style={styles.featureTitle}>{item.title}</Text>
-                      <View style={styles.featureRow}>
-                        <MaterialCommunityIcons name="alarm" size={18} color="#fff" />
-                        <Text style={styles.featureTime}>45 dakika</Text>
+                    <LinearGradient
+                      colors={item.gradient}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={[styles.featureCardStacked, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }]}
+                    >
+                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
+                        <Text style={styles.featureTitle}>{item.title}</Text>
+                        <View style={styles.featureRow}>
+                          <MaterialCommunityIcons name="alarm" size={18} color="#fff" />
+                          <Text style={styles.featureTime}>45 dakika</Text>
+                        </View>
                       </View>
-                    </View>
-                    <View style={{ minWidth: 130, maxWidth: 220, width: '50%', height: '145%', alignItems: 'flex-end', justifyContent: 'center', marginRight: -18 }}>
-                      <Image
-                        source={item.image}
-                        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
-                      />
-                    </View>
-                  </LinearGradient>
+                      <View style={{ minWidth: 130, maxWidth: 220, width: '50%', height: '145%', alignItems: 'flex-end', justifyContent: 'center', marginRight: -18 }}>
+                        <Image
+                          source={item.image}
+                          style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                        />
+                      </View>
+                    </LinearGradient>
+                  </TouchableOpacity>
                 );
               }}
               stackSize={3}
@@ -179,24 +268,36 @@ const HomeScreen: React.FC = () => {
         {/* Streak Bar */}
         <View style={styles.streakContainer}>
           <View style={styles.streakLabelRow}>
-            <Text style={styles.streakLabel}>current streak <Text style={{ color: '#ff4757', fontWeight: 'bold' }}>2</Text></Text>
-            <Text style={styles.streakLabel}>longest streak <Text style={{ color: '#ffa502', fontWeight: 'bold' }}>18</Text></Text>
+            <Text style={styles.streakLabel}>current streak <Text style={{ color: '#ff4757', fontWeight: 'bold' }}>{currentStreak}</Text></Text>
+            <Text style={styles.streakLabel}>longest streak <Text style={{ color: '#ffa502', fontWeight: 'bold' }}>{longestStreak}</Text></Text>
           </View>
           <View style={styles.streakBar}>
-            {[17, 18, 1, 2, 3, 4, 5, 6, 7].map((num, idx) => (
+            {streakDays.length > 0 ? streakDays.map((day, idx) => (
               <View key={idx} style={styles.streakBox}>
-                {idx < 2 ? (
-                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
-                ) : idx < 4 ? (
+                {day > 0 ? (
                   <MaterialCommunityIcons name="fire" size={20} color="#ff4757" />
                 ) : (
-                  <MaterialCommunityIcons name="fire-off" size={20} color="#eee" />
+                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
                 )}
-                <Text style={styles.streakDay}>{num}</Text>
+                <Text style={[styles.streakDay, { color: day > 0 ? '#ff4757' : '#bbb' }]}>
+                  {day > 0 ? day : '-'}
+                </Text>
               </View>
-            ))}
+            )) : (
+              // Loading durumu için placeholder
+              Array.from({ length: 9 }, (_, idx) => (
+                <View key={idx} style={styles.streakBox}>
+                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
+                  <Text style={styles.streakDay}>-</Text>
+                </View>
+              ))
+            )}
           </View>
-          <Text style={styles.streakInfo}>Her gün giriş yap, serini kaybetme!</Text>
+          <Text style={styles.streakInfo}>
+            {currentStreak > 0 
+              ? `Harika! ${currentStreak} günlük serin devam ediyor! 🔥` 
+              : 'Her gün giriş yap, serini kaybetme!'}
+          </Text>
         </View>
         {/* Dersler Grid */}
         <View style={styles.sectionRow}>
