@@ -174,7 +174,10 @@ const HomeScreen: React.FC = () => {
           <TouchableOpacity>
             <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Merhaba! Emre</Text>
+          <View style={styles.headerTitleContainer}>
+            <Text style={styles.headerTitle}>Merhaba!</Text>
+            <Text style={styles.userName}>Emre</Text>
+          </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity style={{ marginRight: 12 }} onPress={() => setSearchModalVisible(true)}>
               <Ionicons name="search" size={22} color="#222" />
@@ -302,7 +305,6 @@ const HomeScreen: React.FC = () => {
         {/* Dersler Grid */}
         <View style={styles.sectionRow}>
           <Text style={styles.sectionTitle}>Çalışma Soruları</Text>
-          <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
         <View style={styles.subjectGrid}>
           {/* Fen Bilimleri */}
@@ -341,7 +343,6 @@ const HomeScreen: React.FC = () => {
         {/* Video kurs */}
         <View style={styles.sectionRow}>
           <Text style={styles.sectionTitle}>Sınav Denemesi</Text>
-          <TouchableOpacity><Text style={styles.seeAll}>Tümünü Gör</Text></TouchableOpacity>
         </View>
         {/* Sınav Denemesi Grid */}
         <View style={styles.sınavDenemesiGrid}>
@@ -398,7 +399,9 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', paddingTop: 56 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 20 },
-  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#222', marginLeft: 12, flex: 1 },
+  headerTitleContainer: { flex: 1, marginLeft: 12 },
+  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#222' },
+  userName: { fontSize: 20, fontWeight: '600', color: '#666', marginTop: 2 },
   headerIcons: { flexDirection: 'row', alignItems: 'center' },
   notificationDot: { position: 'absolute', top: -2, right: -2, width: 12, height: 12, borderRadius: 6, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff' },
   avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#eee' },
