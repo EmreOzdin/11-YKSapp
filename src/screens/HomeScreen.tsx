@@ -49,7 +49,7 @@ const NotificationModal = ({ visible, onClose }: { visible: boolean; onClose: ()
   </Modal>
 );
 
-const SearchModal = ({ visible, onClose, value, onChange, results }: { visible: boolean; onClose: () => void; value: string; onChange: (t: string) => void; results: { title: string; image: any }[] }) => (
+const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress }: { visible: boolean; onClose: () => void; value: string; onChange: (t: string) => void; results: { title: string; image: any }[]; onResultPress: (item: { title: string; image: any }) => void }) => (
   <Modal visible={visible} animationType="fade" transparent>
     <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.18)', justifyContent: 'flex-start', alignItems: 'center' }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
@@ -72,10 +72,18 @@ const SearchModal = ({ visible, onClose, value, onChange, results }: { visible: 
           <View style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: 16, marginTop: 8, maxHeight: 220, elevation: 2, paddingVertical: 4 }}>
             {results.length > 0 ? (
               results.map((item, idx) => (
-                <View key={item.title} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 8, borderBottomWidth: idx !== results.length - 1 ? 1 : 0, borderColor: '#f0f0f0' }}>
+                <TouchableOpacity
+                  key={item.title}
+                  onPress={() => {
+                    onResultPress(item);
+                    onClose();
+                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 8, borderBottomWidth: idx !== results.length - 1 ? 1 : 0, borderColor: '#f0f0f0' }}
+                  activeOpacity={0.7}
+                >
                   <Image source={item.image} style={{ width: 32, height: 32, marginRight: 12, borderRadius: 8 }} />
                   <Text style={{ fontSize: 16, color: '#222' }}>{item.title}</Text>
-                </View>
+                </TouchableOpacity>
               ))
             ) : (
               <Text style={{ color: '#888', textAlign: 'center', padding: 16 }}>Sonuç bulunamadı.</Text>
@@ -166,6 +174,24 @@ const HomeScreen: React.FC = () => {
     updateStreak();
   }, []);
 
+  // Arama sonucuna tıklandığında yönlendirme
+  const handleSearchResultPress = (item: { title: string; image: any }) => {
+    switch (item.title) {
+      case 'Fen Bilimleri Sınavı':
+        navigation.navigate('Fen Bilimleri');
+        break;
+      case 'Türkçe Sınavı':
+        navigation.navigate('Türkçe');
+        break;
+      case 'Matematik Sınavı':
+        navigation.navigate('Matematik');
+        break;
+      case 'Sosyal Bilimler Sınavı':
+        navigation.navigate('Sosyal Bilimler');
+        break;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 90 }}>
@@ -239,7 +265,15 @@ const HomeScreen: React.FC = () => {
                           <Text style={styles.featureTime}>45 dakika</Text>
                         </View>
                       </View>
-                      <View style={{ minWidth: 130, maxWidth: 220, width: '50%', height: '145%', alignItems: 'flex-end', justifyContent: 'center', marginRight: -18 }}>
+                      <View style={{ 
+                        minWidth: item.title === 'Türkçe Sınavı' ? 150 : 130, 
+                        maxWidth: item.title === 'Türkçe Sınavı' ? 240 : 220, 
+                        width: item.title === 'Türkçe Sınavı' ? '55%' : '50%', 
+                        height: item.title === 'Türkçe Sınavı' ? '155%' : '145%', 
+                        alignItems: 'flex-end', 
+                        justifyContent: 'center', 
+                        marginRight: item.title === 'Türkçe Sınavı' ? -20 : -18 
+                      }}>
                         <Image
                           source={item.image}
                           style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
@@ -391,7 +425,7 @@ const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
-      <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchText} onChange={setSearchText} results={searchResults} />
+      <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchText} onChange={setSearchText} results={searchResults} onResultPress={handleSearchResultPress} />
     </View>
   );
 };
