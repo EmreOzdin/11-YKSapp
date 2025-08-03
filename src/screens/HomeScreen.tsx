@@ -99,14 +99,14 @@ const HomeScreen: React.FC = () => {
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
   const [streakDays, setStreakDays] = useState<number[]>([]);
-  
+
   // Arama sonuçlarını filtrele
-  const searchResults = searchText.length > 0
-    ? CARD_DATA.filter(card => card.title.toLowerCase().includes(searchText.toLowerCase()))
+  const filteredSearchResults = searchValue.length > 0
+    ? CARD_DATA.filter(card => card.title.toLowerCase().includes(searchValue.toLowerCase()))
     : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
@@ -304,37 +304,53 @@ const HomeScreen: React.FC = () => {
         </View>
         {/* Streak Bar */}
         <View style={styles.streakContainer}>
-          <View style={styles.streakLabelRow}>
-            <Text style={styles.streakLabel}>current streak <Text style={{ color: '#ff4757', fontWeight: 'bold' }}>{currentStreak}</Text></Text>
-            <Text style={styles.streakLabel}>longest streak <Text style={{ color: '#ffa502', fontWeight: 'bold' }}>{longestStreak}</Text></Text>
-          </View>
-          <View style={styles.streakBar}>
-            {streakDays.length > 0 ? streakDays.map((day, idx) => (
-              <View key={idx} style={styles.streakBox}>
-                {day > 0 ? (
-                  <MaterialCommunityIcons name="fire" size={20} color="#ff4757" />
-                ) : (
-                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
-                )}
-                <Text style={[styles.streakDay, { color: day > 0 ? '#ff4757' : '#bbb' }]}>
-                  {day > 0 ? day : '-'}
-                </Text>
+          <View style={styles.streakRow}>
+            {/* Sol Bölüm - Streak Sayısı */}
+            <View style={styles.streakLeftSection}>
+              <View style={styles.streakIconContainer}>
+                <MaterialCommunityIcons name="trophy" size={36} color="#ffd700" style={styles.streakIcon} />
               </View>
-            )) : (
-              // Loading durumu için placeholder
-              Array.from({ length: 9 }, (_, idx) => (
-                <View key={idx} style={styles.streakBox}>
-                  <MaterialCommunityIcons name="fire-off" size={20} color="#ddd" />
-                  <Text style={styles.streakDay}>-</Text>
+              <Text style={styles.streakDaysText}>{currentStreak}</Text>
+              <Text style={styles.streakLabelText}>günlük streak</Text>
+            </View>
+            
+            {/* Sağ Bölüm - Progress ve Haftalık Aktivite */}
+            <View style={styles.streakRightSection}>
+              {/* Progress Bar */}
+              <View style={styles.progressContainer}>
+                <Text style={styles.progressText}>
+                  {currentStreak} / 8000
+                </Text>
+                <View style={styles.progressBarContainer}>
+                  <View style={styles.progressBarTrack}>
+                    <View 
+                      style={[
+                        styles.progressBarFill, 
+                        { width: `${Math.min((currentStreak / 8000) * 100, 100)}%` }
+                      ]} 
+                    />
+                  </View>
                 </View>
-              ))
-            )}
+              </View>
+              
+              {/* Haftalık Aktivite */}
+              <View style={styles.weeklyActivityContainer}>
+                {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day, idx) => (
+                  <View key={day} style={styles.dayContainer}>
+                    <View style={[
+                      styles.dayCircle,
+                      streakDays[idx] > 0 && styles.dayCircleActive
+                    ]}>
+                      {streakDays[idx] > 0 && (
+                        <MaterialCommunityIcons name="check" size={12} color="#fff" />
+                      )}
+                    </View>
+                    <Text style={styles.dayLabel}>{day}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
-          <Text style={styles.streakInfo}>
-            {currentStreak > 0 
-              ? `Harika! ${currentStreak} günlük serin devam ediyor! 🔥` 
-              : 'Her gün giriş yap, serini kaybetme!'}
-          </Text>
         </View>
         {/* Dersler Grid */}
         <View style={styles.sectionRow}>
@@ -425,7 +441,7 @@ const HomeScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
-      <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchText} onChange={setSearchText} results={searchResults} onResultPress={handleSearchResultPress} />
+             <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
     </View>
   );
 };
@@ -462,16 +478,140 @@ const styles = StyleSheet.create({
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  streakContainer: { marginTop: 155, marginHorizontal: 20, marginBottom: 18, backgroundColor: '#fff', borderRadius: 16, padding: 16, elevation: 1 },
-  streakLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  streakLabel: { fontSize: 13, color: '#888', fontWeight: '500' },
-  streakBar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
-  streakBox: { alignItems: 'center', justifyContent: 'center', width: 32 },
-  streakDay: { fontSize: 12, color: '#bbb', marginTop: 2 },
-  streakInfo: { fontSize: 12, color: '#aaa', textAlign: 'center', marginTop: 2 },
+  streakContainer: { 
+    marginTop: 155, 
+    marginHorizontal: 20, 
+    marginBottom: 8, 
+    backgroundColor: '#1a1a1a', 
+    borderRadius: 16, 
+    padding: 12, 
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  streakRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  streakLeftSection: {
+    alignItems: 'center',
+    marginRight: 20,
+  },
+  streakIconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 6,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+  },
+  streakIcon: {
+    width: 36,
+    height: 36,
+    textShadowColor: 'rgba(255, 215, 0, 0.8)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
+  },
+  streakDaysText: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 2,
+    textShadowColor: 'rgba(255, 255, 255, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  streakLabelText: {
+    fontSize: 12,
+    color: '#ccc',
+    fontWeight: '500',
+  },
+  streakRightSection: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  progressContainer: {
+    width: '100%',
+    marginBottom: 10,
+  },
+  progressText: {
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'left',
+    marginBottom: 4,
+    fontWeight: '600',
+  },
+  progressBarContainer: {
+    height: 8,
+    backgroundColor: '#333',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarTrack: {
+    height: '100%',
+    backgroundColor: '#333',
+    borderRadius: 4,
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#ff4757',
+    borderRadius: 4,
+    shadowColor: '#ff4757',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+  },
+  weeklyActivityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 8,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 8,
+    padding: 8,
+  },
+  dayContainer: {
+    alignItems: 'center',
+  },
+  dayCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    borderColor: '#444',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 3,
+    backgroundColor: '#333',
+  },
+  dayCircleActive: {
+    backgroundColor: '#ff4757',
+    borderColor: '#ff4757',
+    shadowColor: '#ff4757',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+  },
+  dayLabel: {
+    fontSize: 10,
+    color: '#ccc',
+    fontWeight: '500',
+  },
+  streakInfo: { 
+    fontSize: 12, 
+    color: '#aaa', 
+    textAlign: 'center', 
+    marginTop: 2 
+  },
   subjectGrid: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 8, marginTop: 10, marginBottom: 8 },
   subjectGridItem: { flex: 1, marginHorizontal: 4, aspectRatio: 0.85, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 12, minWidth: 64, maxWidth: 90 },
-  sınavDenemesiGrid: { flexDirection: 'row', justifyContent: 'center', marginHorizontal: 0, marginTop: 16, marginBottom: 16 },
+  sınavDenemesiGrid: { flexDirection: 'row', justifyContent: 'center', marginHorizontal: 0, marginTop: 8, marginBottom: 16 },
   sınavDenemesiGridItem: { width: 112, height: 112, borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginHorizontal: 8, marginBottom: 12 },
   subjectGridLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', marginTop: 8 },
 });

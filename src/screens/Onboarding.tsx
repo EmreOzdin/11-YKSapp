@@ -29,7 +29,7 @@ const ONBOARDING_DATA = [
   {
     key: '3',
     image: require('../../assets/onboarding3.png'),
-    title: 'Deneme Sınavlarıyla Gerçeği Yaşa',
+    title: 'Deneme Sınavları',
     description: 'Gerçek sınav deneyimini yaşa, gelişimini anlık takip et, her gün bir adım ileri git.',
   },
 ];
