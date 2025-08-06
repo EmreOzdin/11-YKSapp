@@ -104,7 +104,7 @@ const HomeScreen: React.FC = () => {
   const [totalDays, setTotalDays] = useState(0); // Toplam gün sayısı
   const [longestStreak, setLongestStreak] = useState(0);
   const [streakDays, setStreakDays] = useState<number[]>([]);
-  const STREAK_GOAL = 8000; // Streak hedefi
+  const STREAK_GOAL = 2000; // Streak hedefi
 
   // Arama sonuçlarını filtrele
   const filteredSearchResults = searchValue.length > 0
@@ -183,9 +183,9 @@ const HomeScreen: React.FC = () => {
         const demoStreakData = {
           lastLoginDate: new Date().toDateString(),
           currentStreak: 15, // Peş peşe 15 gün
-          totalDays: 1253, // Toplam 1253 gün
+          totalDays: 2, // Toplam 2 gün
           longestStreak: 25,
-          streakDays: [1, 1, 1, 1, 1, 1, 1] // Son 7 gün aktif
+          streakDays: [1, 0, 1, 0, 0, 1, 0] // Son 7 gün: Pzt(1), Sal(0), Çar(1), Per(0), Cum(0), Cmt(1), Paz(0)
         };
         await AsyncStorage.setItem('streakData', JSON.stringify(demoStreakData));
         updateStreak();
@@ -330,7 +330,7 @@ const HomeScreen: React.FC = () => {
           <View style={styles.streakRow}>
             {/* Sol Bölüm - Streak Sayısı */}
             <View style={styles.streakLeftSection}>
-              <MaterialCommunityIcons name="fire" size={56} color="#ffd700" style={styles.streakIcon} />
+              <MaterialCommunityIcons name="fire" size={64} color="#ffd700" style={styles.streakIcon} />
               <Text style={styles.streakDaysText}>{currentStreak}</Text>
               <Text style={styles.streakLabelText}>günlük streak</Text>
             </View>
@@ -534,8 +534,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 215, 0, 0.4)',
   },
   streakIcon: {
-    width: 56,
-    height: 56,
+    width: 64,
+    height: 64,
     textShadowColor: 'rgba(255, 215, 0, 0.9)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 12,
@@ -572,11 +572,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   progressBarContainer: {
-    height: 16,
+    height: 20,
     backgroundColor: '#333',
     borderRadius: 8,
-    overflow: 'visible',
-    marginHorizontal: -4,
+    overflow: 'hidden',
+    marginHorizontal: 0,
   },
   progressBarTrack: {
     height: '100%',
@@ -596,6 +596,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2a2a2a',
     borderRadius: 8,
     padding: 8,
+    marginHorizontal: -8,
   },
   dayContainer: {
     alignItems: 'center',
