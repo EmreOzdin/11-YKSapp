@@ -368,7 +368,8 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: colors.background, 
-    paddingTop: responsiveSize(56)
+    paddingTop: responsiveSize(56),
+    minHeight: '100%'
   },
   headerRow: { 
     flexDirection: 'row', 
@@ -531,7 +532,7 @@ const styles = StyleSheet.create({
     width: '90%',
     maxWidth: responsiveSize(420),
     overflow: 'visible',
-    pointerEvents: 'auto',
+    pointerEvents: 'box-none',
   },
   swiperImageContainer: {
     width: '50%',
