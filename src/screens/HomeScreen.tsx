@@ -100,11 +100,7 @@ const HomeScreen: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [currentStreak, setCurrentStreak] = useState(0); // Peş peşe gün sayısı
-  const [totalDays, setTotalDays] = useState(0); // Toplam gün sayısı
-  const [longestStreak, setLongestStreak] = useState(0);
-  const [streakDays, setStreakDays] = useState<number[]>([]);
-  const STREAK_GOAL = 2000; // Streak hedefi
+
 
   // Arama sonuçlarını filtrele
   const filteredSearchResults = searchValue.length > 0
@@ -112,90 +108,7 @@ const HomeScreen: React.FC = () => {
     : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
-  // Streak sistemini yönet
-  const updateStreak = async () => {
-    try {
-      const today = new Date().toDateString();
-      const storedStreakData = await AsyncStorage.getItem('streakData');
-      let streakData = storedStreakData ? JSON.parse(storedStreakData) : { 
-        lastLoginDate: null, 
-        currentStreak: 0, 
-        totalDays: 0,
-        longestStreak: 0, 
-        streakDays: [] 
-      };
 
-      // Bugün daha önce giriş yapılmamışsa
-      if (streakData.lastLoginDate !== today) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayString = yesterday.toDateString();
-
-        if (streakData.lastLoginDate === yesterdayString) {
-          // Ardışık gün - streak devam ediyor
-          streakData.currentStreak += 1;
-        } else if (streakData.lastLoginDate !== today) {
-          // Streak kırıldı - yeniden başla
-          streakData.currentStreak = 1;
-        }
-        
-        // Toplam gün sayısını artır
-        streakData.totalDays += 1;
-
-        // En uzun streak'i güncelle
-        if (streakData.currentStreak > streakData.longestStreak) {
-          streakData.longestStreak = streakData.currentStreak;
-        }
-
-        // Son 7 günü takip et (haftalık aktivite için)
-        streakData.streakDays = [];
-        for (let i = 6; i >= 0; i--) {
-          const checkDate = new Date();
-          checkDate.setDate(checkDate.getDate() - i);
-          const checkDateString = checkDate.toDateString();
-          
-          if (streakData.lastLoginDate === checkDateString || 
-              (i === 0 && streakData.lastLoginDate === today)) {
-            streakData.streakDays.push(1); // Aktif gün
-          } else {
-            streakData.streakDays.push(0); // Pasif gün
-          }
-        }
-
-        streakData.lastLoginDate = today;
-        await AsyncStorage.setItem('streakData', JSON.stringify(streakData));
-      }
-
-      setCurrentStreak(streakData.currentStreak);
-      setTotalDays(streakData.totalDays);
-      setLongestStreak(streakData.longestStreak);
-      setStreakDays(streakData.streakDays);
-    } catch (error) {
-      console.error('Streak güncellenirken hata:', error);
-    }
-  };
-
-  // Component mount olduğunda streak'i güncelle
-  useEffect(() => {
-    // Demo için 1253 günlük streak göster
-    const setupDemoStreak = async () => {
-      try {
-        const demoStreakData = {
-          lastLoginDate: new Date().toDateString(),
-          currentStreak: 15, // Peş peşe 15 gün
-          totalDays: 2, // Toplam 2 gün
-          longestStreak: 25,
-          streakDays: [1, 0, 1, 0, 0, 1, 0] // Son 7 gün: Pzt(1), Sal(0), Çar(1), Per(0), Cum(0), Cmt(1), Paz(0)
-        };
-        await AsyncStorage.setItem('streakData', JSON.stringify(demoStreakData));
-        updateStreak();
-      } catch (error) {
-        console.error('Demo streak kurulumunda hata:', error);
-      }
-    };
-    
-    setupDemoStreak();
-  }, []);
 
   // Arama sonucuna tıklandığında yönlendirme
   const handleSearchResultPress = (item: { title: string; image: any }) => {
@@ -217,7 +130,15 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 90 }}>
+      <ScrollView 
+        showsVerticalScrollIndicator={true}
+        contentContainerStyle={{ paddingBottom: 300 }}
+        scrollEnabled={true}
+        bounces={true}
+        style={{ flex: 1 }}
+        nestedScrollEnabled={false}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity>
@@ -247,9 +168,9 @@ const HomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-        {/* Swiper sadece kendi bölgesinde */}
-        <View style={{ marginHorizontal: 0, marginTop: screenWidth < 400 ? -90 : -120, marginBottom: 8, height: 135, alignItems: 'center', justifyContent: 'center' }}>
-          <View style={{ width: '90%', maxWidth: 420, overflow: 'visible', alignSelf: 'flex-start', marginLeft: 0, marginRight: 'auto' }}>
+        {/* Swiper Cards */}
+        <View style={styles.swiperContainer}>
+          <View style={styles.swiperWrapper}>
             <Swiper
               cardStyle={{ height: 135 }}
               cards={CARD_DATA}
@@ -288,18 +209,10 @@ const HomeScreen: React.FC = () => {
                           <Text style={styles.featureTime}>45 dakika</Text>
                         </View>
                       </View>
-                      <View style={{ 
-                        minWidth: item.title === 'Türkçe Sınavı' ? 150 : 130, 
-                        maxWidth: item.title === 'Türkçe Sınavı' ? 240 : 220, 
-                        width: item.title === 'Türkçe Sınavı' ? '55%' : '50%', 
-                        height: item.title === 'Türkçe Sınavı' ? '155%' : '145%', 
-                        alignItems: 'flex-end', 
-                        justifyContent: 'center', 
-                        marginRight: item.title === 'Türkçe Sınavı' ? -20 : -18 
-                      }}>
+                      <View style={styles.swiperImageContainer}>
                         <Image
                           source={item.image}
-                          style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                          style={styles.swiperImage}
                         />
                       </View>
                     </LinearGradient>
@@ -325,55 +238,7 @@ const HomeScreen: React.FC = () => {
             />
           </View>
         </View>
-        {/* Streak Bar */}
-        <View style={styles.streakContainer}>
-          <View style={styles.streakRow}>
-            {/* Sol Bölüm - Streak Sayısı */}
-            <View style={styles.streakLeftSection}>
-              <MaterialCommunityIcons name="fire" size={64} color="#ffd700" style={styles.streakIcon} />
-              <Text style={styles.streakDaysText}>{currentStreak}</Text>
-              <Text style={styles.streakLabelText}>günlük streak</Text>
-            </View>
-            
-            {/* Sağ Bölüm - Progress ve Haftalık Aktivite */}
-            <View style={styles.streakRightSection}>
-              {/* Progress Bar */}
-              <View style={styles.progressContainer}>
-                <Text style={styles.progressText}>
-                  <Text style={{ fontSize: 28, fontWeight: 'bold' }}>{totalDays}</Text>
-                  <Text style={{ fontSize: 18, color: '#ccc' }}> / {STREAK_GOAL}</Text>
-                </Text>
-                <View style={styles.progressBarContainer}>
-                  <View style={styles.progressBarTrack}>
-                    <View 
-                      style={[
-                        styles.progressBarFill, 
-                        { width: `${Math.min((totalDays / STREAK_GOAL) * 100, 100)}%` }
-                      ]} 
-                    />
-                  </View>
-                </View>
-              </View>
-              
-              {/* Haftalık Aktivite */}
-              <View style={styles.weeklyActivityContainer}>
-                {['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'].map((day, idx) => (
-                  <View key={day} style={styles.dayContainer}>
-                    <View style={[
-                      styles.dayCircle,
-                      streakDays[idx] > 0 && styles.dayCircleActive
-                    ]}>
-                      {streakDays[idx] > 0 && (
-                        <MaterialCommunityIcons name="check" size={12} color="#fff" />
-                      )}
-                    </View>
-                    <Text style={styles.dayLabel}>{day}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </View>
-        </View>
+
         {/* Dersler Grid */}
         <View style={styles.sectionRow}>
           <Text style={styles.sectionTitle}>Çalışma Soruları</Text>
@@ -384,15 +249,15 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#e0f2fe' }]}
             onPress={() => navigation.navigate('Fen Bilimleri')}
           >
-            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={{ width: 48, height: 48, marginBottom: 0, marginTop: -10 }} />
-            <Text style={[styles.subjectGridLabel, { marginTop: 7 }]}>Fen Bilimleri</Text>
+            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={styles.subjectIcon} />
+            <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
           </TouchableOpacity>
           {/* Türkçe */}
           <TouchableOpacity
             style={[styles.subjectGridItem, { backgroundColor: '#f3e8ff' }]}
             onPress={() => navigation.navigate('Türkçe')}
           >
-            <Image source={require('../../assets/turkish.png')} style={{ width: 36, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/turkish.png')} style={styles.subjectIcon} />
             <Text style={styles.subjectGridLabel}>Türkçe</Text>
           </TouchableOpacity>
           {/* Matematik */}
@@ -400,7 +265,7 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#fff9db' }]}
             onPress={() => navigation.navigate('Matematik')}
           >
-            <Image source={require('../../assets/math.png')} style={{ width: 49, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/math.png')} style={styles.subjectIcon} />
             <Text style={styles.subjectGridLabel}>Matematik</Text>
           </TouchableOpacity>
           {/* Sosyal Bilimler */}
@@ -408,7 +273,7 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#ffeaea' }]}
             onPress={() => navigation.navigate('Sosyal Bilimler')}
           >
-            <Image source={require('../../assets/social.png')} style={{ width: 50, height: 36, marginBottom: 4 }} />
+            <Image source={require('../../assets/social.png')} style={styles.subjectIcon} />
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </TouchableOpacity>
         </View>
@@ -423,24 +288,55 @@ const HomeScreen: React.FC = () => {
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}
             onPress={() => navigation.navigate('TYT')}
           >
-            <Image source={require('../../assets/tyt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
-            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>TYT</Text>
+            <Image source={require('../../assets/tyt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>TYT</Text>
           </TouchableOpacity>
           {/* AYT */}
           <TouchableOpacity
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}
             onPress={() => navigation.navigate('AYT')}
           >
-            <Image source={require('../../assets/ayt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
-            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>AYT</Text>
+            <Image source={require('../../assets/ayt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>AYT</Text>
           </TouchableOpacity>
           {/* YDT */}
           <TouchableOpacity
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}
             onPress={() => navigation.navigate('YDT')}
           >
-            <Image source={require('../../assets/ydt.png')} style={{ width: 80, height: 80, marginBottom: 10, marginTop: -12 }} />
-            <Text style={[styles.subjectGridLabel, { marginTop: -5 }]}>YDT</Text>
+            <Image source={require('../../assets/ydt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>YDT</Text>
+          </TouchableOpacity>
+        </View>
+        {/* Video kurs */}
+        <View style={styles.sectionRow}>
+          <Text style={styles.sectionTitle}>Çıkmış Sorular</Text>
+        </View>
+        {/* Sınav Denemesi Grid */}
+        <View style={styles.sınavDenemesiGrid}>
+          {/* TYT */}
+          <TouchableOpacity
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}
+            onPress={() => navigation.navigate('TYT')}
+          >
+            <Image source={require('../../assets/tyt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>TYT</Text>
+          </TouchableOpacity>
+          {/* AYT */}
+          <TouchableOpacity
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}
+            onPress={() => navigation.navigate('AYT')}
+          >
+            <Image source={require('../../assets/ayt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>AYT</Text>
+          </TouchableOpacity>
+          {/* YDT */}
+          <TouchableOpacity
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}
+            onPress={() => navigation.navigate('YDT')}
+          >
+            <Image source={require('../../assets/ydt.png')} style={styles.examIcon} />
+            <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -472,7 +368,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: colors.background, 
-    paddingTop: responsiveSize(56) 
+    paddingTop: responsiveSize(56)
   },
   headerRow: { 
     flexDirection: 'row', 
@@ -576,7 +472,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'space-between', 
-    marginTop: responsiveSize(18), 
+    marginTop: responsiveSize(190), 
+    marginBottom: responsiveSize(12),
     marginHorizontal: responsiveSize(20) 
   },
   sectionTitle: { 
@@ -618,166 +515,71 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center' 
   },
-  streakContainer: { 
-    marginTop: responsiveSize(150), 
-    marginHorizontal: responsiveSize(8), 
-    marginBottom: responsiveSize(8), 
-    backgroundColor: '#1a1a1a', 
-    borderRadius: responsiveSize(16), 
-    padding: responsiveSize(12), 
-    ...shadows.medium,
-  },
-  streakRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  swiperContainer: {
+    position: 'absolute',
+    top: responsiveSize(-20),
+    left: -23,
+    right: 0,
+    height: responsiveSize(135),
     alignItems: 'center',
-  },
-  streakLeftSection: {
-    alignItems: 'center',
-    marginRight: 20,
-  },
-  streakIconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 6,
-    borderWidth: 2,
-    borderColor: 'rgba(255, 215, 0, 0.4)',
+    zIndex: 1,
+    pointerEvents: 'none',
+    elevation: 0,
   },
-  streakIcon: {
-    width: responsiveSize(64),
-    height: responsiveSize(64),
-    textShadowColor: 'rgba(255, 215, 0, 0.9)',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: responsiveSize(12),
-    marginBottom: responsiveSize(8),
+  swiperWrapper: {
+    width: '90%',
+    maxWidth: responsiveSize(420),
+    overflow: 'visible',
+    pointerEvents: 'auto',
   },
-  streakDaysText: {
-    fontSize: responsiveFontSize(24),
-    fontWeight: 'bold',
-    color: colors.textWhite,
-    marginBottom: responsiveSize(2),
-    textShadowColor: 'rgba(255, 255, 255, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: responsiveSize(2),
-  },
-  streakLabelText: {
-    fontSize: responsiveFontSize(12),
-    color: colors.textLight,
-    fontWeight: '500',
-  },
-  streakRightSection: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  progressContainer: {
-    width: '100%',
-    marginBottom: 10,
-    marginTop: 1,
-  },
-  progressText: {
-    fontSize: responsiveFontSize(24),
-    color: colors.textWhite,
-    textAlign: 'left',
-    marginBottom: responsiveSize(4),
-    fontWeight: '600',
-  },
-  progressBarContainer: {
-    height: responsiveSize(20),
-    backgroundColor: '#333',
-    borderRadius: responsiveSize(8),
-    overflow: 'hidden',
-    marginHorizontal: 0,
-  },
-  progressBarTrack: {
-    height: '100%',
-    backgroundColor: '#333',
-    borderRadius: responsiveSize(8),
-  },
-  progressBarFill: {
-    height: '100%',
-    backgroundColor: colors.accent,
-    borderRadius: responsiveSize(8),
-  },
-  weeklyActivityContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: responsiveSize(8),
-    backgroundColor: '#2a2a2a',
-    borderRadius: responsiveSize(8),
-    padding: responsiveSize(8),
-    marginHorizontal: -responsiveSize(8),
-  },
-  dayContainer: {
-    alignItems: 'center',
-  },
-  dayCircle: {
-    width: responsiveSize(22),
-    height: responsiveSize(22),
-    borderRadius: responsiveSize(11),
-    borderWidth: 2,
-    borderColor: '#444',
+  swiperImageContainer: {
+    width: '50%',
+    height: '140%',
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: responsiveSize(3),
-    backgroundColor: '#333',
+    marginRight: responsiveSize(-10),
   },
-  dayCircleActive: {
-    backgroundColor: colors.error,
-    borderColor: colors.error,
-    shadowColor: colors.error,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: responsiveSize(4),
+  swiperImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
-  dayLabel: {
-    fontSize: responsiveFontSize(10),
-    color: colors.textWhite,
-    fontWeight: '500',
-  },
-  streakInfo: { 
-    fontSize: 12, 
-    color: '#aaa', 
-    textAlign: 'center', 
-    marginTop: 2 
-  },
+
   subjectGrid: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
-    marginHorizontal: responsiveSize(8), 
-    marginTop: responsiveSize(10), 
-    marginBottom: responsiveSize(8) 
+    marginHorizontal: responsiveSize(20), 
+    marginTop: responsiveSize(8), 
+    marginBottom: responsiveSize(-170) 
   },
   subjectGridItem: { 
     flex: 1, 
-    marginHorizontal: responsiveSize(4), 
-    aspectRatio: 0.85, 
+    marginHorizontal: responsiveSize(6), 
+    aspectRatio: 1, 
     borderRadius: responsiveSize(16), 
     alignItems: 'center', 
     justifyContent: 'center', 
-    marginBottom: responsiveSize(12), 
-    minWidth: responsiveSize(64), 
-    maxWidth: responsiveSize(90) 
+    paddingVertical: responsiveSize(16),
+    paddingHorizontal: responsiveSize(8),
+    minHeight: responsiveSize(100),
+    maxHeight: responsiveSize(120),
   },
   sınavDenemesiGrid: { 
     flexDirection: 'row', 
-    justifyContent: 'center', 
-    marginHorizontal: 0, 
+    justifyContent: 'space-around', 
+    marginHorizontal: responsiveSize(20), 
     marginTop: responsiveSize(8), 
-    marginBottom: responsiveSize(16) 
+    marginBottom: responsiveSize(-170) 
   },
   sınavDenemesiGridItem: { 
-    width: responsiveSize(112), 
-    height: responsiveSize(112), 
-    borderRadius: responsiveSize(26), 
+    width: responsiveSize(100), 
+    height: responsiveSize(100), 
+    borderRadius: responsiveSize(20), 
     alignItems: 'center', 
     justifyContent: 'center', 
-    marginHorizontal: responsiveSize(8), 
-    marginBottom: responsiveSize(12) 
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(8),
   },
   subjectGridLabel: { 
     fontSize: responsiveFontSize(13), 
@@ -785,6 +587,16 @@ const styles = StyleSheet.create({
     fontWeight: '500', 
     textAlign: 'center', 
     marginTop: responsiveSize(8) 
+  },
+  subjectIcon: {
+    width: responsiveSize(40),
+    height: responsiveSize(40),
+    marginBottom: responsiveSize(8),
+  },
+  examIcon: {
+    width: responsiveSize(60),
+    height: responsiveSize(60),
+    marginBottom: responsiveSize(8),
   },
 });
 
