@@ -100,9 +100,11 @@ const HomeScreen: React.FC = () => {
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [currentStreak, setCurrentStreak] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0); // Peş peşe gün sayısı
+  const [totalDays, setTotalDays] = useState(0); // Toplam gün sayısı
   const [longestStreak, setLongestStreak] = useState(0);
   const [streakDays, setStreakDays] = useState<number[]>([]);
+  const STREAK_GOAL = 8000; // Streak hedefi
 
   // Arama sonuçlarını filtrele
   const filteredSearchResults = searchValue.length > 0
@@ -118,6 +120,7 @@ const HomeScreen: React.FC = () => {
       let streakData = storedStreakData ? JSON.parse(storedStreakData) : { 
         lastLoginDate: null, 
         currentStreak: 0, 
+        totalDays: 0,
         longestStreak: 0, 
         streakDays: [] 
       };
@@ -135,25 +138,27 @@ const HomeScreen: React.FC = () => {
           // Streak kırıldı - yeniden başla
           streakData.currentStreak = 1;
         }
+        
+        // Toplam gün sayısını artır
+        streakData.totalDays += 1;
 
         // En uzun streak'i güncelle
         if (streakData.currentStreak > streakData.longestStreak) {
           streakData.longestStreak = streakData.currentStreak;
         }
 
-        // Son 9 günü takip et
-        const todayNum = new Date().getDate();
+        // Son 7 günü takip et (haftalık aktivite için)
         streakData.streakDays = [];
-        for (let i = 8; i >= 0; i--) {
+        for (let i = 6; i >= 0; i--) {
           const checkDate = new Date();
           checkDate.setDate(checkDate.getDate() - i);
           const checkDateString = checkDate.toDateString();
           
           if (streakData.lastLoginDate === checkDateString || 
               (i === 0 && streakData.lastLoginDate === today)) {
-            streakData.streakDays.push(checkDate.getDate());
+            streakData.streakDays.push(1); // Aktif gün
           } else {
-            streakData.streakDays.push(0);
+            streakData.streakDays.push(0); // Pasif gün
           }
         }
 
@@ -162,6 +167,7 @@ const HomeScreen: React.FC = () => {
       }
 
       setCurrentStreak(streakData.currentStreak);
+      setTotalDays(streakData.totalDays);
       setLongestStreak(streakData.longestStreak);
       setStreakDays(streakData.streakDays);
     } catch (error) {
@@ -171,7 +177,24 @@ const HomeScreen: React.FC = () => {
 
   // Component mount olduğunda streak'i güncelle
   useEffect(() => {
-    updateStreak();
+    // Demo için 1253 günlük streak göster
+    const setupDemoStreak = async () => {
+      try {
+        const demoStreakData = {
+          lastLoginDate: new Date().toDateString(),
+          currentStreak: 15, // Peş peşe 15 gün
+          totalDays: 1253, // Toplam 1253 gün
+          longestStreak: 25,
+          streakDays: [1, 1, 1, 1, 1, 1, 1] // Son 7 gün aktif
+        };
+        await AsyncStorage.setItem('streakData', JSON.stringify(demoStreakData));
+        updateStreak();
+      } catch (error) {
+        console.error('Demo streak kurulumunda hata:', error);
+      }
+    };
+    
+    setupDemoStreak();
   }, []);
 
   // Arama sonucuna tıklandığında yönlendirme
@@ -307,9 +330,7 @@ const HomeScreen: React.FC = () => {
           <View style={styles.streakRow}>
             {/* Sol Bölüm - Streak Sayısı */}
             <View style={styles.streakLeftSection}>
-              <View style={styles.streakIconContainer}>
-                <MaterialCommunityIcons name="trophy" size={36} color="#ffd700" style={styles.streakIcon} />
-              </View>
+              <MaterialCommunityIcons name="fire" size={56} color="#ffd700" style={styles.streakIcon} />
               <Text style={styles.streakDaysText}>{currentStreak}</Text>
               <Text style={styles.streakLabelText}>günlük streak</Text>
             </View>
@@ -319,14 +340,15 @@ const HomeScreen: React.FC = () => {
               {/* Progress Bar */}
               <View style={styles.progressContainer}>
                 <Text style={styles.progressText}>
-                  {currentStreak} / 8000
+                  <Text style={{ fontSize: 28, fontWeight: 'bold' }}>{totalDays}</Text>
+                  <Text style={{ fontSize: 18, color: '#ccc' }}> / {STREAK_GOAL}</Text>
                 </Text>
                 <View style={styles.progressBarContainer}>
                   <View style={styles.progressBarTrack}>
                     <View 
                       style={[
                         styles.progressBarFill, 
-                        { width: `${Math.min((currentStreak / 8000) * 100, 100)}%` }
+                        { width: `${Math.min((totalDays / STREAK_GOAL) * 100, 100)}%` }
                       ]} 
                     />
                   </View>
@@ -479,8 +501,8 @@ const styles = StyleSheet.create({
   tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
   tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   streakContainer: { 
-    marginTop: 155, 
-    marginHorizontal: 20, 
+    marginTop: 150, 
+    marginHorizontal: 8, 
     marginBottom: 8, 
     backgroundColor: '#1a1a1a', 
     borderRadius: 16, 
@@ -504,22 +526,23 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 6,
     borderWidth: 2,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
+    borderColor: 'rgba(255, 215, 0, 0.4)',
   },
   streakIcon: {
-    width: 36,
-    height: 36,
-    textShadowColor: 'rgba(255, 215, 0, 0.8)',
+    width: 56,
+    height: 56,
+    textShadowColor: 'rgba(255, 215, 0, 0.9)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 12,
+    marginBottom: 8,
   },
   streakDaysText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
     marginBottom: 2,
@@ -539,33 +562,31 @@ const styles = StyleSheet.create({
   progressContainer: {
     width: '100%',
     marginBottom: 10,
+    marginTop: 1,
   },
   progressText: {
-    fontSize: 14,
+    fontSize: 24,
     color: '#fff',
     textAlign: 'left',
     marginBottom: 4,
     fontWeight: '600',
   },
   progressBarContainer: {
-    height: 8,
+    height: 16,
     backgroundColor: '#333',
-    borderRadius: 4,
-    overflow: 'hidden',
+    borderRadius: 8,
+    overflow: 'visible',
+    marginHorizontal: -4,
   },
   progressBarTrack: {
     height: '100%',
     backgroundColor: '#333',
-    borderRadius: 4,
+    borderRadius: 8,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#ff4757',
-    borderRadius: 4,
-    shadowColor: '#ff4757',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
+    backgroundColor: '#ffd700',
+    borderRadius: 8,
   },
   weeklyActivityContainer: {
     flexDirection: 'row',
@@ -600,7 +621,7 @@ const styles = StyleSheet.create({
   },
   dayLabel: {
     fontSize: 10,
-    color: '#ccc',
+    color: '#fff',
     fontWeight: '500',
   },
   streakInfo: { 
