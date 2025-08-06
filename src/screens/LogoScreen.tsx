@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-
-const { width, height } = Dimensions.get('window');
+import { responsiveSize, responsiveWidth, screenWidth } from '../utils/responsive';
+import { colors } from '../utils/theme';
 
 const LogoScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -24,13 +24,13 @@ const LogoScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
   },
   logo: {
-    width: width * 0.5,
-    height: width * 0.5,
+    width: screenWidth * 0.5,
+    height: screenWidth * 0.5,
   },
 });
 

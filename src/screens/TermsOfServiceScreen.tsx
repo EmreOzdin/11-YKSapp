@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { responsiveSize, responsiveFontSize } from '../utils/responsive';
+import { colors, typography } from '../utils/theme';
 
 const TERMS_TEXT = `YKSapp Kullanım Koşulları
 
@@ -46,12 +48,35 @@ const TermsOfServiceScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 24 },
-  headerRow: { flexDirection: 'row', alignItems: 'center', marginTop: 48, marginBottom: 16 },
-  backButton: { marginRight: 8 },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#222', textAlign: 'left' },
-  scroll: { flex: 1, marginTop: 32 },
-  text: { fontSize: 15, color: '#333', lineHeight: 22 },
+  container: { 
+    flex: 1, 
+    backgroundColor: colors.background, 
+    padding: responsiveSize(24) 
+  },
+  headerRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginTop: responsiveSize(48), 
+    marginBottom: responsiveSize(16) 
+  },
+  backButton: { 
+    marginRight: responsiveSize(8) 
+  },
+  title: { 
+    fontSize: responsiveFontSize(22), 
+    fontWeight: 'bold', 
+    color: colors.textPrimary, 
+    textAlign: 'left' 
+  },
+  scroll: { 
+    flex: 1, 
+    marginTop: responsiveSize(32) 
+  },
+  text: { 
+    fontSize: responsiveFontSize(15), 
+    color: colors.textSecondary, 
+    lineHeight: responsiveFontSize(22) 
+  },
 });
 
 export default TermsOfServiceScreen; 

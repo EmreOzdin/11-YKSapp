@@ -5,8 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, isSmallDevice, isMediumDevice, isLargeDevice, screenWidth } from '../utils/responsive';
+import { colors, typography, shadows } from '../utils/theme';
 
 const CARD_DATA = [
   { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: require('../../assets/physicsexam.png') },
@@ -248,7 +248,7 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
         {/* Swiper sadece kendi bölgesinde */}
-        <View style={{ marginHorizontal: 0, marginTop: SCREEN_WIDTH < 400 ? -90 : -120, marginBottom: 8, height: 135, alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{ marginHorizontal: 0, marginTop: screenWidth < 400 ? -90 : -120, marginBottom: 8, height: 135, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ width: '90%', maxWidth: 420, overflow: 'visible', alignSelf: 'flex-start', marginLeft: 0, marginRight: 'auto' }}>
             <Swiper
               cardStyle={{ height: 135 }}
@@ -469,24 +469,126 @@ const HomeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingTop: 56 },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 24, paddingHorizontal: 20 },
-  headerTitleContainer: { flex: 1, marginLeft: 12 },
-  headerTitle: { fontSize: 26, fontWeight: 'bold', color: '#222' },
-  userName: { fontSize: 20, fontWeight: '600', color: '#666', marginTop: 2 },
-  headerIcons: { flexDirection: 'row', alignItems: 'center' },
-  notificationDot: { position: 'absolute', top: -2, right: -2, width: 12, height: 12, borderRadius: 6, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff' },
-  avatar: { width: 48, height: 48, borderRadius: 24, backgroundColor: '#eee' },
-  featureCard: { flexDirection: 'row', backgroundColor: '#ff6b81', borderRadius: 24, padding: 20, margin: 20, alignItems: 'center', marginTop: 28 },
-  featureCardStacked: { flexDirection: 'row', borderRadius: 24, padding: 12, alignItems: 'center', height: 135, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.10, shadowRadius: 6, elevation: 3, borderWidth: 1, borderColor: '#f2f2f2' },
-  featureTitle: { color: '#fff', fontSize: 22, fontWeight: 'bold', marginBottom: 2, marginTop: 0 },
-  featureRow: { flexDirection: 'row', alignItems: 'center', marginTop: 6, marginBottom: 4 },
-  featureTime: { color: '#fff', fontSize: 16, marginLeft: 6 },
-  featureImage: { width: 80, height: 80, marginLeft: 16, borderRadius: 16, backgroundColor: '#fff' },
-  featureImageIcon: { width: 90, height: 90, position: 'relative', right: 0, top: 0, marginLeft: 12, alignSelf: 'center', opacity: 1, resizeMode: 'contain' },
-  sectionRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, marginHorizontal: 20 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
-  seeAll: { color: '#1877f2', fontWeight: 'bold', fontSize: 15 },
+  container: { 
+    flex: 1, 
+    backgroundColor: colors.background, 
+    paddingTop: responsiveSize(56) 
+  },
+  headerRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginTop: responsiveSize(24), 
+    paddingHorizontal: responsiveSize(20) 
+  },
+  headerTitleContainer: { 
+    flex: 1, 
+    marginLeft: responsiveSize(12) 
+  },
+  headerTitle: { 
+    fontSize: responsiveFontSize(26), 
+    fontWeight: 'bold', 
+    color: colors.textPrimary 
+  },
+  userName: { 
+    fontSize: responsiveFontSize(20), 
+    fontWeight: '600', 
+    color: colors.textTertiary, 
+    marginTop: responsiveSize(2) 
+  },
+  headerIcons: { 
+    flexDirection: 'row', 
+    alignItems: 'center' 
+  },
+  notificationDot: { 
+    position: 'absolute', 
+    top: -2, 
+    right: -2, 
+    width: responsiveSize(12), 
+    height: responsiveSize(12), 
+    borderRadius: responsiveSize(6), 
+    backgroundColor: colors.error, 
+    borderWidth: 2, 
+    borderColor: colors.background 
+  },
+  avatar: { 
+    width: responsiveSize(48), 
+    height: responsiveSize(48), 
+    borderRadius: responsiveSize(24), 
+    backgroundColor: colors.borderLight 
+  },
+  featureCard: { 
+    flexDirection: 'row', 
+    backgroundColor: colors.gradients.pink[0], 
+    borderRadius: responsiveSize(24), 
+    padding: responsiveSize(20), 
+    margin: responsiveSize(20), 
+    alignItems: 'center', 
+    marginTop: responsiveSize(28) 
+  },
+  featureCardStacked: { 
+    flexDirection: 'row', 
+    borderRadius: responsiveSize(24), 
+    padding: responsiveSize(12), 
+    alignItems: 'center', 
+    height: responsiveHeight(135), 
+    ...shadows.small,
+    borderWidth: 1, 
+    borderColor: colors.borderLight 
+  },
+  featureTitle: { 
+    color: colors.textWhite, 
+    fontSize: responsiveFontSize(22), 
+    fontWeight: 'bold', 
+    marginBottom: responsiveSize(2), 
+    marginTop: 0 
+  },
+  featureRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    marginTop: responsiveSize(6), 
+    marginBottom: responsiveSize(4) 
+  },
+  featureTime: { 
+    color: colors.textWhite, 
+    fontSize: responsiveFontSize(16), 
+    marginLeft: responsiveSize(6) 
+  },
+  featureImage: { 
+    width: responsiveSize(80), 
+    height: responsiveSize(80), 
+    marginLeft: responsiveSize(16), 
+    borderRadius: responsiveSize(16), 
+    backgroundColor: colors.background 
+  },
+  featureImageIcon: { 
+    width: responsiveSize(90), 
+    height: responsiveSize(90), 
+    position: 'relative', 
+    right: 0, 
+    top: 0, 
+    marginLeft: responsiveSize(12), 
+    alignSelf: 'center', 
+    opacity: 1, 
+    resizeMode: 'contain' 
+  },
+  sectionRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginTop: responsiveSize(18), 
+    marginHorizontal: responsiveSize(20) 
+  },
+  sectionTitle: { 
+    fontSize: responsiveFontSize(18), 
+    fontWeight: 'bold', 
+    color: colors.textPrimary 
+  },
+  seeAll: { 
+    color: colors.secondary, 
+    fontWeight: 'bold', 
+    fontSize: responsiveFontSize(15) 
+  },
   subjectGroup: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: 14, marginBottom: 8, flex: 1 },
   subjectIconBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd', borderRadius: 16, padding: 14, marginHorizontal: 4 },
   subjectLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginBottom: 8 },
@@ -498,20 +600,32 @@ const styles = StyleSheet.create({
   videoRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   videoRating: { fontSize: 14, color: '#222', marginLeft: 4, marginRight: 8 },
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
-  tabBar: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', height: 60, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fff', position: 'absolute', left: 0, right: 0, bottom: 24 },
-  tabItem: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  tabBar: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-around', 
+    alignItems: 'center', 
+    height: responsiveSize(60), 
+    borderTopWidth: 1, 
+    borderColor: colors.border, 
+    backgroundColor: colors.background, 
+    position: 'absolute', 
+    left: 0, 
+    right: 0, 
+    bottom: responsiveSize(24) 
+  },
+  tabItem: { 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
   streakContainer: { 
-    marginTop: 150, 
-    marginHorizontal: 8, 
-    marginBottom: 8, 
+    marginTop: responsiveSize(150), 
+    marginHorizontal: responsiveSize(8), 
+    marginBottom: responsiveSize(8), 
     backgroundColor: '#1a1a1a', 
-    borderRadius: 16, 
-    padding: 12, 
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    borderRadius: responsiveSize(16), 
+    padding: responsiveSize(12), 
+    ...shadows.medium,
   },
   streakRow: {
     flexDirection: 'row',
@@ -534,25 +648,25 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 215, 0, 0.4)',
   },
   streakIcon: {
-    width: 64,
-    height: 64,
+    width: responsiveSize(64),
+    height: responsiveSize(64),
     textShadowColor: 'rgba(255, 215, 0, 0.9)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 12,
-    marginBottom: 8,
+    textShadowRadius: responsiveSize(12),
+    marginBottom: responsiveSize(8),
   },
   streakDaysText: {
-    fontSize: 24,
+    fontSize: responsiveFontSize(24),
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 2,
+    color: colors.textWhite,
+    marginBottom: responsiveSize(2),
     textShadowColor: 'rgba(255, 255, 255, 0.3)',
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    textShadowRadius: responsiveSize(2),
   },
   streakLabelText: {
-    fontSize: 12,
-    color: '#ccc',
+    fontSize: responsiveFontSize(12),
+    color: colors.textLight,
     fontWeight: '500',
   },
   streakRightSection: {
@@ -565,64 +679,64 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   progressText: {
-    fontSize: 24,
-    color: '#fff',
+    fontSize: responsiveFontSize(24),
+    color: colors.textWhite,
     textAlign: 'left',
-    marginBottom: 4,
+    marginBottom: responsiveSize(4),
     fontWeight: '600',
   },
   progressBarContainer: {
-    height: 20,
+    height: responsiveSize(20),
     backgroundColor: '#333',
-    borderRadius: 8,
+    borderRadius: responsiveSize(8),
     overflow: 'hidden',
     marginHorizontal: 0,
   },
   progressBarTrack: {
     height: '100%',
     backgroundColor: '#333',
-    borderRadius: 8,
+    borderRadius: responsiveSize(8),
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: '#ffd700',
-    borderRadius: 8,
+    backgroundColor: colors.accent,
+    borderRadius: responsiveSize(8),
   },
   weeklyActivityContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    marginTop: 8,
+    marginTop: responsiveSize(8),
     backgroundColor: '#2a2a2a',
-    borderRadius: 8,
-    padding: 8,
-    marginHorizontal: -8,
+    borderRadius: responsiveSize(8),
+    padding: responsiveSize(8),
+    marginHorizontal: -responsiveSize(8),
   },
   dayContainer: {
     alignItems: 'center',
   },
   dayCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: responsiveSize(22),
+    height: responsiveSize(22),
+    borderRadius: responsiveSize(11),
     borderWidth: 2,
     borderColor: '#444',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 3,
+    marginBottom: responsiveSize(3),
     backgroundColor: '#333',
   },
   dayCircleActive: {
-    backgroundColor: '#ff4757',
-    borderColor: '#ff4757',
-    shadowColor: '#ff4757',
+    backgroundColor: colors.error,
+    borderColor: colors.error,
+    shadowColor: colors.error,
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
-    shadowRadius: 4,
+    shadowRadius: responsiveSize(4),
   },
   dayLabel: {
-    fontSize: 10,
-    color: '#fff',
+    fontSize: responsiveFontSize(10),
+    color: colors.textWhite,
     fontWeight: '500',
   },
   streakInfo: { 
@@ -631,11 +745,47 @@ const styles = StyleSheet.create({
     textAlign: 'center', 
     marginTop: 2 
   },
-  subjectGrid: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 8, marginTop: 10, marginBottom: 8 },
-  subjectGridItem: { flex: 1, marginHorizontal: 4, aspectRatio: 0.85, borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginBottom: 12, minWidth: 64, maxWidth: 90 },
-  sınavDenemesiGrid: { flexDirection: 'row', justifyContent: 'center', marginHorizontal: 0, marginTop: 8, marginBottom: 16 },
-  sınavDenemesiGridItem: { width: 112, height: 112, borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginHorizontal: 8, marginBottom: 12 },
-  subjectGridLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', marginTop: 8 },
+  subjectGrid: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginHorizontal: responsiveSize(8), 
+    marginTop: responsiveSize(10), 
+    marginBottom: responsiveSize(8) 
+  },
+  subjectGridItem: { 
+    flex: 1, 
+    marginHorizontal: responsiveSize(4), 
+    aspectRatio: 0.85, 
+    borderRadius: responsiveSize(16), 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginBottom: responsiveSize(12), 
+    minWidth: responsiveSize(64), 
+    maxWidth: responsiveSize(90) 
+  },
+  sınavDenemesiGrid: { 
+    flexDirection: 'row', 
+    justifyContent: 'center', 
+    marginHorizontal: 0, 
+    marginTop: responsiveSize(8), 
+    marginBottom: responsiveSize(16) 
+  },
+  sınavDenemesiGridItem: { 
+    width: responsiveSize(112), 
+    height: responsiveSize(112), 
+    borderRadius: responsiveSize(26), 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    marginHorizontal: responsiveSize(8), 
+    marginBottom: responsiveSize(12) 
+  },
+  subjectGridLabel: { 
+    fontSize: responsiveFontSize(13), 
+    color: colors.textPrimary, 
+    fontWeight: '500', 
+    textAlign: 'center', 
+    marginTop: responsiveSize(8) 
+  },
 });
 
 export default HomeScreen; 

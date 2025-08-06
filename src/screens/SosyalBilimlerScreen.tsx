@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { responsiveSize, responsiveFontSize } from '../utils/responsive';
+import { colors, typography, shadows } from '../utils/theme';
 
 const SosyalBilimlerScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -15,10 +17,31 @@ const SosyalBilimlerScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#ffeaea' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#ff6b81' },
-  backButton: { position: 'absolute', top: 40, left: 20, padding: 8, backgroundColor: '#fff', borderRadius: 8, elevation: 2 },
-  backText: { fontSize: 16, color: '#ff6b81', fontWeight: 'bold' },
+  container: { 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: '#ffeaea' 
+  },
+  title: { 
+    fontSize: responsiveFontSize(28), 
+    fontWeight: 'bold', 
+    color: colors.gradients.pink[0] 
+  },
+  backButton: { 
+    position: 'absolute', 
+    top: responsiveSize(40), 
+    left: responsiveSize(20), 
+    padding: responsiveSize(8), 
+    backgroundColor: colors.background, 
+    borderRadius: responsiveSize(8), 
+    ...shadows.small 
+  },
+  backText: { 
+    fontSize: responsiveFontSize(16), 
+    color: colors.gradients.pink[0], 
+    fontWeight: 'bold' 
+  },
 });
 
 export default SosyalBilimlerScreen; 

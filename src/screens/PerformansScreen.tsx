@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import { responsiveSize, responsiveFontSize } from '../utils/responsive';
+import { colors, typography, shadows } from '../utils/theme';
 
 const PerformansScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -15,10 +17,31 @@ const PerformansScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#1877f2' },
-  backButton: { position: 'absolute', top: 40, left: 20, padding: 8, backgroundColor: '#fff', borderRadius: 8, elevation: 2 },
-  backText: { fontSize: 16, color: '#1877f2', fontWeight: 'bold' },
+  container: { 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    backgroundColor: colors.backgroundSecondary 
+  },
+  title: { 
+    fontSize: responsiveFontSize(28), 
+    fontWeight: 'bold', 
+    color: colors.secondary 
+  },
+  backButton: { 
+    position: 'absolute', 
+    top: responsiveSize(40), 
+    left: responsiveSize(20), 
+    padding: responsiveSize(8), 
+    backgroundColor: colors.background, 
+    borderRadius: responsiveSize(8), 
+    ...shadows.small 
+  },
+  backText: { 
+    fontSize: responsiveFontSize(16), 
+    color: colors.secondary, 
+    fontWeight: 'bold' 
+  },
 });
 
 export default PerformansScreen; 

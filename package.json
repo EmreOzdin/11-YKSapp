@@ -23,8 +23,18 @@
     "react-native-gesture-handler": "^2.27.1",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "~3.17.4",
+    "react-native-responsive-dimensions": "^3.1.1",
+    "react-native-responsive-fontsize": "^0.5.1",
+    "react-native-responsive-grid": "^0.41.993",
+    "react-native-responsive-image": "^2.3.1",
+    "react-native-responsive-layout": "^1.2.0",
+    "react-native-responsive-screen": "^1.4.2",
+    "react-native-responsive-screens": "^1.0.1",
+    "react-native-responsive-styles": "^0.2.2",
+    "react-native-responsive-utils": "^1.0.0",
     "react-native-safe-area-context": "^5.5.2",
-    "react-native-screens": "^4.13.1"
+    "react-native-screens": "^4.13.1",
+    "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

@@ -10,8 +10,8 @@ import {
   ViewToken,
 } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-
-const { width, height } = Dimensions.get('window');
+import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, screenWidth, screenHeight } from '../utils/responsive';
+import { colors, typography, shadows } from '../utils/theme';
 
 const ONBOARDING_DATA = [
   {
@@ -98,102 +98,103 @@ const Onboarding: React.FC = () => {
   );
 };
 
-const IMAGE_HEIGHT = height * 0.32;
-const IMAGE_WIDTH = width * 0.88;
+const IMAGE_HEIGHT = screenHeight * 0.32;
+const IMAGE_WIDTH = screenWidth * 0.88;
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   header: {
     width: '100%',
     alignItems: 'flex-start',
-    marginTop: 80,
-    marginBottom: 8,
-    paddingHorizontal: 28,
+    marginTop: responsiveSize(80),
+    marginBottom: responsiveSize(8),
+    paddingHorizontal: responsiveSize(28),
   },
   brand: {
-    fontSize: 32,
+    fontSize: responsiveFontSize(32),
     fontWeight: 'bold',
-    color: '#4F5DFF',
+    color: colors.primary,
     letterSpacing: 1,
   },
   page: {
-    width,
+    width: screenWidth,
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingHorizontal: 0,
-    marginTop: 40,
+    marginTop: responsiveSize(40),
   },
   image: {
     width: IMAGE_WIDTH,
     height: IMAGE_HEIGHT,
-    borderRadius: 24,
-    marginTop: 12,
-    marginBottom: 32,
+    borderRadius: responsiveSize(24),
+    marginTop: responsiveSize(12),
+    marginBottom: responsiveSize(32),
     backgroundColor: '#eaf0ff',
   },
   title: {
-    fontSize: 26,
+    fontSize: responsiveFontSize(26),
     fontWeight: 'bold',
-    color: '#22223b',
-    marginBottom: 16,
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(16),
     textAlign: 'center',
-    paddingHorizontal: 24,
-    marginTop: 32,
+    paddingHorizontal: responsiveSize(24),
+    marginTop: responsiveSize(32),
   },
   description: {
-    fontSize: 18,
-    color: '#4F5D75',
+    fontSize: responsiveFontSize(18),
+    color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: 32,
-    paddingHorizontal: 32,
-    marginTop: 12,
+    marginBottom: responsiveSize(32),
+    paddingHorizontal: responsiveSize(32),
+    marginTop: responsiveSize(12),
   },
   buttonGroup: {
     width: '100%',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: responsiveSize(8),
   },
   primaryButton: {
-    backgroundColor: '#4F5DFF',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 64,
+    backgroundColor: colors.primary,
+    borderRadius: responsiveSize(16),
+    paddingVertical: responsiveSize(16),
+    paddingHorizontal: responsiveSize(64),
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: responsiveSize(8),
     width: IMAGE_WIDTH * 0.9,
+    ...shadows.small,
   },
   primaryButtonText: {
-    color: '#fff',
-    fontSize: 18,
+    color: colors.textWhite,
+    fontSize: responsiveFontSize(18),
     fontWeight: 'bold',
   },
   secondaryButtonText: {
-    color: '#4F5DFF',
-    fontSize: 16,
+    color: colors.primary,
+    fontSize: responsiveFontSize(16),
     fontWeight: '500',
     textDecorationLine: 'underline',
   },
   pagination: {
     flexDirection: 'row',
     position: 'absolute',
-    bottom: 48,
+    bottom: responsiveSize(48),
     alignSelf: 'center',
   },
   dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: responsiveSize(10),
+    height: responsiveSize(10),
+    borderRadius: responsiveSize(5),
     backgroundColor: '#d1d1e0',
-    marginHorizontal: 6,
+    marginHorizontal: responsiveSize(6),
   },
   dotActive: {
-    backgroundColor: '#4F5DFF',
-    width: 22,
+    backgroundColor: colors.primary,
+    width: responsiveSize(22),
   },
 });
 
