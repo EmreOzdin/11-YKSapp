@@ -15,6 +15,9 @@ import SosyalBilimlerScreen from '../screens/SosyalBilimlerScreen';
 import TytScreen from '../screens/TytScreen';
 import AytScreen from '../screens/AytScreen';
 import YdtScreen from '../screens/YdtScreen';
+import TytPastScreen from '../screens/TytPastScreen';
+import AytPastScreen from '../screens/AytPastScreen';
+import YdtPastScreen from '../screens/YdtPastScreen';
 import { colors } from '../utils/theme';
 import { responsiveSize } from '../utils/responsive';
 
@@ -33,6 +36,9 @@ const HomeStack = () => {
       <Stack.Screen name="TYT" component={TytScreen} />
       <Stack.Screen name="AYT" component={AytScreen} />
       <Stack.Screen name="YDT" component={YdtScreen} />
+      <Stack.Screen name="TYT Past" component={TytPastScreen} />
+      <Stack.Screen name="AYT Past" component={AytPastScreen} />
+      <Stack.Screen name="YDT Past" component={YdtPastScreen} />
     </Stack.Navigator>
   );
 };

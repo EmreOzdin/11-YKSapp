@@ -16,6 +16,9 @@ import SosyalBilimlerScreen from './src/screens/SosyalBilimlerScreen';
 import TytScreen from './src/screens/TytScreen';
 import AytScreen from './src/screens/AytScreen';
 import YdtScreen from './src/screens/YdtScreen';
+import TytPastScreen from './src/screens/TytPastScreen';
+import AytPastScreen from './src/screens/AytPastScreen';
+import YdtPastScreen from './src/screens/YdtPastScreen';
 // Yasal ekranlar eklenecek
 
 const Stack = createStackNavigator();
@@ -36,6 +39,9 @@ export default function App() {
         <Stack.Screen name="TYT" component={TytScreen} />
         <Stack.Screen name="AYT" component={AytScreen} />
         <Stack.Screen name="YDT" component={YdtScreen} />
+        <Stack.Screen name="TYT Past" component={TytPastScreen} />
+        <Stack.Screen name="AYT Past" component={AytPastScreen} />
+        <Stack.Screen name="YDT Past" component={YdtPastScreen} />
         <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
         <Stack.Screen name="PaymentTerms" component={PaymentTermsScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />

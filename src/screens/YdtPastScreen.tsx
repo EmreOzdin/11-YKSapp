@@ -4,14 +4,14 @@ import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 
-const CardsScreen: React.FC = () => {
+const YdtPastScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeTab')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>Cards</Text>
+      <Text style={styles.title}>YDT Çıkmış Sorular</Text>
     </View>
   );
 };
@@ -21,12 +21,12 @@ const styles = StyleSheet.create({
     flex: 1, 
     alignItems: 'center', 
     justifyContent: 'center', 
-    backgroundColor: colors.backgroundSecondary 
+    backgroundColor: '#fff8e1' 
   },
   title: { 
     fontSize: responsiveFontSize(28), 
     fontWeight: 'bold', 
-    color: colors.secondary 
+    color: colors.gradients.orange[0] 
   },
   backButton: { 
     position: 'absolute', 
@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
   },
   backText: { 
     fontSize: responsiveFontSize(16), 
-    color: colors.secondary, 
+    color: colors.gradients.orange[0], 
     fontWeight: 'bold' 
   },
 });
 
-export default CardsScreen; 
+export default YdtPastScreen;

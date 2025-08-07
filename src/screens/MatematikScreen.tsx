@@ -8,7 +8,7 @@ const MatematikScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-              <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('MainApp')}>
+              <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Matematik</Text>
@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
     top: responsiveSize(40), 
     left: responsiveSize(20), 
     padding: responsiveSize(8), 
-    backgroundColor: colors.background, 
     borderRadius: responsiveSize(8), 
     ...shadows.small 
   },
