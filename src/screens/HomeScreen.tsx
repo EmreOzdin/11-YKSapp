@@ -289,7 +289,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.subjectGrid}>
           {/* Fen Bilimleri */}
           <TouchableOpacity
-            style={[styles.subjectGridItem, { backgroundColor: '#e0f2fe' }]}
+            style={[styles.subjectGridItem, { backgroundColor: '#e3f2fd' }]}
             onPress={() => navigation.navigate('Fen Bilimleri')}
           >
             <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={styles.subjectIcon} />
@@ -297,7 +297,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* Türkçe */}
           <TouchableOpacity
-            style={[styles.subjectGridItem, { backgroundColor: '#f3e8ff' }]}
+            style={[styles.subjectGridItem, { backgroundColor: '#ffebee' }]}
             onPress={() => navigation.navigate('Türkçe')}
           >
             <Image source={require('../../assets/turkish.png')} style={styles.subjectIcon} />
@@ -305,7 +305,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* Matematik */}
           <TouchableOpacity
-            style={[styles.subjectGridItem, { backgroundColor: '#fff9db' }]}
+            style={[styles.subjectGridItem, { backgroundColor: '#fff3e0' }]}
             onPress={() => navigation.navigate('Matematik')}
           >
             <Image source={require('../../assets/math.png')} style={styles.subjectIcon} />
@@ -313,7 +313,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* Sosyal Bilimler */}
           <TouchableOpacity
-            style={[styles.subjectGridItem, { backgroundColor: '#ffeaea' }]}
+            style={[styles.subjectGridItem, { backgroundColor: '#e8f5e8' }]}
             onPress={() => navigation.navigate('Sosyal Bilimler')}
           >
             <Image source={require('../../assets/social.png')} style={styles.subjectIcon} />
@@ -328,7 +328,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.sınavDenemesiGrid}>
           {/* TYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e1f5fe' }]}
             onPress={() => navigation.navigate('TYT')}
           >
             <Image source={require('../../assets/tyt.png')} style={styles.examIcon} />
@@ -336,7 +336,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* AYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f1e8ff' }]}
             onPress={() => navigation.navigate('AYT')}
           >
             <Image source={require('../../assets/ayt.png')} style={styles.examIcon} />
@@ -344,7 +344,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* YDT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff8e1' }]}
             onPress={() => navigation.navigate('YDT')}
           >
             <Image source={require('../../assets/ydt.png')} style={styles.examIcon} />
@@ -359,7 +359,7 @@ const HomeScreen: React.FC = () => {
         <View style={styles.sınavDenemesiGrid}>
           {/* TYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f7fa' }]}
             onPress={() => navigation.navigate('TYT Past')}
           >
             <Image source={{ uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp' }} style={styles.examIcon} />
@@ -367,7 +367,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* AYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e5f5' }]}
             onPress={() => navigation.navigate('AYT Past')}
           >
             <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png' }} style={styles.examIcon} />
@@ -375,7 +375,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
           {/* YDT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}
+            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fffde7' }]}
             onPress={() => navigation.navigate('YDT Past')}
           >
             <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/language.png' }} style={styles.examIcon} />
