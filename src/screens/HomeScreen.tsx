@@ -315,7 +315,7 @@ const HomeScreen: React.FC = () => {
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f2fe' }]}
             onPress={() => navigation.navigate('TYT')}
           >
-            <Image source={require('../../assets/tyt.png')} style={styles.examIcon} />
+            <Image source={{ uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp' }} style={styles.examIcon} />
             <Text style={styles.subjectGridLabel}>TYT</Text>
           </TouchableOpacity>
           {/* AYT */}
@@ -323,7 +323,7 @@ const HomeScreen: React.FC = () => {
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e8ff' }]}
             onPress={() => navigation.navigate('AYT')}
           >
-            <Image source={require('../../assets/ayt.png')} style={styles.examIcon} />
+            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png' }} style={styles.examIcon} />
             <Text style={styles.subjectGridLabel}>AYT</Text>
           </TouchableOpacity>
           {/* YDT */}
@@ -331,7 +331,7 @@ const HomeScreen: React.FC = () => {
             style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff9db' }]}
             onPress={() => navigation.navigate('YDT')}
           >
-            <Image source={require('../../assets/ydt.png')} style={styles.examIcon} />
+            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/language.png' }} style={styles.examIcon} />
             <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
