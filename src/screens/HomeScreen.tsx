@@ -98,20 +98,56 @@ const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress
 const HomeScreen: React.FC = () => {
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(notifications.length);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const swiperRef = React.useRef<any>(null);
+  const [cardData, setCardData] = useState(CARD_DATA);
 
 
   // Arama sonuçlarını filtrele
   const filteredSearchResults = searchValue.length > 0
-    ? CARD_DATA.filter(card => card.title.toLowerCase().includes(searchValue.toLowerCase()))
+    ? cardData.filter(card => card.title.toLowerCase().includes(searchValue.toLowerCase()))
     : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  // Navigation focus listener to handle card index when returning from other screens
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', async () => {
+      try {
+        const savedCardIndex = await AsyncStorage.getItem('lastVisitedCardIndex');
+        if (savedCardIndex !== null) {
+          const cardIndex = parseInt(savedCardIndex);
+          console.log('Setting card index to:', cardIndex);
+          // Reorder cards to show the visited card first
+          const reorderedCards = [...CARD_DATA];
+          const visitedCard = reorderedCards[cardIndex];
+          reorderedCards.splice(cardIndex, 1);
+          reorderedCards.unshift(visitedCard);
+          setCardData(reorderedCards);
+          setCurrentCardIndex(0);
+          await AsyncStorage.removeItem('lastVisitedCardIndex');
+        }
+      } catch (error) {
+        console.log('Error loading card index:', error);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
 
 
   // Arama sonucuna tıklandığında yönlendirme
-  const handleSearchResultPress = (item: { title: string; image: any }) => {
+  const handleSearchResultPress = async (item: { title: string; image: any }) => {
+    // Store the current card index before navigating
+    const cardIndex = cardData.findIndex(card => card.title === item.title);
+    try {
+      await AsyncStorage.setItem('lastVisitedCardIndex', cardIndex.toString());
+    } catch (error) {
+      console.log('Error saving card index:', error);
+    }
+    
     switch (item.title) {
       case 'Fen Bilimleri Sınavı':
         navigation.navigate('Fen Bilimleri');
@@ -172,12 +208,21 @@ const HomeScreen: React.FC = () => {
         <View style={styles.swiperContainer}>
           <View style={styles.swiperWrapper}>
             <Swiper
+              ref={swiperRef}
               cardStyle={{ height: 135 }}
-              cards={CARD_DATA}
+              cards={cardData}
               renderCard={(item) => {
                 return (
                   <TouchableOpacity
-                    onPress={() => {
+                    onPress={async () => {
+                      // Store the current card index before navigating
+                      const cardIndex = cardData.findIndex(card => card.title === item.title);
+                      try {
+                        await AsyncStorage.setItem('lastVisitedCardIndex', cardIndex.toString());
+                      } catch (error) {
+                        console.log('Error saving card index:', error);
+                      }
+                      
                       switch (item.title) {
                         case 'Fen Bilimleri Sınavı':
                           navigation.navigate('Fen Bilimleri');
@@ -222,13 +267,15 @@ const HomeScreen: React.FC = () => {
               stackSeparation={10}
               backgroundColor="transparent"
               cardHorizontalMargin={8}
-              cardIndex={0}
+              cardIndex={currentCardIndex}
               infinite
               showSecondCard
               verticalSwipe={false}
               horizontalSwipe={true}
               onSwipedAll={() => {}}
-              onSwiped={(cardIndex) => {}}
+              onSwiped={(cardIndex) => {
+                setCurrentCardIndex(cardIndex);
+              }}
               onSwipedLeft={(cardIndex) => {}}
               onSwipedRight={(cardIndex) => {}}
             />
