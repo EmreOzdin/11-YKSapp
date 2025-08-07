@@ -8,9 +8,7 @@ const HedeflerScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.backText}>{'<'} Geri</Text>
-      </TouchableOpacity>
+
       <Text style={styles.title}>Hedefler</Text>
     </View>
   );

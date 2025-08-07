@@ -132,7 +132,7 @@ const HomeScreen: React.FC = () => {
     <View style={styles.container}>
       <ScrollView 
         showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingBottom: 300 }}
+        contentContainerStyle={{ paddingBottom: responsiveSize(20) }}
         scrollEnabled={true}
         bounces={true}
         style={{ flex: 1 }}
@@ -278,7 +278,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         {/* Video kurs */}
-        <View style={styles.sectionRow}>
+        <View style={styles.sectionRowExam}>
           <Text style={styles.sectionTitle}>Sınav Denemesi</Text>
         </View>
         {/* Sınav Denemesi Grid */}
@@ -309,7 +309,7 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         {/* Video kurs */}
-        <View style={styles.sectionRow}>
+        <View style={styles.sectionRowPast}>
           <Text style={styles.sectionTitle}>Çıkmış Sorular</Text>
         </View>
         {/* Sınav Denemesi Grid */}
@@ -340,24 +340,6 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      {/* Alt Tab Bar (Mock) */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Home')}>
-          <MaterialCommunityIcons name="home-variant" size={26} color="#1877f2" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Cards')}>
-          <MaterialCommunityIcons name="cards" size={26} color="#bbb" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Hedefler')}>
-          <MaterialCommunityIcons name="clipboard-list-outline" size={26} color="#bbb" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Performans')}>
-          <MaterialCommunityIcons name="chart-bar" size={26} color="#bbb" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabItem} onPress={() => navigation.navigate('Profil')}>
-          <MaterialCommunityIcons name="account-circle-outline" size={26} color="#bbb" />
-        </TouchableOpacity>
-      </View>
       <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
              <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
     </View>
@@ -369,7 +351,6 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: colors.background, 
     paddingTop: responsiveSize(56),
-    minHeight: '100%'
   },
   headerRow: { 
     flexDirection: 'row', 
@@ -473,8 +454,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'space-between', 
-    marginTop: responsiveSize(190), 
-    marginBottom: responsiveSize(12),
+    marginTop: responsiveSize(170), 
+    marginBottom: responsiveSize(6),
+    marginHorizontal: responsiveSize(20) 
+  },
+  sectionRowExam: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginTop: responsiveSize(185), 
+    marginBottom: responsiveSize(6),
+    marginHorizontal: responsiveSize(20) 
+  },
+  sectionRowPast: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    marginTop: responsiveSize(185), 
+    marginBottom: responsiveSize(6),
     marginHorizontal: responsiveSize(20) 
   },
   sectionTitle: { 
@@ -498,27 +495,10 @@ const styles = StyleSheet.create({
   videoRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
   videoRating: { fontSize: 14, color: '#222', marginLeft: 4, marginRight: 8 },
   videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
-  tabBar: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
-    alignItems: 'center', 
-    height: responsiveSize(60), 
-    borderTopWidth: 1, 
-    borderColor: colors.border, 
-    backgroundColor: colors.background, 
-    position: 'absolute', 
-    left: 0, 
-    right: 0, 
-    bottom: responsiveSize(24) 
-  },
-  tabItem: { 
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center' 
-  },
+
   swiperContainer: {
     position: 'absolute',
-    top: responsiveSize(-20),
+    top: responsiveSize(-30),
     left: -23,
     right: 0,
     height: responsiveSize(135),
@@ -587,17 +567,17 @@ const styles = StyleSheet.create({
     color: colors.textPrimary, 
     fontWeight: '500', 
     textAlign: 'center', 
-    marginTop: responsiveSize(8) 
+    marginTop: responsiveSize(3) 
   },
   subjectIcon: {
     width: responsiveSize(40),
     height: responsiveSize(40),
-    marginBottom: responsiveSize(8),
+    marginBottom: responsiveSize(3),
   },
   examIcon: {
     width: responsiveSize(60),
     height: responsiveSize(60),
-    marginBottom: responsiveSize(8),
+    marginBottom: responsiveSize(2),
   },
 });
 

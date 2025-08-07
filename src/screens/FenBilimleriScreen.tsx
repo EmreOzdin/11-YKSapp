@@ -8,7 +8,7 @@ const FenBilimleriScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')}>
+              <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('MainApp')}>
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
       <Text style={styles.title}>Fen Bilimleri</Text>

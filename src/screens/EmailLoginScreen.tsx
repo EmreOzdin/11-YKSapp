@@ -28,7 +28,7 @@ const EmailLoginScreen: React.FC = () => {
           placeholderTextColor="#888"
           secureTextEntry
         />
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('MainApp')}>
           <Text style={styles.loginButtonText}>Giriş Yap</Text>
         </TouchableOpacity>
         <TouchableOpacity>
