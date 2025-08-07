@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
     marginHorizontal: responsiveSize(20) 
   },
   sectionTitle: { 
-    fontSize: responsiveFontSize(18), 
+    fontSize: responsiveFontSize(20), 
     fontWeight: 'bold', 
     color: colors.textPrimary 
   },
