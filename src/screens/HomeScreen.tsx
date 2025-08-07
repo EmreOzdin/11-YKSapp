@@ -150,7 +150,7 @@ const HomeScreen: React.FC = () => {
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity style={{ marginRight: 12 }} onPress={() => setSearchModalVisible(true)}>
-              <Ionicons name="search" size={22} color="#222" />
+              <Ionicons name="search" size={28} color="#222" />
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginRight: 12 }}
@@ -159,7 +159,7 @@ const HomeScreen: React.FC = () => {
                 setUnreadCount(0);
               }}
             >
-              <Ionicons name="notifications-outline" size={22} color="#222" />
+              <Ionicons name="notifications-outline" size={28} color="#222" />
               {unreadCount > 0 && (
                 <View style={{ position: 'absolute', top: -4, left: 9, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
                   <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>{unreadCount}</Text>
@@ -175,7 +175,6 @@ const HomeScreen: React.FC = () => {
               cardStyle={{ height: 135 }}
               cards={CARD_DATA}
               renderCard={(item) => {
-                // Kart ikonunu kaldır, sadece alarm ikonu göster
                 return (
                   <TouchableOpacity
                     onPress={() => {
@@ -194,7 +193,7 @@ const HomeScreen: React.FC = () => {
                           break;
                       }
                     }}
-                    activeOpacity={1}
+                    activeOpacity={0.8}
                   >
                     <LinearGradient
                       colors={item.gradient}
@@ -226,11 +225,8 @@ const HomeScreen: React.FC = () => {
               cardIndex={0}
               infinite
               showSecondCard
-              disableTopSwipe
-              disableBottomSwipe
               verticalSwipe={false}
               horizontalSwipe={true}
-              pointerEvents="auto"
               onSwipedAll={() => {}}
               onSwiped={(cardIndex) => {}}
               onSwipedLeft={(cardIndex) => {}}
@@ -505,7 +501,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
-    pointerEvents: 'none',
     elevation: 0,
   },
   swiperWrapper: {
