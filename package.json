@@ -9,11 +9,12 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-async-storage/async-storage": "2.1.2",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^7.4.5",
     "@react-navigation/native": "^7.1.17",
     "@react-navigation/stack": "^7.4.5",
+    "@realm/react": "^0.11.0",
     "expo": "~53.0.20",
     "expo-linear-gradient": "~14.1.5",
     "expo-status-bar": "~2.2.3",
@@ -21,7 +22,7 @@
     "react": "19.0.0",
     "react-native": "0.79.5",
     "react-native-deck-swiper": "^2.0.18",
-    "react-native-gesture-handler": "^2.27.1",
+    "react-native-gesture-handler": "~2.24.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "~3.17.4",
     "react-native-responsive-dimensions": "^3.1.1",
@@ -33,9 +34,10 @@
     "react-native-responsive-screens": "^1.0.1",
     "react-native-responsive-styles": "^0.2.2",
     "react-native-responsive-utils": "^1.0.0",
-    "react-native-safe-area-context": "^5.5.2",
-    "react-native-screens": "^4.13.1",
-    "react-native-vector-icons": "^10.3.0"
+    "react-native-safe-area-context": "5.4.0",
+    "react-native-screens": "~4.11.1",
+    "react-native-vector-icons": "^10.3.0",
+    "realm": "^20.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
