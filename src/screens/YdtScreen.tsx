@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     left: responsiveSize(20), 
     padding: responsiveSize(8), 
     borderRadius: responsiveSize(8), 
-    backgroundColor: colors.backgroundSecondary,
     zIndex: 1,
     ...shadows.small 
   },

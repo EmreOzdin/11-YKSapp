@@ -429,7 +429,6 @@ const styles = StyleSheet.create({
   backButton: {
     padding: responsiveSize(8),
     borderRadius: responsiveSize(8),
-    backgroundColor: colors.backgroundSecondary,
   },
   backText: {
     fontSize: responsiveFontSize(16),

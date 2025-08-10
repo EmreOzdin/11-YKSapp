@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     left: responsiveSize(20), 
     padding: responsiveSize(8), 
     borderRadius: responsiveSize(8), 
-    backgroundColor: colors.backgroundSecondary,
     ...shadows.small 
   },
   backText: { 
