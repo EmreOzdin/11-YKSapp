@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, Modal, FlatList, Pressable, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, Modal, FlatList, Pressable, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, isSmallDevice, isMediumDevice, isLargeDevice, screenWidth } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
+
 
 const CARD_DATA = [
   { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: require('../../assets/physicsexam.png') },
@@ -163,6 +164,8 @@ const HomeScreen: React.FC = () => {
         break;
     }
   };
+
+
 
   return (
     <View style={styles.container}>
@@ -382,6 +385,8 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
+
+
       </ScrollView>
       <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
              <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
@@ -621,6 +626,7 @@ const styles = StyleSheet.create({
     height: responsiveSize(60),
     marginBottom: responsiveSize(2),
   },
+
 });
 
 export default HomeScreen; 

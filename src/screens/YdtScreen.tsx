@@ -1,17 +1,103 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
+import { QuestionService } from '../services/questionService';
 
 const YdtScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const [hasSelections, setHasSelections] = useState(false);
+
+  useEffect(() => {
+    checkUserSelections();
+  }, []);
+
+  const checkUserSelections = async () => {
+    try {
+      const selections = await QuestionService.getUserSelections();
+      setHasSelections(selections?.examType === 'YDT' && selections.selectedTopics.length > 0);
+    } catch (error) {
+      console.error('Kullanıcı seçimleri kontrol edilirken hata:', error);
+    }
+  };
+
+  const handleStartQuestions = async () => {
+    if (!hasSelections) {
+      Alert.alert(
+        "Konu Seçimi Gerekli",
+        "Soru çözmeye başlamadan önce çalışmak istediğiniz konuları seçmeniz gerekiyor.",
+        [
+          {
+            text: "Konu Seç",
+            onPress: () => navigation.navigate('TopicSelectionScreen', { examType: 'YDT' })
+          },
+          {
+            text: "İptal",
+            style: "cancel"
+          }
+        ]
+      );
+      return;
+    }
+
+    navigation.navigate('QuestionScreen', { examType: 'YDT' });
+  };
+
+  const handleTopicSelection = () => {
+    navigation.navigate('TopicSelectionScreen', { examType: 'YDT' });
+  };
+
   return (
     <View style={styles.container}>
-              <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>YDT</Text>
+      
+      <View style={styles.content}>
+        <Text style={styles.title}>YDT</Text>
+        <Text style={styles.subtitle}>Yabancı Dil Testi</Text>
+        
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>YDT Hakkında</Text>
+          <Text style={styles.infoText}>
+            • 80 soru, 120 dakika{'\n'}
+            • İngilizce: 80 soru{'\n'}
+            • Almanca: 80 soru{'\n'}
+            • Fransızca: 80 soru{'\n'}
+            • Arapça: 80 soru{'\n'}
+            • Rusça: 80 soru
+          </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.primaryButton} 
+            onPress={handleStartQuestions}
+          >
+            <Text style={styles.primaryButtonText}>
+              {hasSelections ? 'Sorularla Çalış' : 'Konu Seç ve Başla'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.secondaryButton} 
+            onPress={handleTopicSelection}
+          >
+            <Text style={styles.secondaryButtonText}>
+              {hasSelections ? 'Konuları Değiştir' : 'Konu Seç'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {hasSelections && (
+          <View style={styles.selectionInfo}>
+            <Text style={styles.selectionText}>
+              ✓ Konularınız seçildi, sorularla çalışmaya başlayabilirsiniz!
+            </Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
@@ -19,14 +105,7 @@ const YdtScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    backgroundColor: '#fff9db' 
-  },
-  title: { 
-    fontSize: responsiveFontSize(28), 
-    fontWeight: 'bold', 
-    color: colors.gradients.orange[0] 
+    backgroundColor: colors.backgroundTertiary 
   },
   backButton: { 
     position: 'absolute', 
@@ -34,12 +113,94 @@ const styles = StyleSheet.create({
     left: responsiveSize(20), 
     padding: responsiveSize(8), 
     borderRadius: responsiveSize(8), 
+    backgroundColor: colors.backgroundSecondary,
+    zIndex: 1,
     ...shadows.small 
   },
   backText: { 
     fontSize: responsiveFontSize(16), 
-    color: colors.gradients.orange[0], 
+    color: colors.gradients.blue[0], 
     fontWeight: 'bold' 
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center', 
+    justifyContent: 'center',
+    paddingHorizontal: responsiveSize(20),
+  },
+  title: { 
+    fontSize: responsiveFontSize(32), 
+    fontWeight: 'bold', 
+    color: colors.gradients.blue[0],
+    marginBottom: responsiveSize(8),
+  },
+  subtitle: {
+    fontSize: responsiveFontSize(18),
+    color: colors.textSecondary,
+    marginBottom: responsiveSize(30),
+  },
+  infoCard: {
+    backgroundColor: colors.backgroundSecondary,
+    padding: responsiveSize(20),
+    borderRadius: responsiveSize(12),
+    marginBottom: responsiveSize(30),
+    width: '100%',
+    ...shadows.medium,
+  },
+  infoTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(10),
+    textAlign: 'center',
+  },
+  infoText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    lineHeight: responsiveFontSize(20),
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: responsiveSize(15),
+  },
+  primaryButton: {
+    backgroundColor: colors.primary,
+    padding: responsiveSize(16),
+    borderRadius: responsiveSize(12),
+    alignItems: 'center',
+    ...shadows.medium,
+  },
+  primaryButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textWhite,
+  },
+  secondaryButton: {
+    backgroundColor: colors.backgroundSecondary,
+    padding: responsiveSize(16),
+    borderRadius: responsiveSize(12),
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  secondaryButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+  },
+  selectionInfo: {
+    marginTop: responsiveSize(20),
+    padding: responsiveSize(15),
+    backgroundColor: colors.success + '20',
+    borderRadius: responsiveSize(8),
+    borderWidth: 1,
+    borderColor: colors.success,
+  },
+  selectionText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.success,
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });
 

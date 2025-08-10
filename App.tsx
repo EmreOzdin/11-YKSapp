@@ -19,6 +19,7 @@ import YdtScreen from './src/screens/YdtScreen';
 import TytPastScreen from './src/screens/TytPastScreen';
 import AytPastScreen from './src/screens/AytPastScreen';
 import YdtPastScreen from './src/screens/YdtPastScreen';
+import QuestionScreen from './src/screens/QuestionScreen';
 // Yasal ekranlar eklenecek
 
 const Stack = createStackNavigator();
@@ -42,6 +43,7 @@ export default function App() {
         <Stack.Screen name="TYT Past" component={TytPastScreen} />
         <Stack.Screen name="AYT Past" component={AytPastScreen} />
         <Stack.Screen name="YDT Past" component={YdtPastScreen} />
+        <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
         <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
         <Stack.Screen name="PaymentTerms" component={PaymentTermsScreen} />
         <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />

@@ -18,6 +18,8 @@ import YdtScreen from '../screens/YdtScreen';
 import TytPastScreen from '../screens/TytPastScreen';
 import AytPastScreen from '../screens/AytPastScreen';
 import YdtPastScreen from '../screens/YdtPastScreen';
+import TopicSelectionScreen from '../screens/TopicSelectionScreen';
+import QuestionScreen from '../screens/QuestionScreen';
 import { colors } from '../utils/theme';
 import { responsiveSize } from '../utils/responsive';
 
@@ -39,6 +41,8 @@ const HomeStack = () => {
       <Stack.Screen name="TYT Past" component={TytPastScreen} />
       <Stack.Screen name="AYT Past" component={AytPastScreen} />
       <Stack.Screen name="YDT Past" component={YdtPastScreen} />
+      <Stack.Screen name="TopicSelectionScreen" component={TopicSelectionScreen} />
+      <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
     </Stack.Navigator>
   );
 };
