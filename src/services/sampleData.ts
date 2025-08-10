@@ -154,7 +154,7 @@ export const sampleQuestions: QuestionType[] = [
     isPastQuestion: false
   },
 
-  // Ek örnek sorular
+  // Ek örnek sorular - Fen Bilimleri
   {
     questionText: "Bir cismin ivmesi nedir?",
     options: [
@@ -173,6 +173,42 @@ export const sampleQuestions: QuestionType[] = [
     isPastQuestion: false
   },
   {
+    questionText: "Hangi element periyodik tabloda en aktif metaldir?",
+    options: [
+      "Sodyum",
+      "Potasyum",
+      "Lityum",
+      "Sezyum"
+    ],
+    correctAnswer: "D",
+    explanation: "Sezyum periyodik tabloda en aktif metaldir ve en düşük iyonlaşma enerjisine sahiptir.",
+    subject: "Fen Bilimleri",
+    topic: "Periyodik Tablo",
+    topicId: "tyt-kimya-madde",
+    difficulty: 2,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "Hücre zarının temel yapısı nedir?",
+    options: [
+      "Protein tabakası",
+      "Fosfolipid çift tabakası",
+      "Karbonhidrat tabakası",
+      "Nükleik asit tabakası"
+    ],
+    correctAnswer: "B",
+    explanation: "Hücre zarı fosfolipid çift tabakasından oluşur ve bu yapı hücrenin temel koruyucu bariyeridir.",
+    subject: "Fen Bilimleri",
+    topic: "Hücre",
+    topicId: "tyt-biyoloji-hucre",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+
+  // Ek örnek sorular - Türkçe
+  {
     questionText: "Aşağıdaki cümlelerden hangisinde anlatım bozukluğu vardır?",
     options: [
       "Bu konuyu daha önce de konuşmuştuk.",
@@ -190,6 +226,42 @@ export const sampleQuestions: QuestionType[] = [
     isPastQuestion: false
   },
   {
+    questionText: "Aşağıdaki kelimelerden hangisi büyük ünlü uyumuna uymaz?",
+    options: [
+      "Kitap",
+      "Kalem",
+      "Telefon",
+      "Masa"
+    ],
+    correctAnswer: "C",
+    explanation: "'Telefon' kelimesi büyük ünlü uyumuna uymaz çünkü 'e' ve 'o' sesleri aynı kelimede bulunur.",
+    subject: "Türkçe",
+    topic: "Dilbilgisi",
+    topicId: "tyt-turkce-dilbilgisi",
+    difficulty: 2,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "Aşağıdaki cümlelerden hangisinde noktalama yanlışı vardır?",
+    options: [
+      "Ahmet, Mehmet ve Ali okula gitti.",
+      "Evet, haklısın.",
+      "Ne yapıyorsun?",
+      "Güzel bir gün, değil mi."
+    ],
+    correctAnswer: "D",
+    explanation: "'Güzel bir gün, değil mi.' cümlesinde soru işareti kullanılmalıdır.",
+    subject: "Türkçe",
+    topic: "Noktalama",
+    topicId: "tyt-turkce-noktalama",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+
+  // Ek örnek sorular - Matematik
+  {
     questionText: "Bir üçgenin iç açıları toplamı kaç derecedir?",
     options: [
       "90",
@@ -203,6 +275,93 @@ export const sampleQuestions: QuestionType[] = [
     topic: "Geometri",
     topicId: "tyt-matematik-geometri",
     difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "3x + 5 = 20 denkleminin çözümü kaçtır?",
+    options: [
+      "3",
+      "5",
+      "7",
+      "15"
+    ],
+    correctAnswer: "B",
+    explanation: "3x + 5 = 20 → 3x = 15 → x = 5",
+    subject: "Matematik",
+    topic: "Birinci Dereceden Denklemler",
+    topicId: "tyt-matematik-temel",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "Bir zar atıldığında 6 gelme olasılığı kaçtır?",
+    options: [
+      "1/2",
+      "1/3",
+      "1/6",
+      "1/12"
+    ],
+    correctAnswer: "C",
+    explanation: "Bir zarın 6 yüzü vardır ve her yüzün gelme olasılığı 1/6'dır.",
+    subject: "Matematik",
+    topic: "Olasılık",
+    topicId: "tyt-matematik-olasilik",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+
+  // Ek örnek sorular - Sosyal Bilimler
+  {
+    questionText: "Osmanlı Devleti'nin kurucusu kimdir?",
+    options: [
+      "Osman Bey",
+      "Orhan Bey",
+      "Murat Bey",
+      "Fatih Sultan Mehmet"
+    ],
+    correctAnswer: "A",
+    explanation: "Osmanlı Devleti 1299 yılında Osman Bey tarafından kurulmuştur.",
+    subject: "Sosyal Bilimler",
+    topic: "Osmanlı Tarihi",
+    topicId: "tyt-tarih-osmanli",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "Türkiye'nin en büyük gölü hangisidir?",
+    options: [
+      "Van Gölü",
+      "Tuz Gölü",
+      "Beyşehir Gölü",
+      "İznik Gölü"
+    ],
+    correctAnswer: "A",
+    explanation: "Van Gölü 3.713 km² alanıyla Türkiye'nin en büyük gölüdür.",
+    subject: "Sosyal Bilimler",
+    topic: "Türkiye Coğrafyası",
+    topicId: "tyt-cografya-fiziki",
+    difficulty: 1,
+    examType: "TYT",
+    isPastQuestion: false
+  },
+  {
+    questionText: "Aşağıdakilerden hangisi mantık biliminin konularından biri değildir?",
+    options: [
+      "Önermeler",
+      "Çıkarımlar",
+      "Kimyasal tepkimeler",
+      "Kavramlar"
+    ],
+    correctAnswer: "C",
+    explanation: "Kimyasal tepkimeler kimya biliminin konusudur, mantık biliminin değil.",
+    subject: "Sosyal Bilimler",
+    topic: "Mantık",
+    topicId: "tyt-felsefe-mantik",
+    difficulty: 2,
     examType: "TYT",
     isPastQuestion: false
   }

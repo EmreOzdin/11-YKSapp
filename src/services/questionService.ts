@@ -144,6 +144,17 @@ export class QuestionService {
     }
   }
 
+  // Derse göre soruları getirme (sınav tipi belirtilmeden)
+  static async getQuestionsBySubjectOnly(subject: string): Promise<QuestionType[]> {
+    try {
+      const questions = await this.getAllQuestions();
+      return questions.filter(question => question.subject === subject);
+    } catch (error) {
+      console.error('Derse göre sorular getirilirken hata:', error);
+      return [];
+    }
+  }
+
   // Konu kategorilerini getirme
   static getTopicCategories(examType?: "TYT" | "AYT" | "YDT", subject?: string): TopicCategory[] {
     let categories = TOPIC_CATEGORIES;

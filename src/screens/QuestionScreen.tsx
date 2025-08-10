@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Modal } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase, useRoute, RouteProp } from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
@@ -24,6 +24,7 @@ const QuestionScreen: React.FC = () => {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [loading, setLoading] = useState(true);
   const [userSelections, setUserSelections] = useState<any>(null);
+  const [showExplanationModal, setShowExplanationModal] = useState(false);
 
   useEffect(() => {
     loadQuestions();
@@ -33,44 +34,47 @@ const QuestionScreen: React.FC = () => {
     try {
       setLoading(true);
       
-      // Kullanıcı seçimlerini kontrol et
-      const selections = await QuestionService.getUserSelections();
-      setUserSelections(selections);
+      let userQuestions: QuestionType[] = [];
 
-      if (!selections || selections.selectedTopics.length === 0) {
-        Alert.alert(
-          "Konu Seçimi Gerekli",
-          "Çalışmak istediğiniz konuları seçmeniz gerekiyor.",
-          [
-            {
-              text: "Konu Seç",
-              onPress: () => navigation.navigate('TopicSelectionScreen', { 
-                examType: route.params.examType || 'TYT' 
-              })
-            },
-            {
-              text: "İptal",
-              style: "cancel"
-            }
-          ]
-        );
-        return;
+      // Eğer subject parametresi varsa, sadece o derse ait soruları getir
+      if (route.params.subject) {
+        userQuestions = await QuestionService.getQuestionsBySubjectOnly(route.params.subject);
+      } else {
+        // Kullanıcı seçimlerini kontrol et
+        const selections = await QuestionService.getUserSelections();
+        setUserSelections(selections);
+
+        if (!selections || selections.selectedTopics.length === 0) {
+          Alert.alert(
+            "Konu Seçimi Gerekli",
+            "Çalışmak istediğiniz konuları seçmeniz gerekiyor.",
+            [
+              {
+                text: "Konu Seç",
+                onPress: () => navigation.navigate('TopicSelectionScreen', { 
+                  examType: route.params.examType || 'TYT' 
+                })
+              },
+              {
+                text: "İptal",
+                style: "cancel"
+              }
+            ]
+          );
+          return;
+        }
+
+        // Seçilen konulara göre soruları getir
+        userQuestions = await QuestionService.getQuestionsByUserSelections();
       }
-
-      // Seçilen konulara göre soruları getir
-      const userQuestions = await QuestionService.getQuestionsByUserSelections();
       
       if (userQuestions.length === 0) {
         Alert.alert(
           "Soru Bulunamadı",
-          "Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.",
+          route.params.subject 
+            ? `${route.params.subject} dersinde henüz soru bulunmuyor.`
+            : "Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.",
           [
-            {
-              text: "Konu Seç",
-              onPress: () => navigation.navigate('TopicSelectionScreen', { 
-                examType: route.params.examType || 'TYT' 
-              })
-            },
             {
               text: "Ana Sayfa",
               onPress: () => navigation.navigate('HomeScreen')
@@ -277,8 +281,8 @@ const QuestionScreen: React.FC = () => {
       {isAnswered && (
         <View style={styles.feedbackContainer}>
           <View style={[styles.feedbackCard, isCorrect ? styles.correctFeedback : styles.incorrectFeedback]}>
-            <Text style={styles.feedbackIcon}>
-              {isCorrect ? '✔️' : '❌'}
+            <Text style={[styles.feedbackIcon, isCorrect && styles.correctIcon]}>
+              {isCorrect ? '✓' : '❌'}
             </Text>
             <Text style={styles.feedbackText}>
               {isCorrect ? 'Doğru!' : 'Yanlış!'}
@@ -287,23 +291,75 @@ const QuestionScreen: React.FC = () => {
               Doğru cevap: {currentQuestion.correctAnswer}
             </Text>
           </View>
-          <Text style={styles.explanationText}>
-            <Text style={styles.explanationTitle}>Açıklama:</Text> {currentQuestion.explanation}
-          </Text>
+          
+          {/* Açıklama - Sadece doğru cevaplarda göster */}
+          {isCorrect && (
+            <Text style={styles.explanationText}>
+              <Text style={styles.explanationTitle}>Açıklama:</Text> {currentQuestion.explanation}
+            </Text>
+          )}
+          
+          {/* Butonlar - Yan yana yerleştirilmiş */}
+          <View style={styles.buttonContainer}>
+            {/* Açıklama Butonu - Sadece yanlış cevaplarda göster */}
+            {!isCorrect && (
+              <TouchableOpacity 
+                style={styles.explanationButton}
+                onPress={() => setShowExplanationModal(true)}
+              >
+                <Text style={styles.explanationButtonText}>Açıklamayı Göster</Text>
+              </TouchableOpacity>
+            )}
+            
+            {/* Sonraki Soru Butonu */}
+            <TouchableOpacity 
+              style={styles.nextButton} 
+              onPress={handleNextQuestion}
+            >
+              <Text style={styles.nextButtonText}>
+                {currentQuestionIndex < questions.length - 1 ? 'Sonraki Soru' : 'Testi Tamamla'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
 
-      {/* Next Button */}
-      {isAnswered && (
-        <TouchableOpacity 
-          style={styles.nextButton} 
-          onPress={handleNextQuestion}
-        >
-          <Text style={styles.nextButtonText}>
-            {currentQuestionIndex < questions.length - 1 ? 'Sonraki Soru' : 'Testi Tamamla'}
-          </Text>
-        </TouchableOpacity>
-      )}
+      {/* Açıklama Modal */}
+      <Modal
+        visible={showExplanationModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowExplanationModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Soru Açıklaması</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setShowExplanationModal(false)}
+              >
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.modalBody}>
+              <View style={styles.explanationSection}>
+                <Text style={styles.explanationText}>
+                  {currentQuestion.explanation || 'Açıklama bulunmuyor.'}
+                </Text>
+              </View>
+            </ScrollView>
+            
+            <TouchableOpacity 
+              style={styles.modalCloseButton}
+              onPress={() => setShowExplanationModal(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Kapat</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
@@ -395,6 +451,7 @@ const styles = StyleSheet.create({
   questionCard: {
     backgroundColor: colors.backgroundSecondary,
     margin: responsiveSize(20),
+    marginTop: responsiveSize(15),
     padding: responsiveSize(20),
     borderRadius: responsiveSize(12),
     ...shadows.medium,
@@ -491,7 +548,7 @@ const styles = StyleSheet.create({
   },
   feedbackContainer: {
     paddingHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(20),
+    marginTop: responsiveSize(15),
   },
   feedbackCard: {
     flexDirection: 'row',
@@ -514,6 +571,9 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(24),
     marginRight: responsiveSize(8),
   },
+  correctIcon: {
+    color: colors.success,
+  },
   feedbackText: {
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
@@ -524,18 +584,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   explanationText: {
-    fontSize: responsiveFontSize(14),
-    color: colors.textSecondary,
-    lineHeight: responsiveFontSize(20),
+    fontSize: responsiveFontSize(16),
+    color: colors.textPrimary,
+    lineHeight: responsiveFontSize(24),
   },
   explanationTitle: {
+    fontSize: responsiveFontSize(18),
     fontWeight: 'bold',
     color: colors.textPrimary,
+    marginBottom: responsiveSize(15),
   },
   nextButton: {
+    flex: 1,
     backgroundColor: colors.primary,
-    marginHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(20),
     padding: responsiveSize(16),
     borderRadius: responsiveSize(12),
     alignItems: 'center',
@@ -568,6 +629,152 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: responsiveSize(10),
+    marginTop: responsiveSize(10),
+  },
+  explanationButton: {
+    flex: 1,
+    backgroundColor: colors.primary,
+    padding: responsiveSize(12),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  explanationButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textWhite,
+    marginTop: responsiveSize(4),
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: responsiveSize(16),
+    margin: responsiveSize(20),
+    maxHeight: '90%',
+    minHeight: responsiveSize(400),
+    width: '90%',
+    ...shadows.large,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: responsiveSize(20),
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderLight,
+  },
+  modalTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+  },
+  closeButton: {
+    padding: responsiveSize(8),
+  },
+  closeButtonText: {
+    fontSize: responsiveFontSize(20),
+    color: colors.textSecondary,
+    fontWeight: 'bold',
+  },
+  modalBody: {
+    flex: 1,
+    padding: responsiveSize(20),
+  },
+  questionSection: {
+    marginBottom: responsiveSize(20),
+  },
+  modalQuestionText: {
+    fontSize: responsiveFontSize(16),
+    color: colors.textPrimary,
+    lineHeight: responsiveFontSize(22),
+    marginBottom: responsiveSize(15),
+    fontWeight: '500',
+  },
+  optionsSection: {
+    marginBottom: responsiveSize(20),
+  },
+  optionsTitle: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: 'bold',
+    color: colors.textSecondary,
+    marginBottom: responsiveSize(10),
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: responsiveSize(12),
+    marginBottom: responsiveSize(8),
+    borderRadius: responsiveSize(8),
+    backgroundColor: colors.backgroundTertiary,
+    borderWidth: 1,
+    borderColor: colors.borderLight,
+  },
+  modalCorrectOption: {
+    borderColor: colors.success,
+    backgroundColor: colors.success + '10',
+  },
+  modalIncorrectOption: {
+    borderColor: colors.error,
+    backgroundColor: colors.error + '10',
+  },
+  modalOptionLetter: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: 'bold',
+    color: colors.textSecondary,
+    marginRight: responsiveSize(8),
+    minWidth: responsiveSize(20),
+  },
+  modalOptionText: {
+    flex: 1,
+    fontSize: responsiveFontSize(14),
+    color: colors.textPrimary,
+  },
+  modalCorrectOptionText: {
+    color: colors.success,
+    fontWeight: 'bold',
+  },
+  modalIncorrectOptionText: {
+    color: colors.error,
+    fontWeight: 'bold',
+  },
+  correctBadge: {
+    fontSize: responsiveFontSize(12),
+    color: colors.success,
+    fontWeight: 'bold',
+    marginLeft: responsiveSize(8),
+  },
+  incorrectBadge: {
+    fontSize: responsiveFontSize(12),
+    color: colors.error,
+    fontWeight: 'bold',
+    marginLeft: responsiveSize(8),
+  },
+  explanationSection: {
+    marginTop: responsiveSize(15),
+    padding: responsiveSize(25),
+    backgroundColor: colors.backgroundTertiary,
+    borderRadius: responsiveSize(8),
+    marginHorizontal: responsiveSize(10),
+  },
+  modalCloseButton: {
+    backgroundColor: colors.primary,
+    padding: responsiveSize(15),
+    margin: responsiveSize(20),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  modalCloseButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textWhite,
   },
 });
 
