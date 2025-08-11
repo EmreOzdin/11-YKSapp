@@ -8,8 +8,11 @@ import {
   Image, 
   Alert,
   Switch,
-  Modal
+  Modal,
+  FlatList,
+  Platform
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -30,10 +33,7 @@ interface ProfileOption {
 
 const ProfilScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-
+  
   // Kullanıcı bilgileri (gerçek uygulamada API'den gelecek)
   const userInfo = {
     name: 'Emre Yılmaz',
@@ -45,6 +45,90 @@ const ProfilScreen: React.FC = () => {
     accuracy: 71.7,
     studyStreak: 15,
     totalStudyTime: 89,
+  };
+
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(userInfo.avatar);
+
+  // Avatar seçenekleri
+  const avatarOptions = [
+    { id: '1', url: 'https://randomuser.me/api/portraits/men/32.jpg' },
+    { id: '2', url: 'https://randomuser.me/api/portraits/men/33.jpg' },
+    { id: '3', url: 'https://randomuser.me/api/portraits/men/34.jpg' },
+    { id: '4', url: 'https://randomuser.me/api/portraits/men/35.jpg' },
+    { id: '5', url: 'https://randomuser.me/api/portraits/men/36.jpg' },
+    { id: '6', url: 'https://randomuser.me/api/portraits/men/37.jpg' },
+    { id: '7', url: 'https://randomuser.me/api/portraits/men/38.jpg' },
+    { id: '8', url: 'https://randomuser.me/api/portraits/men/39.jpg' },
+    { id: '9', url: 'https://randomuser.me/api/portraits/men/40.jpg' },
+    { id: '10', url: 'https://randomuser.me/api/portraits/men/41.jpg' },
+    { id: '11', url: 'https://randomuser.me/api/portraits/men/42.jpg' },
+    { id: '12', url: 'https://randomuser.me/api/portraits/men/43.jpg' },
+  ];
+
+  const requestPermissions = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('İzin Gerekli', 'Fotoğraf seçmek için galeri izni gereklidir.');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const requestCameraPermissions = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('İzin Gerekli', 'Fotoğraf çekmek için kamera izni gereklidir.');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const pickImageFromLibrary = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) return;
+
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setSelectedAvatar(result.assets[0].uri);
+        setImageSourceModalVisible(false);
+      }
+    } catch (error) {
+      Alert.alert('Hata', 'Fotoğraf seçilirken bir hata oluştu.');
+    }
+  };
+
+  const takePhotoWithCamera = async () => {
+    const hasPermission = await requestCameraPermissions();
+    if (!hasPermission) return;
+
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets && result.assets[0]) {
+        setSelectedAvatar(result.assets[0].uri);
+        setImageSourceModalVisible(false);
+      }
+    } catch (error) {
+      Alert.alert('Hata', 'Fotoğraf çekilirken bir hata oluştu.');
+    }
   };
 
   const handleLogout = () => {
@@ -180,7 +264,7 @@ const ProfilScreen: React.FC = () => {
           <View style={styles.headerContent}>
             <TouchableOpacity 
               style={styles.backButton}
-              onPress={() => navigation.navigate('HomeScreen')}
+              onPress={() => navigation.navigate('HomeTab')}
             >
               <Ionicons name="arrow-back" size={24} color={colors.textWhite} />
             </TouchableOpacity>
@@ -191,7 +275,7 @@ const ProfilScreen: React.FC = () => {
 
         {/* User Info Card */}
         <View style={styles.userCard}>
-          <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
+          <Image source={{ uri: selectedAvatar }} style={styles.avatar} />
           <Text style={styles.userName}>{userInfo.name}</Text>
           <Text style={styles.userEmail}>{userInfo.email}</Text>
           <Text style={styles.joinDate}>Üye olma tarihi: {userInfo.joinDate}</Text>
@@ -222,18 +306,86 @@ const ProfilScreen: React.FC = () => {
                 <Ionicons name="close" size={24} color={colors.textPrimary} />
               </TouchableOpacity>
             </View>
-            <Text style={styles.modalSubtitle}>
-              Bu özellik yakında eklenecektir.
-            </Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setEditModalVisible(false)}
-            >
-              <Text style={styles.modalButtonText}>Tamam</Text>
-            </TouchableOpacity>
+            
+            {/* Avatar Selection */}
+            <View style={styles.avatarSection}>
+              <View style={styles.currentAvatarContainer}>
+                <Image source={{ uri: selectedAvatar }} style={styles.currentAvatar} />
+                <Text style={styles.currentAvatarText}>Mevcut Fotoğraf</Text>
+              </View>
+              
+              {/* Photo Source Buttons */}
+              <View style={styles.photoSourceButtons}>
+                <TouchableOpacity
+                  style={styles.photoSourceButton}
+                  onPress={pickImageFromLibrary}
+                >
+                  <MaterialCommunityIcons name="image-multiple" size={24} color={colors.primary} />
+                  <Text style={styles.photoSourceButtonText}>Galeriden Seç</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={styles.photoSourceButton}
+                  onPress={takePhotoWithCamera}
+                >
+                  <MaterialCommunityIcons name="camera" size={24} color={colors.primary} />
+                  <Text style={styles.photoSourceButtonText}>Kamera ile Çek</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.avatarSectionSubtitle}>Varsayılan avatarlar:</Text>
+              <FlatList
+                data={avatarOptions}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.avatarOption,
+                      selectedAvatar === item.url && styles.avatarOptionSelected
+                    ]}
+                    onPress={() => setSelectedAvatar(item.url)}
+                  >
+                    <Image source={{ uri: item.url }} style={styles.avatarOptionImage} />
+                    {selectedAvatar === item.url && (
+                      <View style={styles.avatarCheckmark}>
+                        <Ionicons name="checkmark" size={16} color={colors.textWhite} />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.avatarListContainer}
+              />
+            </View>
+
+            {/* Action Buttons */}
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={styles.modalButtonSecondary}
+                onPress={() => {
+                  setSelectedAvatar(userInfo.avatar);
+                  setEditModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalButtonSecondaryText}>İptal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => {
+                  // Burada avatar güncelleme API çağrısı yapılacak
+                  Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
+                  setEditModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalButtonText}>Kaydet</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
+
+
     </View>
   );
 };
@@ -351,8 +503,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderRadius: responsiveSize(16),
     padding: responsiveSize(20),
-    width: '80%',
-    maxWidth: responsiveSize(300),
+    width: '90%',
+    maxWidth: responsiveSize(400),
+    maxHeight: '80%',
     ...shadows.large,
   },
   modalHeader: {
@@ -383,6 +536,102 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.textWhite,
   },
+  avatarSection: {
+    marginBottom: responsiveSize(20),
+  },
+  avatarSectionTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(12),
+  },
+  avatarSectionSubtitle: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    marginBottom: responsiveSize(12),
+  },
+  currentAvatarContainer: {
+    alignItems: 'center',
+    marginBottom: responsiveSize(16),
+  },
+  currentAvatar: {
+    width: responsiveSize(80),
+    height: responsiveSize(80),
+    borderRadius: responsiveSize(40),
+    marginBottom: responsiveSize(8),
+  },
+  currentAvatarText: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textTertiary,
+  },
+  avatarListContainer: {
+    paddingHorizontal: responsiveSize(4),
+  },
+  avatarOption: {
+    marginHorizontal: responsiveSize(6),
+    position: 'relative',
+  },
+  avatarOptionSelected: {
+    borderWidth: 3,
+    borderColor: colors.primary,
+    borderRadius: responsiveSize(30),
+  },
+  avatarOptionImage: {
+    width: responsiveSize(60),
+    height: responsiveSize(60),
+    borderRadius: responsiveSize(30),
+  },
+  avatarCheckmark: {
+    position: 'absolute',
+    top: responsiveSize(2),
+    right: responsiveSize(2),
+    backgroundColor: colors.primary,
+    borderRadius: responsiveSize(10),
+    width: responsiveSize(20),
+    height: responsiveSize(20),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: responsiveSize(12),
+  },
+  modalButtonSecondary: {
+    flex: 1,
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: responsiveSize(12),
+    padding: responsiveSize(12),
+    alignItems: 'center',
+  },
+  modalButtonSecondaryText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
+    color: colors.textSecondary,
+  },
+  photoSourceButtons: {
+    marginBottom: responsiveSize(16),
+  },
+  photoSourceButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: responsiveSize(12),
+    padding: responsiveSize(12),
+    marginBottom: responsiveSize(8),
+  },
+  photoSourceButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
+    color: colors.primary,
+    marginLeft: responsiveSize(8),
+  },
+
 });
 
 export default ProfilScreen; 
