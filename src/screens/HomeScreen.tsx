@@ -180,7 +180,7 @@ const HomeScreen: React.FC = () => {
       >
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('ProfilScreen')}>
             <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>

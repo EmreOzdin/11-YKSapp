@@ -43,6 +43,7 @@ const HomeStack = () => {
       <Stack.Screen name="YDT Past" component={YdtPastScreen} />
       <Stack.Screen name="TopicSelectionScreen" component={TopicSelectionScreen} />
       <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
+      <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
     </Stack.Navigator>
   );
 };
