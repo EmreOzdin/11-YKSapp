@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { colors } from '../utils/theme';
+import { responsiveSize } from '../utils/responsive';
 
 const LoadingScreen: React.FC = () => {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.primary} />
+      <ActivityIndicator size={responsiveSize(40)} color={colors.primary} />
     </View>
   );
 };

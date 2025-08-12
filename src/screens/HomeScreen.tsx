@@ -30,21 +30,21 @@ const NotificationModal = ({ visible, onClose }: { visible: boolean; onClose: ()
       onStartShouldSetResponder={() => true}
       onResponderRelease={onClose}
     >
-      <View style={{ width: '85%', backgroundColor: '#fff', borderRadius: 28, paddingTop: 18, paddingHorizontal: 18, paddingBottom: 32, maxHeight: '70%' }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12 }}>Bildirimler</Text>
+      <View style={{ width: '85%', backgroundColor: '#fff', borderRadius: responsiveSize(28), paddingTop: responsiveSize(18), paddingHorizontal: responsiveSize(18), paddingBottom: responsiveSize(32), maxHeight: '70%' }}>
+        <Text style={{ fontSize: responsiveFontSize(20), fontWeight: 'bold', marginBottom: responsiveSize(12) }}>Bildirimler</Text>
         <FlatList
           data={notifications}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-            <View style={{ paddingVertical: 10, borderBottomWidth: 1, borderColor: '#eee' }}>
-              <Text style={{ fontSize: 16, color: '#222', fontWeight: '500' }}>{item.title}</Text>
-              <Text style={{ fontSize: 13, color: '#888', marginTop: 2 }}>{item.date}</Text>
+            <View style={{ paddingVertical: responsiveSize(10), borderBottomWidth: 1, borderColor: '#eee' }}>
+              <Text style={{ fontSize: responsiveFontSize(16), color: '#222', fontWeight: '500' }}>{item.title}</Text>
+              <Text style={{ fontSize: responsiveFontSize(13), color: '#888', marginTop: responsiveSize(2) }}>{item.date}</Text>
             </View>
           )}
-          ListEmptyComponent={<Text style={{ color: '#888', textAlign: 'center', marginTop: 24 }}>Henüz bildiriminiz yok.</Text>}
+          ListEmptyComponent={<Text style={{ color: '#888', textAlign: 'center', marginTop: responsiveSize(24) }}>Henüz bildiriminiz yok.</Text>}
         />
-        <Pressable onPress={onClose} style={{ marginTop: 18, alignSelf: 'center', padding: 10 }}>
-          <Text style={{ color: '#1877f2', fontWeight: 'bold', fontSize: 16 }}>Kapat</Text>
+        <Pressable onPress={onClose} style={{ marginTop: responsiveSize(18), alignSelf: 'center', padding: responsiveSize(10) }}>
+          <Text style={{ color: '#1877f2', fontWeight: 'bold', fontSize: responsiveFontSize(16) }}>Kapat</Text>
         </Pressable>
       </View>
     </View>
@@ -55,23 +55,23 @@ const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress
   <Modal visible={visible} animationType="fade" transparent>
     <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.18)', justifyContent: 'flex-start', alignItems: 'center' }}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
-        <View style={{ marginTop: 60, width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: 16, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, elevation: 3 }}>
-          <Ionicons name="search" size={22} color="#888" style={{ marginRight: 8 }} />
+        <View style={{ marginTop: responsiveSize(60), width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: responsiveSize(16), flexDirection: 'row', alignItems: 'center', paddingHorizontal: responsiveSize(14), paddingVertical: responsiveSize(8), elevation: 3 }}>
+          <Ionicons name="search" size={responsiveSize(22)} color="#888" style={{ marginRight: responsiveSize(8) }} />
           <TextInput
             autoFocus
             value={value}
             onChangeText={onChange}
             placeholder="Ara..."
-            style={{ flex: 1, fontSize: 17, color: '#222', paddingVertical: 6 }}
+            style={{ flex: 1, fontSize: responsiveFontSize(17), color: '#222', paddingVertical: responsiveSize(6) }}
             returnKeyType="search"
           />
-          <TouchableOpacity onPress={onClose} style={{ marginLeft: 8 }}>
-            <MaterialCommunityIcons name="close" size={22} color="#888" />
+          <TouchableOpacity onPress={onClose} style={{ marginLeft: responsiveSize(8) }}>
+            <MaterialCommunityIcons name="close" size={responsiveSize(22)} color="#888" />
           </TouchableOpacity>
         </View>
         {/* Sonuçlar */}
         {value.length > 0 && (
-          <View style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: 16, marginTop: 8, maxHeight: 220, elevation: 2, paddingVertical: 4 }}>
+          <View style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: responsiveSize(16), marginTop: responsiveSize(8), maxHeight: responsiveSize(220), elevation: 2, paddingVertical: responsiveSize(4) }}>
             {results.length > 0 ? (
               results.map((item, idx) => (
                 <TouchableOpacity
@@ -80,15 +80,15 @@ const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress
                     onResultPress(item);
                     onClose();
                   }}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 8, borderBottomWidth: idx !== results.length - 1 ? 1 : 0, borderColor: '#f0f0f0' }}
+                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveSize(10), paddingHorizontal: responsiveSize(8), borderBottomWidth: idx !== results.length - 1 ? 1 : 0, borderColor: '#f0f0f0' }}
                   activeOpacity={0.7}
                 >
-                  <Image source={item.image} style={{ width: 32, height: 32, marginRight: 12, borderRadius: 8 }} />
-                  <Text style={{ fontSize: 16, color: '#222' }}>{item.title}</Text>
+                  <Image source={item.image} style={{ width: responsiveSize(32), height: responsiveSize(32), marginRight: responsiveSize(12), borderRadius: responsiveSize(8) }} />
+                  <Text style={{ fontSize: responsiveFontSize(16), color: '#222' }}>{item.title}</Text>
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={{ color: '#888', textAlign: 'center', padding: 16 }}>Sonuç bulunamadı.</Text>
+              <Text style={{ color: '#888', textAlign: 'center', padding: responsiveSize(16) }}>Sonuç bulunamadı.</Text>
             )}
           </View>
         )}
@@ -534,17 +534,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     fontSize: responsiveFontSize(15) 
   },
-  subjectGroup: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginTop: 14, marginBottom: 8, flex: 1 },
-  subjectIconBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd', borderRadius: 16, padding: 14, marginHorizontal: 4 },
-  subjectLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20, marginBottom: 8 },
-  subjectLabel: { fontSize: 13, color: '#222', fontWeight: '500', textAlign: 'center', flex: 1 },
-  videoCard: { flexDirection: 'row', backgroundColor: '#f8fafd', borderRadius: 18, padding: 14, marginHorizontal: 20, marginTop: 10, alignItems: 'center' },
-  videoImage: { width: 60, height: 60, borderRadius: 12, backgroundColor: '#fff' },
-  videoTitle: { fontSize: 16, fontWeight: 'bold', color: '#222' },
-  videoTeacher: { fontSize: 13, color: '#888', marginTop: 2 },
-  videoRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  videoRating: { fontSize: 14, color: '#222', marginLeft: 4, marginRight: 8 },
-  videoLive: { fontSize: 12, color: '#fff', backgroundColor: '#ff6b81', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 2, marginLeft: 8, overflow: 'hidden' },
+  subjectGroup: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: responsiveSize(20), marginTop: responsiveSize(14), marginBottom: responsiveSize(8), flex: 1 },
+  subjectIconBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd', borderRadius: responsiveSize(16), padding: responsiveSize(14), marginHorizontal: responsiveSize(4) },
+  subjectLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: responsiveSize(20), marginBottom: responsiveSize(8) },
+  subjectLabel: { fontSize: responsiveFontSize(13), color: '#222', fontWeight: '500', textAlign: 'center', flex: 1 },
+  videoCard: { flexDirection: 'row', backgroundColor: '#f8fafd', borderRadius: responsiveSize(18), padding: responsiveSize(14), marginHorizontal: responsiveSize(20), marginTop: responsiveSize(10), alignItems: 'center' },
+  videoImage: { width: responsiveSize(60), height: responsiveSize(60), borderRadius: responsiveSize(12), backgroundColor: '#fff' },
+  videoTitle: { fontSize: responsiveFontSize(16), fontWeight: 'bold', color: '#222' },
+  videoTeacher: { fontSize: responsiveFontSize(13), color: '#888', marginTop: responsiveSize(2) },
+  videoRow: { flexDirection: 'row', alignItems: 'center', marginTop: responsiveSize(4) },
+  videoRating: { fontSize: responsiveFontSize(14), color: '#222', marginLeft: responsiveSize(4), marginRight: responsiveSize(8) },
+  videoLive: { fontSize: responsiveFontSize(12), color: '#fff', backgroundColor: '#ff6b81', borderRadius: responsiveSize(8), paddingHorizontal: responsiveSize(8), paddingVertical: responsiveSize(2), marginLeft: responsiveSize(8), overflow: 'hidden' },
 
   swiperContainer: {
     position: 'absolute',
