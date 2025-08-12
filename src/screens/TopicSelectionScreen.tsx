@@ -94,16 +94,8 @@ const TopicSelectionScreen: React.FC = () => {
 
       await QuestionService.saveUserSelections(selections);
       
-      Alert.alert(
-        "Başarılı!",
-        `${selectedTopics.length} konu seçildi. Artık bu konulardaki sorularla çalışabilirsiniz.`,
-        [
-          {
-            text: "Çalışmaya Başla",
-            onPress: () => navigation.navigate('QuestionScreen', { examType })
-          }
-        ]
-      );
+      // Direkt sorulara geçiş yap
+      navigation.navigate('QuestionScreen', { examType });
     } catch (error) {
       Alert.alert("Hata", "Seçimler kaydedilemedi. Lütfen tekrar deneyin.");
     }

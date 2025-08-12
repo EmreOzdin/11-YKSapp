@@ -24,20 +24,7 @@ const AytScreen: React.FC = () => {
 
   const handleStartQuestions = async () => {
     if (!hasSelections) {
-      Alert.alert(
-        "Konu Seçimi Gerekli",
-        "Soru çözmeye başlamadan önce çalışmak istediğiniz konuları seçmeniz gerekiyor.",
-        [
-          {
-            text: "Konu Seç",
-            onPress: () => navigation.navigate('TopicSelectionScreen', { examType: 'AYT' })
-          },
-          {
-            text: "İptal",
-            style: "cancel"
-          }
-        ]
-      );
+      navigation.navigate('TopicSelectionScreen', { examType: 'AYT' });
       return;
     }
 
