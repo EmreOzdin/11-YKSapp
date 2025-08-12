@@ -458,7 +458,7 @@ const CardsScreen: React.FC = () => {
             >
               <Ionicons name="arrow-back" size={24} color={colors.textWhite} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Hap Bilgi Kartları</Text>
+            <Text style={styles.headerTitle}>Bilgi Kartları</Text>
             <View style={styles.searchButton} />
           </View>
         </LinearGradient>
