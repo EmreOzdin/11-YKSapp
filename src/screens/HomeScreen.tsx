@@ -7,6 +7,7 @@ import Swiper from 'react-native-deck-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, isSmallDevice, isMediumDevice, isLargeDevice, screenWidth } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
+import { useUser } from '../context/UserContext';
 
 
 const CARD_DATA = [
@@ -97,6 +98,7 @@ const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress
 );
 
 const HomeScreen: React.FC = () => {
+  const { userInfo } = useUser();
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -181,11 +183,11 @@ const HomeScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.navigate('ProfilScreen')}>
-            <Image source={{ uri: 'https://randomuser.me/api/portraits/men/32.jpg' }} style={styles.avatar} />
+            <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>Merhaba!</Text>
-            <Text style={styles.userName}>Emre</Text>
+            <Text style={styles.userName}>{userInfo.name.split(' ')[0]}</Text>
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity style={{ marginRight: 12 }} onPress={() => setSearchModalVisible(true)}>

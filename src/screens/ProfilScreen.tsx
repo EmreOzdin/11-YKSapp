@@ -18,6 +18,7 @@ import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-ico
 import { LinearGradient } from 'expo-linear-gradient';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
+import { useUser } from '../context/UserContext';
 
 interface ProfileOption {
   id: string;
@@ -33,24 +34,16 @@ interface ProfileOption {
 
 const ProfilScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  
-  // Kullanıcı bilgileri (gerçek uygulamada API'den gelecek)
-  const userInfo = {
-    name: 'Emre Yılmaz',
-    email: 'emre.yilmaz@email.com',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    joinDate: 'Ocak 2024',
-    totalQuestions: 1247,
-    correctAnswers: 892,
-    accuracy: 71.7,
-    studyStreak: 15,
-    totalStudyTime: 89,
-  };
+  const { userInfo, updateAvatar } = useUser();
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(userInfo.avatar);
+
+  // userInfo.avatar değiştiğinde selectedAvatar'ı güncelle
+  React.useEffect(() => {
+    setSelectedAvatar(userInfo.avatar);
+  }, [userInfo.avatar]);
 
   // Avatar seçenekleri
   const avatarOptions = [
@@ -169,33 +162,7 @@ const ProfilScreen: React.FC = () => {
       switchValue: notificationsEnabled,
       onSwitchChange: setNotificationsEnabled,
     },
-    {
-      id: 'darkMode',
-      title: 'Karanlık Mod',
-      subtitle: 'Karanlık tema kullanın',
-      icon: 'moon-waning-crescent',
-      iconColor: colors.secondary,
-      onPress: () => {},
-      showSwitch: true,
-      switchValue: darkModeEnabled,
-      onSwitchChange: setDarkModeEnabled,
-    },
-    {
-      id: 'privacy',
-      title: 'Gizlilik',
-      subtitle: 'Gizlilik ayarlarınızı yönetin',
-      icon: 'shield-account',
-      iconColor: colors.success,
-      onPress: () => navigation.navigate('PrivacyPolicyScreen'),
-    },
-    {
-      id: 'terms',
-      title: 'Kullanım Koşulları',
-      subtitle: 'Kullanım koşullarını okuyun',
-      icon: 'file-document-outline',
-      iconColor: colors.info,
-      onPress: () => navigation.navigate('TermsOfServiceScreen'),
-    },
+
     {
       id: 'help',
       title: 'Yardım & Destek',
@@ -373,7 +340,7 @@ const ProfilScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => {
-                  // Burada avatar güncelleme API çağrısı yapılacak
+                  updateAvatar(selectedAvatar);
                   Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
                   setEditModalVisible(false);
                 }}

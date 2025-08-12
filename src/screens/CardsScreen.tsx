@@ -6,14 +6,13 @@ import {
   TouchableOpacity, 
   ScrollView, 
   FlatList,
-  Dimensions,
-  Animated
+  Dimensions
 } from 'react-native';
 import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import { colors, shadows } from '../utils/theme';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -23,7 +22,6 @@ interface MemoryCard {
   question: string;
   answer: string;
   difficulty: 'easy' | 'medium' | 'hard';
-  isFavorite: boolean;
 }
 
 interface CardCategory {
@@ -38,8 +36,7 @@ const CardsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [isCardFlipped, setIsCardFlipped] = useState(false);
-  const [favoriteCards, setFavoriteCards] = useState<string[]>([]);
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
 
   // Kart kategorileri
   const cardCategories: CardCategory[] = [
@@ -47,95 +44,310 @@ const CardsScreen: React.FC = () => {
       id: 'math',
       name: 'Matematik',
       icon: 'calculator',
-      color: colors.gradients.orange[0],
-      cardCount: 45
+      color: '#f7b731',
+      cardCount: 6
     },
     {
       id: 'physics',
       name: 'Fizik',
       icon: 'atom',
-      color: colors.gradients.blue[0],
-      cardCount: 38
+      color: '#228be6',
+      cardCount: 6
     },
     {
       id: 'chemistry',
       name: 'Kimya',
       icon: 'flask',
-      color: colors.gradients.purple[0],
-      cardCount: 32
+      color: '#6c47ff',
+      cardCount: 6
     },
     {
       id: 'biology',
       name: 'Biyoloji',
       icon: 'leaf',
-      color: colors.gradients.pink[0],
-      cardCount: 41
+      color: '#ff6b81',
+      cardCount: 6
     },
     {
       id: 'turkish',
       name: 'Türkçe',
       icon: 'book-open-variant',
-      color: colors.gradients.blue[1],
-      cardCount: 28
+      color: '#17a2b8',
+      cardCount: 6
     },
     {
       id: 'history',
       name: 'Tarih',
       icon: 'castle',
-      color: colors.gradients.orange[1],
-      cardCount: 35
+      color: '#ffb347',
+      cardCount: 6
     }
   ];
 
   // Örnek hap bilgi kartları
   const memoryCards: MemoryCard[] = [
+    // Matematik Kartları
     {
       id: '1',
       category: 'math',
       question: 'İkinci dereceden denklem formülü nedir?',
       answer: 'x = (-b ± √(b² - 4ac)) / 2a',
-      difficulty: 'medium',
-      isFavorite: false
+      difficulty: 'medium'
     },
     {
       id: '2',
-      category: 'physics',
-      question: 'Newton\'un 1. Yasası nedir?',
-      answer: 'Bir cisim üzerine net kuvvet etki etmiyorsa, cisim durumunu korur (durgun kalır veya sabit hızla hareket eder).',
-      difficulty: 'easy',
-      isFavorite: true
+      category: 'math',
+      question: 'Pisagor teoremi nedir?',
+      answer: 'a² + b² = c² (Dik üçgende hipotenüsün karesi, diğer iki kenarın karelerinin toplamına eşittir)',
+      difficulty: 'easy'
     },
     {
       id: '3',
-      category: 'chemistry',
-      question: 'Periyodik tabloda kaç periyot vardır?',
-      answer: '7 periyot vardır.',
-      difficulty: 'easy',
-      isFavorite: false
+      category: 'math',
+      question: 'Logaritma nedir?',
+      answer: 'Bir sayının belirli bir tabana göre üssüdür. logₐb = c ise a^c = b',
+      difficulty: 'hard'
     },
     {
       id: '4',
-      category: 'biology',
-      question: 'DNA\'nın açılımı nedir?',
-      answer: 'Deoksiribo Nükleik Asit',
-      difficulty: 'easy',
-      isFavorite: false
+      category: 'math',
+      question: 'Türev nedir?',
+      answer: 'Bir fonksiyonun belirli bir noktadaki değişim hızını gösteren matematiksel kavramdır.',
+      difficulty: 'hard'
     },
     {
       id: '5',
-      category: 'turkish',
-      question: 'Türkçede kaç ünlü harf vardır?',
-      answer: '8 ünlü harf vardır: a, e, ı, i, o, ö, u, ü',
-      difficulty: 'easy',
-      isFavorite: false
+      category: 'math',
+      question: 'İntegral nedir?',
+      answer: 'Bir fonksiyonun belirli bir aralıktaki toplam değişimini hesaplayan matematiksel işlemdir.',
+      difficulty: 'hard'
     },
     {
       id: '6',
+      category: 'math',
+      question: 'Trigonometrik fonksiyonlar nelerdir?',
+      answer: 'sin, cos, tan, cot, sec, csc fonksiyonlarıdır.',
+      difficulty: 'medium'
+    },
+
+    // Fizik Kartları
+    {
+      id: '7',
+      category: 'physics',
+      question: 'Newton\'un 1. Yasası nedir?',
+      answer: 'Bir cisim üzerine net kuvvet etki etmiyorsa, cisim durumunu korur (durgun kalır veya sabit hızla hareket eder).',
+      difficulty: 'easy'
+    },
+    {
+      id: '8',
+      category: 'physics',
+      question: 'Newton\'un 2. Yasası nedir?',
+      answer: 'F = m × a (Kuvvet, kütle ile ivmenin çarpımına eşittir)',
+      difficulty: 'medium'
+    },
+    {
+      id: '9',
+      category: 'physics',
+      question: 'Newton\'un 3. Yasası nedir?',
+      answer: 'Her etkiye karşılık eşit ve zıt yönde bir tepki vardır.',
+      difficulty: 'medium'
+    },
+    {
+      id: '10',
+      category: 'physics',
+      question: 'Enerji korunumu yasası nedir?',
+      answer: 'Enerji yoktan var edilemez, vardan yok edilemez, sadece bir türden diğerine dönüşür.',
+      difficulty: 'medium'
+    },
+    {
+      id: '11',
+      category: 'physics',
+      question: 'Momentum nedir?',
+      answer: 'p = m × v (Momentum, kütle ile hızın çarpımıdır)',
+      difficulty: 'medium'
+    },
+    {
+      id: '12',
+      category: 'physics',
+      question: 'Elektrik akımı birimi nedir?',
+      answer: 'Amper (A)',
+      difficulty: 'easy'
+    },
+
+    // Kimya Kartları
+    {
+      id: '13',
+      category: 'chemistry',
+      question: 'Periyodik tabloda kaç periyot vardır?',
+      answer: '7 periyot vardır.',
+      difficulty: 'easy'
+    },
+    {
+      id: '14',
+      category: 'chemistry',
+      question: 'Atom numarası nedir?',
+      answer: 'Bir elementin çekirdeğindeki proton sayısıdır.',
+      difficulty: 'easy'
+    },
+    {
+      id: '15',
+      category: 'chemistry',
+      question: 'Kütle numarası nedir?',
+      answer: 'Proton ve nötron sayılarının toplamıdır.',
+      difficulty: 'easy'
+    },
+    {
+      id: '16',
+      category: 'chemistry',
+      question: 'İyon nedir?',
+      answer: 'Elektron alarak veya vererek yük kazanmış atom veya atom gruplarıdır.',
+      difficulty: 'medium'
+    },
+    {
+      id: '17',
+      category: 'chemistry',
+      question: 'pH nedir?',
+      answer: 'Çözeltinin asitlik veya bazlık derecesini gösteren ölçektir (0-14 arası).',
+      difficulty: 'medium'
+    },
+    {
+      id: '18',
+      category: 'chemistry',
+      question: 'Kovalent bağ nedir?',
+      answer: 'İki atom arasında elektron paylaşımı ile oluşan kimyasal bağdır.',
+      difficulty: 'medium'
+    },
+
+    // Biyoloji Kartları
+    {
+      id: '19',
+      category: 'biology',
+      question: 'DNA\'nın açılımı nedir?',
+      answer: 'Deoksiribo Nükleik Asit',
+      difficulty: 'easy'
+    },
+    {
+      id: '20',
+      category: 'biology',
+      question: 'RNA\'nın açılımı nedir?',
+      answer: 'Ribo Nükleik Asit',
+      difficulty: 'easy'
+    },
+    {
+      id: '21',
+      category: 'biology',
+      question: 'Hücre nedir?',
+      answer: 'Canlıların en küçük yapı ve işlev birimidir.',
+      difficulty: 'easy'
+    },
+    {
+      id: '22',
+      category: 'biology',
+      question: 'Mitokondri nedir?',
+      answer: 'Hücrede enerji üretiminden sorumlu organeldir.',
+      difficulty: 'medium'
+    },
+    {
+      id: '23',
+      category: 'biology',
+      question: 'Fotosentez nedir?',
+      answer: 'Bitkilerin güneş ışığı kullanarak besin üretmesi sürecidir.',
+      difficulty: 'medium'
+    },
+    {
+      id: '24',
+      category: 'biology',
+      question: 'Osmoz nedir?',
+      answer: 'Su moleküllerinin yarı geçirgen zar üzerinden yoğunluk farkı nedeniyle hareketidir.',
+      difficulty: 'medium'
+    },
+
+    // Türkçe Kartları
+    {
+      id: '25',
+      category: 'turkish',
+      question: 'Türkçede kaç ünlü harf vardır?',
+      answer: '8 ünlü harf vardır: a, e, ı, i, o, ö, u, ü',
+      difficulty: 'easy'
+    },
+    {
+      id: '26',
+      category: 'turkish',
+      question: 'Türkçede kaç ünsüz harf vardır?',
+      answer: '21 ünsüz harf vardır.',
+      difficulty: 'easy'
+    },
+    {
+      id: '27',
+      category: 'turkish',
+      question: 'Büyük ünlü uyumu nedir?',
+      answer: 'Türkçe kelimelerde ünlülerin kalınlık-incelik bakımından uyum göstermesidir.',
+      difficulty: 'medium'
+    },
+    {
+      id: '28',
+      category: 'turkish',
+      question: 'Küçük ünlü uyumu nedir?',
+      answer: 'Türkçe kelimelerde ünlülerin düzlük-yuvarlaklık bakımından uyum göstermesidir.',
+      difficulty: 'medium'
+    },
+    {
+      id: '29',
+      category: 'turkish',
+      question: 'Fiil nedir?',
+      answer: 'İş, oluş, hareket ve durum bildiren kelimelerdir.',
+      difficulty: 'easy'
+    },
+    {
+      id: '30',
+      category: 'turkish',
+      question: 'İsim nedir?',
+      answer: 'Varlıkları, kavramları karşılayan kelimelerdir.',
+      difficulty: 'easy'
+    },
+
+    // Tarih Kartları
+    {
+      id: '31',
       category: 'history',
       question: 'İstanbul\'un fethi hangi yılda gerçekleşmiştir?',
       answer: '1453 yılında Fatih Sultan Mehmet tarafından fethedilmiştir.',
-      difficulty: 'medium',
-      isFavorite: true
+      difficulty: 'medium'
+    },
+    {
+      id: '32',
+      category: 'history',
+      question: 'Malazgirt Savaşı hangi yılda yapılmıştır?',
+      answer: '1071 yılında Alparslan komutasındaki Selçuklular ile Bizans arasında yapılmıştır.',
+      difficulty: 'medium'
+    },
+    {
+      id: '33',
+      category: 'history',
+      question: 'Kurtuluş Savaşı hangi yıllar arasında yapılmıştır?',
+      answer: '1919-1923 yılları arasında yapılmıştır.',
+      difficulty: 'medium'
+    },
+    {
+      id: '34',
+      category: 'history',
+      question: 'Cumhuriyet hangi tarihte ilan edilmiştir?',
+      answer: '29 Ekim 1923 tarihinde ilan edilmiştir.',
+      difficulty: 'easy'
+    },
+    {
+      id: '35',
+      category: 'history',
+      question: 'TBMM hangi tarihte açılmıştır?',
+      answer: '23 Nisan 1920 tarihinde açılmıştır.',
+      difficulty: 'easy'
+    },
+    {
+      id: '36',
+      category: 'history',
+      question: 'Çanakkale Savaşı hangi yıllar arasında yapılmıştır?',
+      answer: '1915-1916 yılları arasında yapılmıştır.',
+      difficulty: 'medium'
     }
   ];
 
@@ -143,30 +355,22 @@ const CardsScreen: React.FC = () => {
     ? memoryCards.filter(card => card.category === selectedCategory)
     : memoryCards;
 
-  const toggleFavorite = (cardId: string) => {
-    setFavoriteCards(prev => 
-      prev.includes(cardId) 
-        ? prev.filter(id => id !== cardId)
-        : [...prev, cardId]
-    );
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
+    setFlippedCards(new Set());
+    setCurrentCardIndex(0);
   };
 
-  const flipCard = () => {
-    setIsCardFlipped(!isCardFlipped);
-  };
-
-  const nextCard = () => {
-    if (currentCardIndex < filteredCards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
-      setIsCardFlipped(false);
-    }
-  };
-
-  const prevCard = () => {
-    if (currentCardIndex > 0) {
-      setCurrentCardIndex(currentCardIndex - 1);
-      setIsCardFlipped(false);
-    }
+  const handleCardFlip = (cardId: string) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(cardId)) {
+        newSet.delete(cardId);
+      } else {
+        newSet.add(cardId);
+      }
+      return newSet;
+    });
   };
 
   const renderCategoryCard = ({ item }: { item: CardCategory }) => (
@@ -175,7 +379,7 @@ const CardsScreen: React.FC = () => {
         styles.categoryCard,
         selectedCategory === item.id && styles.categoryCardSelected
       ]}
-      onPress={() => setSelectedCategory(selectedCategory === item.id ? null : item.id)}
+      onPress={() => handleCategoryChange(item.id)}
     >
       <LinearGradient
         colors={[item.color, item.color + '80']}
@@ -188,40 +392,20 @@ const CardsScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
-  const renderMemoryCard = () => {
-    if (filteredCards.length === 0) {
-      return (
-        <View style={styles.emptyState}>
-          <MaterialCommunityIcons name="cards-outline" size={64} color={colors.textTertiary} />
-          <Text style={styles.emptyStateText}>Bu kategoride henüz kart bulunmuyor</Text>
-        </View>
-      );
-    }
-
-    const currentCard = filteredCards[currentCardIndex];
-    const isFavorite = favoriteCards.includes(currentCard.id);
+  const renderMemoryCard = ({ item, index }: { item: MemoryCard; index: number }) => {
+    const isCardFlipped = flippedCards.has(item.id);
 
     return (
       <View style={styles.cardContainer}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardCounter}>
-            {currentCardIndex + 1} / {filteredCards.length}
+            {index + 1} / {filteredCards.length}
           </Text>
-          <TouchableOpacity
-            style={styles.favoriteButton}
-            onPress={() => toggleFavorite(currentCard.id)}
-          >
-            <Ionicons 
-              name={isFavorite ? "heart" : "heart-outline"} 
-              size={24} 
-              color={isFavorite ? colors.error : colors.textTertiary} 
-            />
-          </TouchableOpacity>
         </View>
 
         <TouchableOpacity
           style={styles.memoryCard}
-          onPress={flipCard}
+          onPress={() => handleCardFlip(item.id)}
           activeOpacity={0.9}
         >
           <LinearGradient
@@ -231,11 +415,11 @@ const CardsScreen: React.FC = () => {
             <View style={styles.cardContent}>
               <MaterialCommunityIcons 
                 name={isCardFlipped ? "lightbulb-on" : "help-circle"} 
-                size={48} 
+                size={40} 
                 color={colors.textWhite} 
               />
               <Text style={styles.cardText}>
-                {isCardFlipped ? currentCard.answer : currentCard.question}
+                {isCardFlipped ? item.answer : item.question}
               </Text>
               <Text style={styles.cardHint}>
                 {isCardFlipped ? 'Cevap' : 'Kartı çevirmek için dokun'}
@@ -243,27 +427,16 @@ const CardsScreen: React.FC = () => {
             </View>
           </LinearGradient>
         </TouchableOpacity>
-
-        <View style={styles.cardNavigation}>
-          <TouchableOpacity
-            style={[styles.navButton, currentCardIndex === 0 && styles.navButtonDisabled]}
-            onPress={prevCard}
-            disabled={currentCardIndex === 0}
-          >
-            <Ionicons name="chevron-back" size={24} color={colors.textPrimary} />
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.navButton, currentCardIndex === filteredCards.length - 1 && styles.navButtonDisabled]}
-            onPress={nextCard}
-            disabled={currentCardIndex === filteredCards.length - 1}
-          >
-            <Ionicons name="chevron-forward" size={24} color={colors.textPrimary} />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <MaterialCommunityIcons name="cards-outline" size={64} color={colors.textTertiary} />
+      <Text style={styles.emptyStateText}>Bu kategoride henüz kart bulunmuyor</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -281,9 +454,7 @@ const CardsScreen: React.FC = () => {
               <Ionicons name="arrow-back" size={24} color={colors.textWhite} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Hap Bilgi Kartları</Text>
-            <TouchableOpacity style={styles.searchButton}>
-              <Ionicons name="search-outline" size={24} color={colors.textWhite} />
-            </TouchableOpacity>
+            <View style={styles.searchButton} />
           </View>
         </LinearGradient>
 
@@ -308,7 +479,36 @@ const CardsScreen: React.FC = () => {
               : 'Tüm Kartlar'
             }
           </Text>
-          {renderMemoryCard()}
+          <View style={styles.cardsWrapper}>
+            {filteredCards.length > 0 ? (
+              <FlatList
+                data={filteredCards}
+                renderItem={renderMemoryCard}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                snapToInterval={screenWidth - responsiveSize(40)}
+                decelerationRate={0.95}
+                contentContainerStyle={styles.cardsList}
+                onMomentumScrollEnd={(event) => {
+                  const newIndex = Math.round(event.nativeEvent.contentOffset.x / (screenWidth - responsiveSize(40)));
+                  setCurrentCardIndex(newIndex);
+                }}
+                getItemLayout={(data, index) => ({
+                  length: screenWidth - responsiveSize(40),
+                  offset: (screenWidth - responsiveSize(40)) * index,
+                  index,
+                })}
+                initialNumToRender={1}
+                maxToRenderPerBatch={3}
+                windowSize={5}
+                snapToAlignment="center"
+              />
+            ) : (
+              renderEmptyState()
+            )}
+          </View>
         </View>
 
         {/* Bottom Spacing */}
@@ -391,77 +591,79 @@ const styles = StyleSheet.create({
   cardsContainer: {
     paddingHorizontal: responsiveSize(20),
     marginTop: responsiveSize(20),
+    flex: 1,
+  },
+  cardsWrapper: {
+    height: responsiveSize(450),
+    justifyContent: 'center',
   },
   cardContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
+    width: screenWidth - responsiveSize(40),
+    paddingHorizontal: responsiveSize(10),
+    minHeight: responsiveSize(400),
   },
   cardHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginBottom: responsiveSize(16),
+    marginBottom: responsiveSize(12),
+    paddingHorizontal: responsiveSize(10),
   },
   cardCounter: {
     fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
     fontWeight: '500',
   },
-  favoriteButton: {
-    padding: responsiveSize(8),
-  },
   memoryCard: {
-    width: screenWidth - responsiveSize(80),
-    height: responsiveSize(300),
+    width: '100%',
+    height: responsiveSize(320),
     borderRadius: responsiveSize(16),
     overflow: 'hidden',
     ...shadows.large,
+    marginVertical: responsiveSize(5),
   },
   cardGradient: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: responsiveSize(24),
+    padding: responsiveSize(20),
   },
   cardContent: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    paddingHorizontal: responsiveSize(20),
+    width: '100%',
   },
   cardText: {
     fontSize: responsiveFontSize(18),
-    fontWeight: '600',
+    fontWeight: '800',
     color: colors.textWhite,
     textAlign: 'center',
-    marginTop: responsiveSize(16),
+    marginTop: responsiveSize(12),
     lineHeight: responsiveFontSize(26),
+    width: '100%',
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
   cardHint: {
-    fontSize: responsiveFontSize(12),
+    fontSize: responsiveFontSize(14),
     color: colors.textWhite,
-    opacity: 0.7,
-    marginTop: responsiveSize(16),
+    opacity: 1,
+    marginTop: responsiveSize(12),
     textAlign: 'center',
-  },
-  cardNavigation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
-    marginTop: responsiveSize(20),
-    paddingHorizontal: responsiveSize(40),
+    textShadowColor: 'rgba(0, 0, 0, 0.6)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
-  navButton: {
-    width: responsiveSize(50),
-    height: responsiveSize(50),
-    borderRadius: responsiveSize(25),
-    backgroundColor: colors.background,
+  cardsList: {
     alignItems: 'center',
     justifyContent: 'center',
-    ...shadows.small,
-  },
-  navButtonDisabled: {
-    opacity: 0.3,
   },
   emptyState: {
     alignItems: 'center',
