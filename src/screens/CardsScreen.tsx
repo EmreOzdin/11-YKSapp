@@ -44,14 +44,14 @@ const CardsScreen: React.FC = () => {
       id: 'math',
       name: 'Matematik',
       icon: 'calculator',
-      color: '#f7b731',
+      color: '#228be6',
       cardCount: 6
     },
     {
       id: 'physics',
       name: 'Fizik',
       icon: 'atom',
-      color: '#228be6',
+      color: '#f7b731',
       cardCount: 6
     },
     {
@@ -79,7 +79,7 @@ const CardsScreen: React.FC = () => {
       id: 'history',
       name: 'Tarih',
       icon: 'castle',
-      color: '#ffb347',
+      color: '#D2691E',
       cardCount: 6
     }
   ];
@@ -394,6 +394,11 @@ const CardsScreen: React.FC = () => {
 
   const renderMemoryCard = ({ item, index }: { item: MemoryCard; index: number }) => {
     const isCardFlipped = flippedCards.has(item.id);
+    
+    // Kategori rengini bul
+    const categoryColor = selectedCategory 
+      ? cardCategories.find(cat => cat.id === selectedCategory)?.color || colors.primary
+      : cardCategories.find(cat => cat.id === item.category)?.color || colors.primary;
 
     return (
       <View style={styles.cardContainer}>
@@ -409,7 +414,7 @@ const CardsScreen: React.FC = () => {
           activeOpacity={0.9}
         >
           <LinearGradient
-            colors={[colors.primary, colors.primaryLight]}
+            colors={[categoryColor, categoryColor + '80']}
             style={styles.cardGradient}
           >
             <View style={styles.cardContent}>
@@ -576,17 +581,24 @@ const styles = StyleSheet.create({
     padding: responsiveSize(12),
   },
   categoryName: {
-    fontSize: responsiveFontSize(14),
-    fontWeight: 'bold',
+    fontSize: responsiveFontSize(16),
+    fontWeight: '800',
     color: colors.textWhite,
     marginTop: responsiveSize(8),
     textAlign: 'center',
+    lineHeight: responsiveFontSize(26),
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
   },
   categoryCount: {
     fontSize: responsiveFontSize(10),
     color: colors.textWhite,
     opacity: 0.8,
     marginTop: responsiveSize(2),
+    textShadowColor: 'rgba(0, 0, 0, 0.6)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   cardsContainer: {
     paddingHorizontal: responsiveSize(20),
