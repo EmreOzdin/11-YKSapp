@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   startButtonText: {
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
-    color: colors.white,
+    color: colors.textWhite,
   },
 });
 

@@ -3,17 +3,14 @@ import { View, Text, TouchableOpacity, TextInput, ScrollView, Modal } from 'reac
 import { 
   responsiveSize, 
   responsiveFontSize, 
-  buttonSize, 
-  inputSize, 
   cardSize, 
   modalSize,
   spacing,
   fontSize,
   borderRadius,
-  iconSize,
-  colors,
-  shadows
+  iconSize
 } from './responsive';
+import { colors, shadows } from './theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 // Responsive Button Component
@@ -38,7 +35,9 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
 }) => {
   const getButtonStyle = () => {
     const baseStyle = {
-      ...buttonSize[size],
+      paddingHorizontal: responsiveSize(size === 'sm' ? 16 : size === 'md' ? 24 : 32),
+      paddingVertical: responsiveSize(size === 'sm' ? 8 : size === 'md' ? 12 : 16),
+      borderRadius: responsiveSize(8),
       alignItems: 'center',
       justifyContent: 'center',
       ...shadows.small,
@@ -124,7 +123,10 @@ export const ResponsiveInput: React.FC<ResponsiveInputProps> = ({
     <TextInput
       style={[
         {
-          ...inputSize[size],
+          paddingHorizontal: responsiveSize(size === 'sm' ? 12 : size === 'md' ? 16 : 20),
+          paddingVertical: responsiveSize(size === 'sm' ? 8 : size === 'md' ? 12 : 16),
+          borderRadius: responsiveSize(8),
+          fontSize: responsiveFontSize(size === 'sm' ? 14 : size === 'md' ? 16 : 18),
           backgroundColor: colors.background,
           borderWidth: 1,
           borderColor: colors.border,
