@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, isSmallDevice, isMediumDevice, isLargeDevice, screenWidth } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 import { useUser } from '../context/UserContext';
+import { addSampleData } from '../services/sampleData';
 
 
 const CARD_DATA = [
@@ -107,6 +108,15 @@ const HomeScreen: React.FC = () => {
   const swiperRef = React.useRef<any>(null);
   const [cardData, setCardData] = useState(CARD_DATA);
 
+  // Örnek verileri yükleme fonksiyonu
+  const loadSampleData = async () => {
+    try {
+      await addSampleData();
+      Alert.alert('Başarılı', 'Örnek veriler yüklendi!');
+    } catch (error) {
+      Alert.alert('Hata', 'Veriler yüklenirken bir hata oluştu.');
+    }
+  };
 
   // Arama sonuçlarını filtrele
   const filteredSearchResults = searchValue.length > 0
@@ -209,6 +219,15 @@ const HomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Geliştirici Butonu - Sadece geliştirme için */}
+        <TouchableOpacity 
+          style={styles.devButton} 
+          onPress={loadSampleData}
+        >
+          <Text style={styles.devButtonText}>Örnek Verileri Yükle</Text>
+        </TouchableOpacity>
+
         {/* Swiper Cards */}
         <View style={styles.swiperContainer}>
           <View style={styles.swiperWrapper}>
@@ -388,10 +407,9 @@ const HomeScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-
       </ScrollView>
       <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
-             <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
+      <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
     </View>
   );
 };
@@ -504,7 +522,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'space-between', 
-    marginTop: responsiveSize(170), 
+    marginTop: responsiveSize(125), 
     marginBottom: responsiveSize(6),
     marginHorizontal: responsiveSize(20) 
   },
@@ -627,6 +645,20 @@ const styles = StyleSheet.create({
     width: responsiveSize(60),
     height: responsiveSize(60),
     marginBottom: responsiveSize(2),
+  },
+  devButton: {
+    backgroundColor: colors.warning,
+    paddingHorizontal: responsiveSize(20),
+    paddingVertical: responsiveSize(10),
+    borderRadius: responsiveSize(8),
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(10),
+    alignItems: 'center',
+  },
+  devButtonText: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: 'bold',
+    color: colors.textWhite,
   },
 
 });

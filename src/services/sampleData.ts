@@ -371,6 +371,14 @@ export const sampleQuestions: QuestionType[] = [
 export const addSampleData = async () => {
   console.log('Örnek veriler ekleniyor...');
   
+  // Önce mevcut soruları kontrol et
+  const existingQuestions = await QuestionService.getAllQuestions();
+  
+  if (existingQuestions.length > 0) {
+    console.log('Veritabanında zaten sorular mevcut, ekleme yapılmıyor.');
+    return;
+  }
+  
   for (let i = 0; i < sampleQuestions.length; i++) {
     const questionData = sampleQuestions[i];
     try {
@@ -381,14 +389,18 @@ export const addSampleData = async () => {
     }
   }
   
-  console.log('Örnek veriler eklendi!');
+  console.log('Örnek veriler başarıyla eklendi!');
 };
 
 // Database'i temizle (sadece geliştirme için)
-export const clearDatabase = () => {
+export const clearDatabase = async () => {
   console.log('Database temizleniyor...');
-  // Bu fonksiyon sadece geliştirme aşamasında kullanılmalı
-  // Production'da kullanılmamalı
+  try {
+    await QuestionService.clearDatabase();
+    console.log('Database başarıyla temizlendi!');
+  } catch (error) {
+    console.error('Database temizlenirken hata:', error);
+  }
 };
 
 export default { addSampleData, clearDatabase, sampleQuestions };

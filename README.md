@@ -1,135 +1,67 @@
-# YKS Mobil Uygulaması
+# YKSapp - YKS Hazırlık Uygulaması
 
 YKS (TYT, AYT, YDT) sınavına hazırlık için geliştirilmiş React Native mobil uygulaması.
 
 ## Özellikler
 
-- 📚 **Konu Bazlı Çalışma**: Seçilen konularda soru çözümü
-- 🎯 **Sınav Türleri**: TYT, AYT, YDT desteği
-- 📊 **İstatistikler**: Performans takibi ve analiz
-- 🃏 **Bilgi Kartları**: Hap bilgi kartları ile hızlı öğrenme
-- 📱 **Responsive Tasarım**: Tüm cihazlarda uyumlu
-- 🌙 **Modern UI**: Kullanıcı dostu arayüz
+- 📚 **Konu Bazlı Çalışma**: Derslere göre konu seçimi ve soru çözümü
+- 🎯 **Sınav Denemeleri**: TYT, AYT, YDT formatında deneme sınavları
+- 📊 **Performans Takibi**: Detaylı istatistikler ve ilerleme raporları
+- 🃏 **Bilgi Kartları**: Hap bilgi kartları ile hızlı tekrar
+- 🎨 **Modern UI**: Kullanıcı dostu ve modern arayüz
+- 📱 **Responsive Tasarım**: Tüm cihazlarda uyumlu çalışma
+
+## Teknolojiler
+
+- React Native 0.79.5
+- TypeScript
+- Expo SDK 53
+- React Navigation 7
+- AsyncStorage
+- Expo Linear Gradient
 
 ## Kurulum
 
-### Gereksinimler
-
-- Node.js (v18 veya üzeri)
-- npm veya yarn
-- Expo CLI
-- Android Studio (Android için)
-- Xcode (iOS için)
-
-### Adımlar
-
-1. **Projeyi klonlayın**
+1. Projeyi klonlayın:
 ```bash
 git clone <repository-url>
-cd YKSapp
+cd 11-YKSapp
 ```
 
-2. **Bağımlılıkları yükleyin**
+2. Bağımlılıkları yükleyin:
 ```bash
 npm install
 ```
 
-3. **Expo CLI'yi yükleyin**
-```bash
-npm install -g @expo/cli
-```
-
-## Geliştirme
-
-### Geliştirme Sunucusunu Başlatın
+3. Uygulamayı başlatın:
 ```bash
 npm start
 ```
 
-### Platform Spesifik Çalıştırma
-```bash
-# Android
-npm run android
-
-# iOS
-npm run ios
-
-# Web
-npm run web
-```
-
-## Build ve Dağıtım
-
-### EAS Build Kurulumu
-```bash
-npm install -g eas-cli
-eas login
-```
-
-### Build Konfigürasyonu
-```bash
-eas build:configure
-```
-
-### Build İşlemleri
-
-#### Android APK (Test için)
-```bash
-npm run build:android
-```
-
-#### iOS IPA (Test için)
-```bash
-npm run build:ios
-```
-
-#### Production Build
-```bash
-# Android AAB
-eas build --platform android --profile production
-
-# iOS IPA
-eas build --platform ios --profile production
-```
-
-### Preview Build (Lokal Test)
-```bash
-# Android
-npm run preview:android
-
-# iOS
-npm run preview:ios
-```
+4. Expo Go uygulaması ile QR kodu tarayın veya emülatörde çalıştırın.
 
 ## Proje Yapısı
 
 ```
 src/
-├── components/     # UI bileşenleri
-├── screens/        # Ekranlar
-├── navigation/     # Navigasyon
-├── services/       # API ve servisler
-├── context/        # Global state
-├── utils/          # Yardımcı fonksiyonlar
-└── assets/         # Statik dosyalar
+├── screens/          # Ekranlar
+├── components/       # UI bileşenleri
+├── navigation/       # Navigasyon
+├── context/          # Global state
+├── services/         # API ve veri servisleri
+└── utils/           # Yardımcı fonksiyonlar
 ```
 
-## Teknolojiler
+## Geliştirme
 
-- **React Native** - Mobil uygulama framework'ü
-- **Expo** - Geliştirme platformu
-- **TypeScript** - Tip güvenliği
-- **React Navigation** - Navigasyon
-- **Realm** - Yerel veritabanı
-- **Expo Linear Gradient** - Gradient efektleri
+### Yeni Ekran Ekleme
+1. `src/screens/` klasörüne yeni ekran dosyasını ekleyin
+2. `src/navigation/` klasöründeki navigasyon dosyalarını güncelleyin
+3. Gerekirse `App.tsx`'te route ekleyin
 
-## Katkıda Bulunma
-
-1. Fork yapın
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit yapın (`git commit -m 'Add amazing feature'`)
-4. Push yapın (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
+### Yeni Soru Ekleme
+1. `src/services/sampleData.ts` dosyasına yeni soruları ekleyin
+2. `addSampleData()` fonksiyonunu çağırarak veritabanına ekleyin
 
 ## Lisans
 
@@ -137,4 +69,5 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 ## İletişim
 
-- Proje Linki: [https://github.com/username/YKSapp](https://github.com/username/YKSapp)
+Geliştirici: [Adınız]
+Email: [email@example.com]

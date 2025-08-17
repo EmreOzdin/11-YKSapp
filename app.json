@@ -1,51 +1,30 @@
 {
   "expo": {
     "name": "YKSapp",
-    "slug": "YKSapp",
+    "slug": "yksapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.yksapp.mobile",
-      "buildNumber": "1.0.0",
-      "infoPlist": {
-        "NSCameraUsageDescription": "Bu uygulama profil fotoğrafı çekmek için kamera erişimi gerektirir.",
-        "NSPhotoLibraryUsageDescription": "Bu uygulama profil fotoğrafı seçmek için galeri erişimi gerektirir."
-      }
+      "supportsTablet": true
     },
     "android": {
-      "package": "com.yksapp.mobile",
-      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#ffffff"
-      },
-      "edgeToEdgeEnabled": true,
-      "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ]
+      }
     },
     "web": {
       "favicon": "./assets/logo.png"
-    },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Bu uygulama profil fotoğrafı seçmek için galeri erişimi gerektirir.",
-          "cameraPermission": "Bu uygulama profil fotoğrafı çekmek için kamera erişimi gerektirir."
-        }
-      ]
-    ]
+    }
   }
 }
