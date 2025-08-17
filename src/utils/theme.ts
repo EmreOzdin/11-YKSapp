@@ -1,5 +1,13 @@
 import { Platform } from 'react-native';
-import { spacing, fontSize, borderRadius, iconSize, isSmallDevice, isMediumDevice, isLargeDevice } from './responsive';
+import {
+  spacing,
+  fontSize,
+  borderRadius,
+  iconSize,
+  isSmallDevice,
+  isMediumDevice,
+  isLargeDevice,
+} from './responsive';
 
 export const colors = {
   primary: '#4F5DFF',
@@ -10,27 +18,27 @@ export const colors = {
   warning: '#ffc107',
   error: '#ff4757',
   info: '#17a2b8',
-  
+
   // Background colors
   background: '#ffffff',
   backgroundSecondary: '#f8fafd',
   backgroundTertiary: '#e0f2fe',
-  
+
   // Text colors
   textPrimary: '#22223b',
   textSecondary: '#4F5D75',
   textTertiary: '#888888',
   textLight: '#cccccc',
   textWhite: '#ffffff',
-  
+
   // Border colors
   border: '#e0e0e0',
   borderLight: '#f2f2f2',
-  
+
   // Card colors
   cardBackground: '#ffffff',
   cardShadow: 'rgba(0, 0, 0, 0.1)',
-  
+
   // Gradient colors
   gradients: {
     blue: ['#228be6', '#6ee7b7'],
@@ -119,7 +127,7 @@ export const layout = {
     backgroundColor: colors.background,
     paddingTop: Platform.OS === 'ios' ? 44 : 24,
   },
-  
+
   // Card styles
   card: {
     backgroundColor: colors.cardBackground,
@@ -127,7 +135,7 @@ export const layout = {
     padding: spacing.md,
     ...shadows.small,
   },
-  
+
   // Button styles
   button: {
     primary: {
@@ -160,7 +168,7 @@ export const layout = {
       justifyContent: 'center' as const,
     },
   },
-  
+
   // Input styles
   input: {
     backgroundColor: colors.background,
@@ -172,7 +180,7 @@ export const layout = {
     fontSize: fontSize.md,
     color: colors.textPrimary,
   },
-  
+
   // Grid styles
   grid: {
     container: {
@@ -194,19 +202,19 @@ export const responsiveLayout = {
     height: isSmallDevice ? 56 : isMediumDevice ? 64 : 72,
     paddingHorizontal: isSmallDevice ? spacing.md : spacing.lg,
   },
-  
+
   // Card adjustments
   card: {
     padding: isSmallDevice ? spacing.sm : spacing.md,
     marginHorizontal: isSmallDevice ? spacing.sm : spacing.md,
   },
-  
+
   // Button adjustments
   button: {
     paddingVertical: isSmallDevice ? spacing.sm : spacing.md,
     paddingHorizontal: isSmallDevice ? spacing.md : spacing.lg,
   },
-  
+
   // Grid adjustments
   grid: {
     columns: isSmallDevice ? 2 : isMediumDevice ? 3 : 4,
@@ -224,4 +232,4 @@ export default {
   fontSize,
   borderRadius,
   iconSize,
-}; 
+};

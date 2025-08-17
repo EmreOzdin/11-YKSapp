@@ -1,15 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+  Platform,
+} from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize, responsiveWidth } from '../utils/responsive';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveWidth,
+} from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 
 const policyContents = {
-  terms: 'YKSapp Kullanım Koşulları örnek metni. Burada uygulamanın kullanımına dair tüm kurallar ve şartlar yer alır.',
-  payment: 'YKSapp Ödeme Koşulları örnek metni. Burada ödeme süreçleri, iade ve ücretlendirme detayları yer alır.',
-  nondiscrimination: 'YKSapp Ayrımcılık Karşıtı Politika örnek metni. Burada eşitlik, ayrımcılığın önlenmesi ve kapsayıcılık ilkeleri yer alır.',
-  privacy: 'YKSapp Gizlilik Politikası örnek metni. Burada kişisel verilerin korunması, işlenmesi ve kullanıcı hakları yer alır.'
+  terms:
+    'YKSapp Kullanım Koşulları örnek metni. Burada uygulamanın kullanımına dair tüm kurallar ve şartlar yer alır.',
+  payment:
+    'YKSapp Ödeme Koşulları örnek metni. Burada ödeme süreçleri, iade ve ücretlendirme detayları yer alır.',
+  nondiscrimination:
+    'YKSapp Ayrımcılık Karşıtı Politika örnek metni. Burada eşitlik, ayrımcılığın önlenmesi ve kapsayıcılık ilkeleri yer alır.',
+  privacy:
+    'YKSapp Gizlilik Politikası örnek metni. Burada kişisel verilerin korunması, işlenmesi ve kullanıcı hakları yer alır.',
 };
 
 const SignUpScreen: React.FC = () => {
@@ -18,7 +39,10 @@ const SignUpScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
-  const openPolicy = (type: 'terms' | 'payment' | 'nondiscrimination' | 'privacy', title: string) => {
+  const openPolicy = (
+    type: 'terms' | 'payment' | 'nondiscrimination' | 'privacy',
+    title: string
+  ) => {
     // setModalContent(policyContents[type]); // This line was removed as per the edit hint
     // setModalTitle(title); // This line was removed as per the edit hint
     // setModalVisible(true); // This line was removed as per the edit hint
@@ -28,8 +52,12 @@ const SignUpScreen: React.FC = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('EmailLogin')} accessibilityLabel="Giriş ekranına dön">
-          <MaterialCommunityIcons name="arrow-left" size={28} color="#222" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate('EmailLogin')}
+          accessibilityLabel='Giriş ekranına dön'
+        >
+          <MaterialCommunityIcons name='arrow-left' size={28} color='#222' />
         </TouchableOpacity>
         <View style={styles.headerTitleWrapper}>
           <Text style={styles.headerTitle}>Kayıt Ol</Text>
@@ -41,10 +69,10 @@ const SignUpScreen: React.FC = () => {
         <Text style={styles.label}>E-posta</Text>
         <TextInput
           style={styles.input}
-          placeholder="E-posta"
-          placeholderTextColor="#888"
-          autoCapitalize="none"
-          keyboardType="email-address"
+          placeholder='E-posta'
+          placeholderTextColor='#888'
+          autoCapitalize='none'
+          keyboardType='email-address'
           value={email}
           onChangeText={setEmail}
         />
@@ -52,18 +80,22 @@ const SignUpScreen: React.FC = () => {
         <View style={styles.passwordInputWrapper}>
           <TextInput
             style={[styles.input, styles.passwordInput]}
-            placeholder="Şifre"
-            placeholderTextColor="#888"
+            placeholder='Şifre'
+            placeholderTextColor='#888'
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
           />
           <TouchableOpacity
             style={styles.showHideButtonInside}
-            onPress={() => setShowPassword((prev) => !prev)}
-            accessibilityLabel={showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'}
+            onPress={() => setShowPassword(prev => !prev)}
+            accessibilityLabel={
+              showPassword ? 'Şifreyi gizle' : 'Şifreyi göster'
+            }
           >
-            <Text style={styles.showHideEmoji}>{showPassword ? '🙉' : '🙈'}</Text>
+            <Text style={styles.showHideEmoji}>
+              {showPassword ? '🙉' : '🙈'}
+            </Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.signUpButton}>
@@ -71,16 +103,37 @@ const SignUpScreen: React.FC = () => {
         </TouchableOpacity>
         <Text style={styles.orText}>veya</Text>
         <TouchableOpacity style={styles.socialButton}>
-          <Image source={require('../../assets/apple.png')} style={styles.socialIcon} />
-          <Text style={[styles.socialButtonText, styles.socialButtonTextCenter]}>Apple ile devam et</Text>
+          <Image
+            source={require('../../assets/apple.png')}
+            style={styles.socialIcon}
+          />
+          <Text
+            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
+          >
+            Apple ile devam et
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>
-          <Image source={require('../../assets/google.png')} style={styles.socialIcon} />
-          <Text style={[styles.socialButtonText, styles.socialButtonTextCenter]}>Google ile devam et</Text>
+          <Image
+            source={require('../../assets/google.png')}
+            style={styles.socialIcon}
+          />
+          <Text
+            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
+          >
+            Google ile devam et
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.socialButton}>
-          <Image source={require('../../assets/facebook.png')} style={styles.socialIcon} />
-          <Text style={[styles.socialButtonText, styles.socialButtonTextCenter]}>Facebook ile devam et</Text>
+          <Image
+            source={require('../../assets/facebook.png')}
+            style={styles.socialIcon}
+          />
+          <Text
+            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
+          >
+            Facebook ile devam et
+          </Text>
         </TouchableOpacity>
         <View style={styles.loginRow}>
           <Text style={styles.loginText}>Zaten hesabın var mı? </Text>
@@ -93,11 +146,26 @@ const SignUpScreen: React.FC = () => {
       <View style={styles.legalContainerFixed}>
         <Text style={styles.legalText}>
           <Text>Devam ederek YKSapp </Text>
-          <Text style={styles.legalLink} onPress={() => navigation.navigate('TermsOfService')}>Kullanım Koşulları</Text>
+          <Text
+            style={styles.legalLink}
+            onPress={() => navigation.navigate('TermsOfService')}
+          >
+            Kullanım Koşulları
+          </Text>
           <Text>, </Text>
-          <Text style={styles.legalLink} onPress={() => navigation.navigate('PaymentTerms')}>Ödeme Koşulları</Text>
+          <Text
+            style={styles.legalLink}
+            onPress={() => navigation.navigate('PaymentTerms')}
+          >
+            Ödeme Koşulları
+          </Text>
           <Text> ve </Text>
-          <Text style={styles.legalLink} onPress={() => navigation.navigate('PrivacyPolicy')}>Gizlilik Politikası</Text>
+          <Text
+            style={styles.legalLink}
+            onPress={() => navigation.navigate('PrivacyPolicy')}
+          >
+            Gizlilik Politikası
+          </Text>
           <Text>'nı kabul etmiş oluyorum.</Text>
         </Text>
       </View>
@@ -344,4 +412,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen; 
+export default SignUpScreen;

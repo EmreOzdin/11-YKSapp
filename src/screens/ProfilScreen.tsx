@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
-  Image, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Image,
   Alert,
   Switch,
   Modal,
   FlatList,
-  Platform
+  Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome5,
+} from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
@@ -63,9 +71,13 @@ const ProfilScreen: React.FC = () => {
 
   const requestPermissions = async () => {
     if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('İzin Gerekli', 'Fotoğraf seçmek için galeri izni gereklidir.');
+        Alert.alert(
+          'İzin Gerekli',
+          'Fotoğraf seçmek için galeri izni gereklidir.'
+        );
         return false;
       }
     }
@@ -76,7 +88,10 @@ const ProfilScreen: React.FC = () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('İzin Gerekli', 'Fotoğraf çekmek için kamera izni gereklidir.');
+        Alert.alert(
+          'İzin Gerekli',
+          'Fotoğraf çekmek için kamera izni gereklidir.'
+        );
         return false;
       }
     }
@@ -130,14 +145,14 @@ const ProfilScreen: React.FC = () => {
       'Hesabınızdan çıkış yapmak istediğinizden emin misiniz?',
       [
         { text: 'İptal', style: 'cancel' },
-        { 
-          text: 'Çıkış Yap', 
+        {
+          text: 'Çıkış Yap',
           style: 'destructive',
           onPress: () => {
             // Burada logout işlemi yapılacak
             console.log('Logout pressed');
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -189,8 +204,6 @@ const ProfilScreen: React.FC = () => {
     },
   ];
 
-
-
   const renderProfileOption = (option: ProfileOption) => (
     <TouchableOpacity
       key={option.id}
@@ -199,12 +212,23 @@ const ProfilScreen: React.FC = () => {
       activeOpacity={0.7}
     >
       <View style={styles.optionLeft}>
-        <View style={[styles.optionIcon, { backgroundColor: `${option.iconColor}20` }]}>
-          <MaterialCommunityIcons name={option.icon as any} size={20} color={option.iconColor} />
+        <View
+          style={[
+            styles.optionIcon,
+            { backgroundColor: `${option.iconColor}20` },
+          ]}
+        >
+          <MaterialCommunityIcons
+            name={option.icon as any}
+            size={20}
+            color={option.iconColor}
+          />
         </View>
         <View style={styles.optionText}>
           <Text style={styles.optionTitle}>{option.title}</Text>
-          {option.subtitle && <Text style={styles.optionSubtitle}>{option.subtitle}</Text>}
+          {option.subtitle && (
+            <Text style={styles.optionSubtitle}>{option.subtitle}</Text>
+          )}
         </View>
       </View>
       {option.showSwitch ? (
@@ -215,7 +239,11 @@ const ProfilScreen: React.FC = () => {
           thumbColor={colors.background}
         />
       ) : (
-        <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textTertiary} />
+        <MaterialCommunityIcons
+          name='chevron-right'
+          size={24}
+          color={colors.textTertiary}
+        />
       )}
     </TouchableOpacity>
   );
@@ -229,11 +257,11 @@ const ProfilScreen: React.FC = () => {
           style={styles.header}
         >
           <View style={styles.headerContent}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.navigate('HomeTab')}
             >
-              <Ionicons name="arrow-back" size={24} color={colors.textWhite} />
+              <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Profil</Text>
             <View style={styles.editButton} />
@@ -245,7 +273,9 @@ const ProfilScreen: React.FC = () => {
           <Image source={{ uri: selectedAvatar }} style={styles.avatar} />
           <Text style={styles.userName}>{userInfo.name}</Text>
           <Text style={styles.userEmail}>{userInfo.email}</Text>
-          <Text style={styles.joinDate}>Üye olma tarihi: {userInfo.joinDate}</Text>
+          <Text style={styles.joinDate}>
+            Üye olma tarihi: {userInfo.joinDate}
+          </Text>
         </View>
 
         {/* Options */}
@@ -261,7 +291,7 @@ const ProfilScreen: React.FC = () => {
       {/* Edit Profile Modal */}
       <Modal
         visible={editModalVisible}
-        animationType="slide"
+        animationType='slide'
         transparent
         onRequestClose={() => setEditModalVisible(false)}
       >
@@ -270,54 +300,79 @@ const ProfilScreen: React.FC = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Profili Düzenle</Text>
               <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                <Ionicons name="close" size={24} color={colors.textPrimary} />
+                <Ionicons name='close' size={24} color={colors.textPrimary} />
               </TouchableOpacity>
             </View>
-            
+
             {/* Avatar Selection */}
             <View style={styles.avatarSection}>
               <View style={styles.currentAvatarContainer}>
-                <Image source={{ uri: selectedAvatar }} style={styles.currentAvatar} />
+                <Image
+                  source={{ uri: selectedAvatar }}
+                  style={styles.currentAvatar}
+                />
                 <Text style={styles.currentAvatarText}>Mevcut Fotoğraf</Text>
               </View>
-              
+
               {/* Photo Source Buttons */}
               <View style={styles.photoSourceButtons}>
                 <TouchableOpacity
                   style={styles.photoSourceButton}
                   onPress={pickImageFromLibrary}
                 >
-                  <MaterialCommunityIcons name="image-multiple" size={24} color={colors.primary} />
-                  <Text style={styles.photoSourceButtonText}>Galeriden Seç</Text>
+                  <MaterialCommunityIcons
+                    name='image-multiple'
+                    size={24}
+                    color={colors.primary}
+                  />
+                  <Text style={styles.photoSourceButtonText}>
+                    Galeriden Seç
+                  </Text>
                 </TouchableOpacity>
-                
+
                 <TouchableOpacity
                   style={styles.photoSourceButton}
                   onPress={takePhotoWithCamera}
                 >
-                  <MaterialCommunityIcons name="camera" size={24} color={colors.primary} />
-                  <Text style={styles.photoSourceButtonText}>Kamera ile Çek</Text>
+                  <MaterialCommunityIcons
+                    name='camera'
+                    size={24}
+                    color={colors.primary}
+                  />
+                  <Text style={styles.photoSourceButtonText}>
+                    Kamera ile Çek
+                  </Text>
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.avatarSectionSubtitle}>Varsayılan avatarlar:</Text>
+              <Text style={styles.avatarSectionSubtitle}>
+                Varsayılan avatarlar:
+              </Text>
               <FlatList
                 data={avatarOptions}
-                keyExtractor={(item) => item.id}
+                keyExtractor={item => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={[
                       styles.avatarOption,
-                      selectedAvatar === item.url && styles.avatarOptionSelected
+                      selectedAvatar === item.url &&
+                        styles.avatarOptionSelected,
                     ]}
                     onPress={() => setSelectedAvatar(item.url)}
                   >
-                    <Image source={{ uri: item.url }} style={styles.avatarOptionImage} />
+                    <Image
+                      source={{ uri: item.url }}
+                      style={styles.avatarOptionImage}
+                    />
                     {selectedAvatar === item.url && (
                       <View style={styles.avatarCheckmark}>
-                        <Ionicons name="checkmark" size={16} color={colors.textWhite} />
+                        <Ionicons
+                          name='checkmark'
+                          size={16}
+                          color={colors.textWhite}
+                        />
                       </View>
                     )}
                   </TouchableOpacity>
@@ -351,8 +406,6 @@ const ProfilScreen: React.FC = () => {
           </View>
         </View>
       </Modal>
-
-
     </View>
   );
 };
@@ -598,7 +651,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginLeft: responsiveSize(8),
   },
-
 });
 
-export default ProfilScreen; 
+export default ProfilScreen;

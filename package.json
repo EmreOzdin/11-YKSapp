@@ -11,7 +11,9 @@
     "build:ios": "eas build --platform ios",
     "build:all": "eas build --platform all",
     "preview:android": "expo run:android",
-    "preview:ios": "expo run:ios"
+    "preview:ios": "expo run:ios",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.1.2",
@@ -48,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
+    "prettier": "^3.6.2",
     "typescript": "~5.8.3"
   },
   "private": true

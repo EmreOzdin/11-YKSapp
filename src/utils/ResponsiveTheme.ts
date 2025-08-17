@@ -208,11 +208,11 @@ export const responsiveTheme = {
     }),
 
     // Get responsive font size
-    getFontSize: (baseSize: number, multiplier: number = 1) => 
+    getFontSize: (baseSize: number, multiplier: number = 1) =>
       responsiveFontSize(baseSize * multiplier),
 
     // Get responsive spacing
-    getSpacing: (baseSpacing: number, multiplier: number = 1) => 
+    getSpacing: (baseSpacing: number, multiplier: number = 1) =>
       responsiveSize(baseSpacing * multiplier),
   },
 };
@@ -223,9 +223,20 @@ export const useResponsiveTheme = () => {
 };
 
 // Responsive theme provider
-export const ResponsiveThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ResponsiveThemeProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   return children;
 };
 
 // Export individual theme parts
-export const { spacing, typography, borderRadius, shadows, components, layout, grid, utils } = responsiveTheme;
+export const {
+  spacing,
+  typography,
+  borderRadius,
+  shadows,
+  components,
+  layout,
+  grid,
+  utils,
+} = responsiveTheme;

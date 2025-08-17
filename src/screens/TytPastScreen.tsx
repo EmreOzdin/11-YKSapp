@@ -1,6 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 
@@ -8,7 +12,10 @@ const TytPastScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.navigate('HomeScreen')}
+      >
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
       <Text style={styles.title}>TYT Çıkmış Sorular</Text>
@@ -17,29 +24,29 @@ const TytPastScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    backgroundColor: '#e8f4fd' 
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#e8f4fd',
   },
-  title: { 
-    fontSize: responsiveFontSize(28), 
-    fontWeight: 'bold', 
-    color: colors.gradients.blue[0] 
+  title: {
+    fontSize: responsiveFontSize(28),
+    fontWeight: 'bold',
+    color: colors.gradients.blue[0],
   },
-  backButton: { 
-    position: 'absolute', 
-    top: responsiveSize(40), 
-    left: responsiveSize(20), 
-    padding: responsiveSize(8), 
-    borderRadius: responsiveSize(8), 
-    ...shadows.small 
+  backButton: {
+    position: 'absolute',
+    top: responsiveSize(40),
+    left: responsiveSize(20),
+    padding: responsiveSize(8),
+    borderRadius: responsiveSize(8),
+    ...shadows.small,
   },
-  backText: { 
-    fontSize: responsiveFontSize(16), 
-    color: colors.gradients.blue[0], 
-    fontWeight: 'bold' 
+  backText: {
+    fontSize: responsiveFontSize(16),
+    color: colors.gradients.blue[0],
+    fontWeight: 'bold',
   },
 });
 

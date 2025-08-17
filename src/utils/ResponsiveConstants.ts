@@ -1,4 +1,9 @@
-import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight } from './responsive';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+} from './responsive';
 
 // Responsive constants for common UI elements
 export const RESPONSIVE_CONSTANTS = {
@@ -177,10 +182,10 @@ export const RESPONSIVE_CONSTANTS = {
 
   // Aspect ratios
   ASPECT_RATIO_SQUARE: 1,
-  ASPECT_RATIO_PORTRAIT: 3/4,
-  ASPECT_RATIO_LANDSCAPE: 4/3,
-  ASPECT_RATIO_WIDE: 16/9,
-  ASPECT_RATIO_ULTRA_WIDE: 21/9,
+  ASPECT_RATIO_PORTRAIT: 3 / 4,
+  ASPECT_RATIO_LANDSCAPE: 4 / 3,
+  ASPECT_RATIO_WIDE: 16 / 9,
+  ASPECT_RATIO_ULTRA_WIDE: 21 / 9,
 
   // Screen dimensions
   SCREEN_WIDTH: responsiveWidth(375), // Base width

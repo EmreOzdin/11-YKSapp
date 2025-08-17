@@ -30,20 +30,23 @@ const Stack = createStackNavigator();
 const HomeStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="Fen Bilimleri" component={FenBilimleriScreen} />
-      <Stack.Screen name="Türkçe" component={TurkceScreen} />
-      <Stack.Screen name="Matematik" component={MatematikScreen} />
-      <Stack.Screen name="Sosyal Bilimler" component={SosyalBilimlerScreen} />
-      <Stack.Screen name="TYT" component={TytScreen} />
-      <Stack.Screen name="AYT" component={AytScreen} />
-      <Stack.Screen name="YDT" component={YdtScreen} />
-      <Stack.Screen name="TYT Past" component={TytPastScreen} />
-      <Stack.Screen name="AYT Past" component={AytPastScreen} />
-      <Stack.Screen name="YDT Past" component={YdtPastScreen} />
-      <Stack.Screen name="TopicSelectionScreen" component={TopicSelectionScreen} />
-      <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
-      <Stack.Screen name="ProfilScreen" component={ProfilScreen} />
+      <Stack.Screen name='HomeScreen' component={HomeScreen} />
+      <Stack.Screen name='Fen Bilimleri' component={FenBilimleriScreen} />
+      <Stack.Screen name='Türkçe' component={TurkceScreen} />
+      <Stack.Screen name='Matematik' component={MatematikScreen} />
+      <Stack.Screen name='Sosyal Bilimler' component={SosyalBilimlerScreen} />
+      <Stack.Screen name='TYT' component={TytScreen} />
+      <Stack.Screen name='AYT' component={AytScreen} />
+      <Stack.Screen name='YDT' component={YdtScreen} />
+      <Stack.Screen name='TYT Past' component={TytPastScreen} />
+      <Stack.Screen name='AYT Past' component={AytPastScreen} />
+      <Stack.Screen name='YDT Past' component={YdtPastScreen} />
+      <Stack.Screen
+        name='TopicSelectionScreen'
+        component={TopicSelectionScreen}
+      />
+      <Stack.Screen name='QuestionScreen' component={QuestionScreen} />
+      <Stack.Screen name='ProfilScreen' component={ProfilScreen} />
     </Stack.Navigator>
   );
 };
@@ -70,52 +73,68 @@ const TabNavigator = () => {
       }}
     >
       <Tab.Screen
-        name="HomeTab"
+        name='HomeTab'
         component={HomeStack}
         options={{
           tabBarLabel: 'Ana Sayfa',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home-variant" size={size} color={color} />
+            <MaterialCommunityIcons
+              name='home-variant'
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
       <Tab.Screen
-        name="CardsTab"
+        name='CardsTab'
         component={CardsScreen}
         options={{
           tabBarLabel: 'Kartlar',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="cards" size={size} color={color} />
+            <MaterialCommunityIcons name='cards' size={size} color={color} />
           ),
         }}
       />
       <Tab.Screen
-        name="HedeflerTab"
+        name='HedeflerTab'
         component={HedeflerScreen}
         options={{
           tabBarLabel: 'Hedefler',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="clipboard-list-outline" size={size} color={color} />
+            <MaterialCommunityIcons
+              name='clipboard-list-outline'
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
       <Tab.Screen
-        name="PerformansTab"
+        name='PerformansTab'
         component={PerformansScreen}
         options={{
           tabBarLabel: 'Performans',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="chart-bar" size={size} color={color} />
+            <MaterialCommunityIcons
+              name='chart-bar'
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
       <Tab.Screen
-        name="ProfilTab"
+        name='ProfilTab'
         component={ProfilScreen}
         options={{
           tabBarLabel: 'Profil',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="account-circle-outline" size={size} color={color} />
+            <MaterialCommunityIcons
+              name='account-circle-outline'
+              size={size}
+              color={color}
+            />
           ),
         }}
       />
@@ -123,4 +142,4 @@ const TabNavigator = () => {
   );
 };
 
-export default TabNavigator; 
+export default TabNavigator;

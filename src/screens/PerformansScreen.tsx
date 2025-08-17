@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
   Image,
-  Dimensions
+  Dimensions,
 } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
@@ -28,7 +32,9 @@ interface PerformanceData {
 
 const PerformansScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year'>('month');
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    'week' | 'month' | 'year'
+  >('month');
 
   // Kullanıcı performans verileri (gerçek uygulamada API'den gelecek)
   const userStats = {
@@ -81,9 +87,19 @@ const PerformansScreen: React.FC = () => {
     },
   ];
 
-  const renderStatCard = (title: string, value: string | number, subtitle: string, icon: string, color: string) => (
+  const renderStatCard = (
+    title: string,
+    value: string | number,
+    subtitle: string,
+    icon: string,
+    color: string
+  ) => (
     <View style={[styles.statCard, { backgroundColor: color }]}>
-      <MaterialCommunityIcons name={icon as any} size={24} color={colors.textWhite} />
+      <MaterialCommunityIcons
+        name={icon as any}
+        size={24}
+        color={colors.textWhite}
+      />
       <Text style={styles.statValue}>{value}</Text>
       <Text style={styles.statTitle}>{title}</Text>
       <Text style={styles.statSubtitle}>{subtitle}</Text>
@@ -94,7 +110,11 @@ const PerformansScreen: React.FC = () => {
     <View style={styles.subjectCard}>
       <View style={styles.subjectHeader}>
         <View style={[styles.subjectIcon, { backgroundColor: data.color }]}>
-          <MaterialCommunityIcons name={data.icon as any} size={20} color={colors.textWhite} />
+          <MaterialCommunityIcons
+            name={data.icon as any}
+            size={20}
+            color={colors.textWhite}
+          />
         </View>
         <View style={styles.subjectInfo}>
           <Text style={styles.subjectName}>{data.subject}</Text>
@@ -107,24 +127,34 @@ const PerformansScreen: React.FC = () => {
         </View>
       </View>
       <View style={styles.progressBar}>
-        <View 
+        <View
           style={[
-            styles.progressFill, 
-            { 
+            styles.progressFill,
+            {
               width: `${data.accuracy}%`,
-              backgroundColor: data.color 
-            }
-          ]} 
+              backgroundColor: data.color,
+            },
+          ]}
         />
       </View>
       <View style={styles.subjectFooter}>
         <View style={styles.footerItem}>
-          <MaterialCommunityIcons name="clock-outline" size={16} color={colors.textTertiary} />
+          <MaterialCommunityIcons
+            name='clock-outline'
+            size={16}
+            color={colors.textTertiary}
+          />
           <Text style={styles.footerText}>{data.timeSpent} saat</Text>
         </View>
         <View style={styles.footerItem}>
-          <MaterialCommunityIcons name="timer-outline" size={16} color={colors.textTertiary} />
-          <Text style={styles.footerText}>{(data.timeSpent * 60 / data.totalQuestions).toFixed(1)} dk/soru</Text>
+          <MaterialCommunityIcons
+            name='timer-outline'
+            size={16}
+            color={colors.textTertiary}
+          />
+          <Text style={styles.footerText}>
+            {((data.timeSpent * 60) / data.totalQuestions).toFixed(1)} dk/soru
+          </Text>
         </View>
       </View>
     </View>
@@ -135,42 +165,48 @@ const PerformansScreen: React.FC = () => {
       <TouchableOpacity
         style={[
           styles.periodButton,
-          selectedPeriod === 'week' && styles.periodButtonActive
+          selectedPeriod === 'week' && styles.periodButtonActive,
         ]}
         onPress={() => setSelectedPeriod('week')}
       >
-        <Text style={[
-          styles.periodButtonText,
-          selectedPeriod === 'week' && styles.periodButtonTextActive
-        ]}>
+        <Text
+          style={[
+            styles.periodButtonText,
+            selectedPeriod === 'week' && styles.periodButtonTextActive,
+          ]}
+        >
           Haftalık
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.periodButton,
-          selectedPeriod === 'month' && styles.periodButtonActive
+          selectedPeriod === 'month' && styles.periodButtonActive,
         ]}
         onPress={() => setSelectedPeriod('month')}
       >
-        <Text style={[
-          styles.periodButtonText,
-          selectedPeriod === 'month' && styles.periodButtonTextActive
-        ]}>
+        <Text
+          style={[
+            styles.periodButtonText,
+            selectedPeriod === 'month' && styles.periodButtonTextActive,
+          ]}
+        >
           Aylık
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[
           styles.periodButton,
-          selectedPeriod === 'year' && styles.periodButtonActive
+          selectedPeriod === 'year' && styles.periodButtonActive,
         ]}
         onPress={() => setSelectedPeriod('year')}
       >
-        <Text style={[
-          styles.periodButtonText,
-          selectedPeriod === 'year' && styles.periodButtonTextActive
-        ]}>
+        <Text
+          style={[
+            styles.periodButtonText,
+            selectedPeriod === 'year' && styles.periodButtonTextActive,
+          ]}
+        >
           Yıllık
         </Text>
       </TouchableOpacity>
@@ -186,15 +222,19 @@ const PerformansScreen: React.FC = () => {
           style={styles.header}
         >
           <View style={styles.headerContent}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.backButton}
               onPress={() => navigation.navigate('HomeTab')}
             >
-              <Ionicons name="arrow-back" size={24} color={colors.textWhite} />
+              <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Performans</Text>
             <TouchableOpacity style={styles.shareButton}>
-              <Ionicons name="share-outline" size={24} color={colors.textWhite} />
+              <Ionicons
+                name='share-outline'
+                size={24}
+                color={colors.textWhite}
+              />
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -240,13 +280,25 @@ const PerformansScreen: React.FC = () => {
         {/* Study Time Card */}
         <View style={styles.studyTimeCard}>
           <View style={styles.studyTimeHeader}>
-            <MaterialCommunityIcons name="clock-outline" size={24} color={colors.primary} />
+            <MaterialCommunityIcons
+              name='clock-outline'
+              size={24}
+              color={colors.primary}
+            />
             <Text style={styles.studyTimeTitle}>Toplam Çalışma Süresi</Text>
           </View>
-          <Text style={styles.studyTimeValue}>{userStats.totalStudyTime} saat</Text>
-          <Text style={styles.studyTimeSubtitle}>Bu ay toplam çalışma süreniz</Text>
+          <Text style={styles.studyTimeValue}>
+            {userStats.totalStudyTime} saat
+          </Text>
+          <Text style={styles.studyTimeSubtitle}>
+            Bu ay toplam çalışma süreniz
+          </Text>
           <View style={styles.averageTimeContainer}>
-            <MaterialCommunityIcons name="timer-outline" size={16} color={colors.textTertiary} />
+            <MaterialCommunityIcons
+              name='timer-outline'
+              size={16}
+              color={colors.textTertiary}
+            />
             <Text style={styles.averageTimeText}>
               Ortalama: {userStats.averageTimePerQuestion} dakika/soru
             </Text>
@@ -256,16 +308,22 @@ const PerformansScreen: React.FC = () => {
         {/* Weekly Goal Progress */}
         <View style={styles.goalCard}>
           <View style={styles.goalHeader}>
-            <MaterialCommunityIcons name="target" size={24} color={colors.success} />
+            <MaterialCommunityIcons
+              name='target'
+              size={24}
+              color={colors.success}
+            />
             <Text style={styles.goalTitle}>Haftalık Hedef</Text>
           </View>
           <View style={styles.goalProgress}>
             <View style={styles.goalProgressBar}>
-              <View 
+              <View
                 style={[
-                  styles.goalProgressFill, 
-                  { width: `${(userStats.weeklyProgress / userStats.weeklyGoal) * 100}%` }
-                ]} 
+                  styles.goalProgressFill,
+                  {
+                    width: `${(userStats.weeklyProgress / userStats.weeklyGoal) * 100}%`,
+                  },
+                ]}
               />
             </View>
             <Text style={styles.goalProgressText}>
@@ -536,4 +594,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PerformansScreen; 
+export default PerformansScreen;

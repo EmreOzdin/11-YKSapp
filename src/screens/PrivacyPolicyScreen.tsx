@@ -1,6 +1,16 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography } from '../utils/theme';
@@ -27,8 +37,11 @@ const PrivacyPolicyScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('SignUp')}>
-          <MaterialCommunityIcons name="arrow-left" size={28} color="#222" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.navigate('SignUp')}
+        >
+          <MaterialCommunityIcons name='arrow-left' size={28} color='#222' />
         </TouchableOpacity>
         <Text style={styles.title}>Gizlilik Politikası</Text>
       </View>
@@ -40,43 +53,43 @@ const PrivacyPolicyScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: colors.background, 
-    padding: responsiveSize(24) 
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+    padding: responsiveSize(24),
   },
-  headerRow: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginTop: responsiveSize(48), 
-    marginBottom: responsiveSize(16) 
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: responsiveSize(48),
+    marginBottom: responsiveSize(16),
   },
-  backButton: { 
-    marginRight: responsiveSize(8) 
+  backButton: {
+    marginRight: responsiveSize(8),
   },
-  title: { 
-    fontSize: responsiveFontSize(22), 
-    fontWeight: 'bold', 
-    color: colors.textPrimary, 
-    textAlign: 'left' 
+  title: {
+    fontSize: responsiveFontSize(22),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    textAlign: 'left',
   },
-  scroll: { 
-    flex: 1, 
-    marginTop: responsiveSize(32) 
+  scroll: {
+    flex: 1,
+    marginTop: responsiveSize(32),
   },
-  text: { 
-    fontSize: responsiveFontSize(15), 
-    color: colors.textSecondary, 
-    lineHeight: responsiveFontSize(22) 
+  text: {
+    fontSize: responsiveFontSize(15),
+    color: colors.textSecondary,
+    lineHeight: responsiveFontSize(22),
   },
-  backButtonBottom: { 
-    position: 'absolute', 
-    bottom: responsiveSize(32), 
-    alignSelf: 'center', 
-    backgroundColor: '#f5f5f5', 
-    borderRadius: responsiveSize(24), 
-    padding: responsiveSize(8) 
+  backButtonBottom: {
+    position: 'absolute',
+    bottom: responsiveSize(32),
+    alignSelf: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: responsiveSize(24),
+    padding: responsiveSize(8),
   },
 });
 
-export default PrivacyPolicyScreen; 
+export default PrivacyPolicyScreen;

@@ -21,11 +21,11 @@ src/utils/responsive/
 ### Temel Responsive Fonksiyonlar
 
 ```typescript
-import { 
-  responsiveSize, 
-  responsiveFontSize, 
-  responsiveWidth, 
-  responsiveHeight 
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
 } from '../utils/responsive';
 
 // Boyut ayarlama
@@ -38,20 +38,20 @@ const height = responsiveHeight(100);
 ### Responsive Hook'lar
 
 ```typescript
-import { 
-  useScreenDimensions, 
-  useDeviceType, 
-  useBreakpoint 
+import {
+  useScreenDimensions,
+  useDeviceType,
+  useBreakpoint
 } from '../utils/useResponsive';
 
 const MyComponent = () => {
   const { width, height } = useScreenDimensions();
   const { isSmall, isMedium, isLarge } = useDeviceType();
   const breakpoint = useBreakpoint(); // 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  
+
   return (
-    <View style={{ 
-      padding: isSmall ? 8 : isMedium ? 16 : 24 
+    <View style={{
+      padding: isSmall ? 8 : isMedium ? 16 : 24
     }}>
       {/* Component içeriği */}
     </View>
@@ -62,22 +62,22 @@ const MyComponent = () => {
 ### Responsive Component'ler
 
 ```typescript
-import { 
-  ResponsiveButton, 
-  ResponsiveInput, 
-  ResponsiveCard 
+import {
+  ResponsiveButton,
+  ResponsiveInput,
+  ResponsiveCard
 } from '../utils/ResponsiveComponents';
 
 const MyScreen = () => {
   return (
     <ResponsiveCard size="md">
-      <ResponsiveInput 
+      <ResponsiveInput
         placeholder="Kullanıcı adı"
         size="md"
         value={username}
         onChangeText={setUsername}
       />
-      <ResponsiveButton 
+      <ResponsiveButton
         title="Giriş Yap"
         size="md"
         variant="primary"
@@ -91,15 +91,15 @@ const MyScreen = () => {
 ### Responsive Theme
 
 ```typescript
-import { 
-  useResponsiveTheme, 
-  spacing, 
-  typography 
+import {
+  useResponsiveTheme,
+  spacing,
+  typography
 } from '../utils/ResponsiveTheme';
 
 const MyComponent = () => {
   const theme = useResponsiveTheme();
-  
+
   return (
     <View style={{
       padding: spacing.md,
@@ -114,10 +114,10 @@ const MyComponent = () => {
 ### Responsive Constants
 
 ```typescript
-import { 
-  BUTTON_HEIGHT_MD, 
-  CARD_RADIUS_MD, 
-  SPACING_MD 
+import {
+  BUTTON_HEIGHT_MD,
+  CARD_RADIUS_MD,
+  SPACING_MD,
 } from '../utils/ResponsiveConstants';
 
 const styles = StyleSheet.create({
@@ -131,21 +131,23 @@ const styles = StyleSheet.create({
 
 ## 📱 Breakpoint Sistemi
 
-| Breakpoint | Genişlik | Cihaz Tipi |
-|------------|----------|------------|
-| xs         | < 375px  | Küçük telefon |
-| sm         | 375-414px| Orta telefon |
-| md         | 414-768px| Büyük telefon |
-| lg         | 768-1024px| Tablet |
-| xl         | > 1024px | Büyük tablet |
+| Breakpoint | Genişlik   | Cihaz Tipi    |
+| ---------- | ---------- | ------------- |
+| xs         | < 375px    | Küçük telefon |
+| sm         | 375-414px  | Orta telefon  |
+| md         | 414-768px  | Büyük telefon |
+| lg         | 768-1024px | Tablet        |
+| xl         | > 1024px   | Büyük tablet  |
 
 ## 🎨 Responsive Tasarım Prensipleri
 
 ### 1. Mobile-First Yaklaşım
+
 - Önce mobil tasarım yapın
 - Sonra büyük ekranlar için geliştirin
 
 ### 2. Esnek Grid Sistemi
+
 ```typescript
 import { ResponsiveGrid } from '../utils/ResponsiveComponents';
 
@@ -156,6 +158,7 @@ import { ResponsiveGrid } from '../utils/ResponsiveComponents';
 ```
 
 ### 3. Adaptive Typography
+
 ```typescript
 import { useAdaptiveFontSize } from '../utils/useResponsive';
 
@@ -163,6 +166,7 @@ const fontSize = useAdaptiveFontSize(16, 1.2); // Base size * 1.2
 ```
 
 ### 4. Responsive Spacing
+
 ```typescript
 import { useAdaptiveSpacing } from '../utils/useResponsive';
 
@@ -179,7 +183,10 @@ export const customResponsiveSize = (size: number, multiplier: number = 1) => {
   return responsiveSize(size * multiplier);
 };
 
-export const customResponsiveFontSize = (size: number, multiplier: number = 1) => {
+export const customResponsiveFontSize = (
+  size: number,
+  multiplier: number = 1
+) => {
   return responsiveFontSize(size * multiplier);
 };
 ```
@@ -190,11 +197,11 @@ export const customResponsiveFontSize = (size: number, multiplier: number = 1) =
 // src/utils/useResponsive.ts
 export const useCustomResponsive = (baseValue: number) => {
   const deviceType = useDeviceType();
-  
+
   if (deviceType.isSmall) return baseValue * 0.8;
   if (deviceType.isMedium) return baseValue;
   if (deviceType.isLarge) return baseValue * 1.2;
-  
+
   return baseValue;
 };
 ```
@@ -202,24 +209,26 @@ export const useCustomResponsive = (baseValue: number) => {
 ## 📊 Performance Optimizasyonu
 
 ### 1. Memoization
+
 ```typescript
 import { useMemo } from 'react';
 import { useAdaptiveSize } from '../utils/useResponsive';
 
 const MyComponent = () => {
   const size = useMemo(() => useAdaptiveSize(16), []);
-  
+
   return <View style={{ width: size, height: size }} />;
 };
 ```
 
 ### 2. Conditional Rendering
+
 ```typescript
 import { useDeviceType } from '../utils/useResponsive';
 
 const MyComponent = () => {
   const { isSmall } = useDeviceType();
-  
+
   return (
     <View>
       {isSmall ? <CompactLayout /> : <FullLayout />}
@@ -242,7 +251,7 @@ describe('Responsive Utilities', () => {
     expect(typeof size).toBe('number');
     expect(size).toBeGreaterThan(0);
   });
-  
+
   test('responsiveFontSize should return correct font size', () => {
     const fontSize = responsiveFontSize(18);
     expect(typeof fontSize).toBe('number');
@@ -254,10 +263,12 @@ describe('Responsive Utilities', () => {
 ## 📚 Best Practices
 
 ### 1. Tutarlı Kullanım
+
 - Tüm boyutlar için responsive fonksiyonları kullanın
 - Sabit değerlerden kaçının
 
 ### 2. Semantic Naming
+
 ```typescript
 // ✅ İyi
 const buttonHeight = responsiveSize(44);
@@ -269,6 +280,7 @@ const size2 = responsiveFontSize(24);
 ```
 
 ### 3. Theme Integration
+
 ```typescript
 // ✅ İyi
 import { spacing, typography } from '../utils/ResponsiveTheme';
@@ -290,6 +302,7 @@ const styles = StyleSheet.create({
 ```
 
 ### 4. Accessibility
+
 ```typescript
 import { TOUCH_TARGET_MIN } from '../utils/ResponsiveConstants';
 
@@ -330,6 +343,7 @@ const styles = StyleSheet.create({
 ## 📞 Destek
 
 Herhangi bir sorun veya öneri için:
+
 - Issue açın
 - Documentation'ı güncelleyin
 - Test ekleyin

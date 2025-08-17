@@ -1,7 +1,24 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize, responsiveHeight, screenHeight } from '../utils/responsive';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Dimensions,
+} from 'react-native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveHeight,
+  screenHeight,
+} from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 
 interface EmailLoginScreenProps {
@@ -19,16 +36,19 @@ const EmailLoginScreen: React.FC = () => {
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Kullanıcı adı, e-posta veya telefon"
-          placeholderTextColor="#888"
+          placeholder='Kullanıcı adı, e-posta veya telefon'
+          placeholderTextColor='#888'
         />
         <TextInput
           style={styles.input}
-          placeholder="Şifre"
-          placeholderTextColor="#888"
+          placeholder='Şifre'
+          placeholderTextColor='#888'
           secureTextEntry
         />
-        <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('MainApp')}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => navigation.navigate('MainApp')}
+        >
           <Text style={styles.loginButtonText}>Giriş Yap</Text>
         </TouchableOpacity>
         <TouchableOpacity>
@@ -36,10 +56,16 @@ const EmailLoginScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.createAccountButton} onPress={() => navigation.navigate('SignUp')}>
+        <TouchableOpacity
+          style={styles.createAccountButton}
+          onPress={() => navigation.navigate('SignUp')}
+        >
           <Text style={styles.createAccountText}>Yeni hesap oluştur</Text>
         </TouchableOpacity>
-        <Image source={require('../../assets/meta.png')} style={styles.metaLogo} />
+        <Image
+          source={require('../../assets/meta.png')}
+          style={styles.metaLogo}
+        />
       </View>
     </View>
   );
@@ -149,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmailLoginScreen; 
+export default EmailLoginScreen;

@@ -29,26 +29,35 @@ export default function App() {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Logo">
-          <Stack.Screen name="Logo" component={LogoScreen} />
-          <Stack.Screen name="Onboarding" component={Onboarding} />
-          <Stack.Screen name="EmailLogin" component={EmailLoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="MainApp" component={TabNavigator} />
-          <Stack.Screen name="Fen Bilimleri" component={FenBilimleriScreen} />
-          <Stack.Screen name="Türkçe" component={TurkceScreen} />
-          <Stack.Screen name="Matematik" component={MatematikScreen} />
-          <Stack.Screen name="Sosyal Bilimler" component={SosyalBilimlerScreen} />
-          <Stack.Screen name="TYT" component={TytScreen} />
-          <Stack.Screen name="AYT" component={AytScreen} />
-          <Stack.Screen name="YDT" component={YdtScreen} />
-          <Stack.Screen name="TYT Past" component={TytPastScreen} />
-          <Stack.Screen name="AYT Past" component={AytPastScreen} />
-          <Stack.Screen name="YDT Past" component={YdtPastScreen} />
-          <Stack.Screen name="QuestionScreen" component={QuestionScreen} />
-          <Stack.Screen name="TermsOfService" component={TermsOfServiceScreen} />
-          <Stack.Screen name="PaymentTerms" component={PaymentTermsScreen} />
-          <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName='Logo'
+        >
+          <Stack.Screen name='Logo' component={LogoScreen} />
+          <Stack.Screen name='Onboarding' component={Onboarding} />
+          <Stack.Screen name='EmailLogin' component={EmailLoginScreen} />
+          <Stack.Screen name='SignUp' component={SignUpScreen} />
+          <Stack.Screen name='MainApp' component={TabNavigator} />
+          <Stack.Screen name='Fen Bilimleri' component={FenBilimleriScreen} />
+          <Stack.Screen name='Türkçe' component={TurkceScreen} />
+          <Stack.Screen name='Matematik' component={MatematikScreen} />
+          <Stack.Screen
+            name='Sosyal Bilimler'
+            component={SosyalBilimlerScreen}
+          />
+          <Stack.Screen name='TYT' component={TytScreen} />
+          <Stack.Screen name='AYT' component={AytScreen} />
+          <Stack.Screen name='YDT' component={YdtScreen} />
+          <Stack.Screen name='TYT Past' component={TytPastScreen} />
+          <Stack.Screen name='AYT Past' component={AytPastScreen} />
+          <Stack.Screen name='YDT Past' component={YdtPastScreen} />
+          <Stack.Screen name='QuestionScreen' component={QuestionScreen} />
+          <Stack.Screen
+            name='TermsOfService'
+            component={TermsOfServiceScreen}
+          />
+          <Stack.Screen name='PaymentTerms' component={PaymentTermsScreen} />
+          <Stack.Screen name='PrivacyPolicy' component={PrivacyPolicyScreen} />
           {/* Yasal ekranlar burada olacak */}
         </Stack.Navigator>
       </NavigationContainer>

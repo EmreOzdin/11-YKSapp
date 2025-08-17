@@ -1,27 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
   Alert,
-  Switch 
+  Switch,
 } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase, useRoute, RouteProp } from '@react-navigation/native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
-import { 
-  QuestionService, 
-  TopicCategory, 
-  UserSelections 
+import {
+  QuestionService,
+  TopicCategory,
+  UserSelections,
 } from '../services/questionService';
 
-type TopicSelectionScreenRouteProp = RouteProp<{
-  TopicSelectionScreen: { 
-    examType: "TYT" | "AYT" | "YDT"; 
-  };
-}, 'TopicSelectionScreen'>;
+type TopicSelectionScreenRouteProp = RouteProp<
+  {
+    TopicSelectionScreen: {
+      examType: 'TYT' | 'AYT' | 'YDT';
+    };
+  },
+  'TopicSelectionScreen'
+>;
 
 const TopicSelectionScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -75,11 +84,7 @@ const TopicSelectionScreen: React.FC = () => {
 
   const saveSelections = async () => {
     if (selectedTopics.length === 0) {
-      Alert.alert(
-        "Uyarı",
-        "En az bir konu seçmelisiniz!",
-        [{ text: "Tamam" }]
-      );
+      Alert.alert('Uyarı', 'En az bir konu seçmelisiniz!', [{ text: 'Tamam' }]);
       return;
     }
 
@@ -87,38 +92,45 @@ const TopicSelectionScreen: React.FC = () => {
       const selections: UserSelections = {
         examType,
         selectedTopics,
-        selectedSubjects: [...new Set(topicCategories
-          .filter(cat => selectedTopics.includes(cat.id))
-          .map(cat => cat.subject))]
+        selectedSubjects: [
+          ...new Set(
+            topicCategories
+              .filter(cat => selectedTopics.includes(cat.id))
+              .map(cat => cat.subject)
+          ),
+        ],
       };
 
       await QuestionService.saveUserSelections(selections);
-      
+
       // Direkt sorulara geçiş yap
       navigation.navigate('QuestionScreen', { examType });
     } catch (error) {
-      Alert.alert("Hata", "Seçimler kaydedilemedi. Lütfen tekrar deneyin.");
+      Alert.alert('Hata', 'Seçimler kaydedilemedi. Lütfen tekrar deneyin.');
     }
   };
 
   const getSubjectColor = (subject: string) => {
     const colors = {
-      'Türkçe': '#FF6B6B',
-      'Matematik': '#4ECDC4',
+      Türkçe: '#FF6B6B',
+      Matematik: '#4ECDC4',
       'Fen Bilimleri': '#45B7D1',
       'Sosyal Bilimler': '#96CEB4',
-      'İngilizce': '#FFEAA7'
+      İngilizce: '#FFEAA7',
     };
     return colors[subject as keyof typeof colors] || '#95A5A6';
   };
 
-  const groupedTopics = topicCategories.reduce((acc, topic) => {
-    if (!acc[topic.subject]) {
-      acc[topic.subject] = [];
-    }
-    acc[topic.subject].push(topic);
-    return acc;
-  }, {} as Record<string, TopicCategory[]>);
+  const groupedTopics = topicCategories.reduce(
+    (acc, topic) => {
+      if (!acc[topic.subject]) {
+        acc[topic.subject] = [];
+      }
+      acc[topic.subject].push(topic);
+      return acc;
+    },
+    {} as Record<string, TopicCategory[]>
+  );
 
   if (loading) {
     return (
@@ -132,15 +144,13 @@ const TopicSelectionScreen: React.FC = () => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
+        <TouchableOpacity
+          style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <Text style={styles.backText}>{'<'} Geri</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {examType} Konu Seçimi
-        </Text>
+        <Text style={styles.headerTitle}>{examType} Konu Seçimi</Text>
         <View style={styles.headerRight}>
           <Text style={styles.selectedCount}>
             {selectedTopics.length} seçili
@@ -150,48 +160,48 @@ const TopicSelectionScreen: React.FC = () => {
 
       {/* Action Buttons */}
       <View style={styles.actionButtons}>
-        <TouchableOpacity 
-          style={styles.actionButton} 
-          onPress={selectAllTopics}
-        >
+        <TouchableOpacity style={styles.actionButton} onPress={selectAllTopics}>
           <Text style={styles.actionButtonText}>Tümünü Seç</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.actionButton} 
-          onPress={clearAllTopics}
-        >
+        <TouchableOpacity style={styles.actionButton} onPress={clearAllTopics}>
           <Text style={styles.actionButtonText}>Temizle</Text>
         </TouchableOpacity>
       </View>
 
       {/* Topics List */}
-      <ScrollView style={styles.topicsContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.topicsContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {Object.entries(groupedTopics).map(([subject, topics]) => (
           <View key={subject} style={styles.subjectGroup}>
             <View style={styles.subjectHeader}>
-              <View 
+              <View
                 style={[
-                  styles.subjectColor, 
-                  { backgroundColor: getSubjectColor(subject) }
-                ]} 
+                  styles.subjectColor,
+                  { backgroundColor: getSubjectColor(subject) },
+                ]}
               />
               <Text style={styles.subjectTitle}>{subject}</Text>
             </View>
-            
-            {topics.map((topic) => (
+
+            {topics.map(topic => (
               <TouchableOpacity
                 key={topic.id}
                 style={[
                   styles.topicItem,
-                  selectedTopics.includes(topic.id) && styles.selectedTopicItem
+                  selectedTopics.includes(topic.id) && styles.selectedTopicItem,
                 ]}
                 onPress={() => toggleTopic(topic.id)}
               >
                 <View style={styles.topicContent}>
-                  <Text style={[
-                    styles.topicName,
-                    selectedTopics.includes(topic.id) && styles.selectedTopicName
-                  ]}>
+                  <Text
+                    style={[
+                      styles.topicName,
+                      selectedTopics.includes(topic.id) &&
+                        styles.selectedTopicName,
+                    ]}
+                  >
                     {topic.name}
                   </Text>
                   {topic.description && (
@@ -203,8 +213,15 @@ const TopicSelectionScreen: React.FC = () => {
                 <Switch
                   value={selectedTopics.includes(topic.id)}
                   onValueChange={() => toggleTopic(topic.id)}
-                  trackColor={{ false: colors.borderLight, true: colors.primary }}
-                  thumbColor={selectedTopics.includes(topic.id) ? colors.textWhite : colors.textSecondary}
+                  trackColor={{
+                    false: colors.borderLight,
+                    true: colors.primary,
+                  }}
+                  thumbColor={
+                    selectedTopics.includes(topic.id)
+                      ? colors.textWhite
+                      : colors.textSecondary
+                  }
                 />
               </TouchableOpacity>
             ))}
@@ -214,19 +231,18 @@ const TopicSelectionScreen: React.FC = () => {
 
       {/* Save Button */}
       <View style={styles.footer}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
             styles.saveButton,
-            selectedTopics.length === 0 && styles.saveButtonDisabled
-          ]} 
+            selectedTopics.length === 0 && styles.saveButtonDisabled,
+          ]}
           onPress={saveSelections}
           disabled={selectedTopics.length === 0}
         >
           <Text style={styles.saveButtonText}>
-            {selectedTopics.length > 0 
-              ? `${selectedTopics.length} Konu Seç - Çalışmaya Başla` 
-              : 'En Az 1 Konu Seçin'
-            }
+            {selectedTopics.length > 0
+              ? `${selectedTopics.length} Konu Seç - Çalışmaya Başla`
+              : 'En Az 1 Konu Seçin'}
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,7 +1,15 @@
 import React, { useEffect } from 'react';
 import { View, Image, StyleSheet, Dimensions } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { responsiveSize, responsiveWidth, screenWidth } from '../utils/responsive';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  responsiveSize,
+  responsiveWidth,
+  screenWidth,
+} from '../utils/responsive';
 import { colors } from '../utils/theme';
 
 const LogoScreen: React.FC = () => {
@@ -16,7 +24,11 @@ const LogoScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/logo.png')} style={styles.logo} resizeMode="contain" />
+      <Image
+        source={require('../../assets/logo.png')}
+        style={styles.logo}
+        resizeMode='contain'
+      />
     </View>
   );
 };
@@ -34,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LogoScreen; 
+export default LogoScreen;

@@ -1,21 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Dimensions, Modal, FlatList, Pressable, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  Modal,
+  FlatList,
+  Pressable,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons, Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import {
+  MaterialCommunityIcons,
+  Ionicons,
+  FontAwesome5,
+} from '@expo/vector-icons';
 import Swiper from 'react-native-deck-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, isSmallDevice, isMediumDevice, isLargeDevice, screenWidth } from '../utils/responsive';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+  isSmallDevice,
+  isMediumDevice,
+  isLargeDevice,
+  screenWidth,
+} from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 import { useUser } from '../context/UserContext';
 import { addSampleData } from '../services/sampleData';
 
-
 const CARD_DATA = [
-  { title: 'Fen Bilimleri Sınavı', gradient: ['#228be6', '#6ee7b7'] as const, image: require('../../assets/physicsexam.png') },
-  { title: 'Türkçe Sınavı', gradient: ['#6c47ff', '#b983ff'] as const, image: require('../../assets/turkishexam.png') },
-  { title: 'Matematik Sınavı', gradient: ['#f7b731', '#ffb347'] as const, image: require('../../assets/mathexam.png') },
-  { title: 'Sosyal Bilimler Sınavı', gradient: ['#ff6b81', '#ffb6b9'] as const, image: require('../../assets/socialexam.png') },
+  {
+    title: 'Fen Bilimleri Sınavı',
+    gradient: ['#228be6', '#6ee7b7'] as const,
+    image: require('../../assets/physicsexam.png'),
+  },
+  {
+    title: 'Türkçe Sınavı',
+    gradient: ['#6c47ff', '#b983ff'] as const,
+    image: require('../../assets/turkishexam.png'),
+  },
+  {
+    title: 'Matematik Sınavı',
+    gradient: ['#f7b731', '#ffb347'] as const,
+    image: require('../../assets/mathexam.png'),
+  },
+  {
+    title: 'Sosyal Bilimler Sınavı',
+    gradient: ['#ff6b81', '#ffb6b9'] as const,
+    image: require('../../assets/socialexam.png'),
+  },
 ];
 
 const notifications = [
@@ -24,55 +71,196 @@ const notifications = [
   { id: '3', title: 'Matematikte yeni konu anlatımı var.', date: '2 gün önce' },
 ];
 
-const NotificationModal = ({ visible, onClose }: { visible: boolean; onClose: () => void }) => (
-  <Modal visible={visible} animationType="slide" transparent>
+const NotificationModal = ({
+  visible,
+  onClose,
+}: {
+  visible: boolean;
+  onClose: () => void;
+}) => (
+  <Modal visible={visible} animationType='slide' transparent>
     <View
-      style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'center', alignItems: 'center' }}
+      style={{
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.25)',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
       onStartShouldSetResponder={() => true}
       onResponderRelease={onClose}
     >
-      <View style={{ width: '85%', backgroundColor: '#fff', borderRadius: responsiveSize(28), paddingTop: responsiveSize(18), paddingHorizontal: responsiveSize(18), paddingBottom: responsiveSize(32), maxHeight: '70%' }}>
-        <Text style={{ fontSize: responsiveFontSize(20), fontWeight: 'bold', marginBottom: responsiveSize(12) }}>Bildirimler</Text>
+      <View
+        style={{
+          width: '85%',
+          backgroundColor: '#fff',
+          borderRadius: responsiveSize(28),
+          paddingTop: responsiveSize(18),
+          paddingHorizontal: responsiveSize(18),
+          paddingBottom: responsiveSize(32),
+          maxHeight: '70%',
+        }}
+      >
+        <Text
+          style={{
+            fontSize: responsiveFontSize(20),
+            fontWeight: 'bold',
+            marginBottom: responsiveSize(12),
+          }}
+        >
+          Bildirimler
+        </Text>
         <FlatList
           data={notifications}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-            <View style={{ paddingVertical: responsiveSize(10), borderBottomWidth: 1, borderColor: '#eee' }}>
-              <Text style={{ fontSize: responsiveFontSize(16), color: '#222', fontWeight: '500' }}>{item.title}</Text>
-              <Text style={{ fontSize: responsiveFontSize(13), color: '#888', marginTop: responsiveSize(2) }}>{item.date}</Text>
+            <View
+              style={{
+                paddingVertical: responsiveSize(10),
+                borderBottomWidth: 1,
+                borderColor: '#eee',
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(16),
+                  color: '#222',
+                  fontWeight: '500',
+                }}
+              >
+                {item.title}
+              </Text>
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(13),
+                  color: '#888',
+                  marginTop: responsiveSize(2),
+                }}
+              >
+                {item.date}
+              </Text>
             </View>
           )}
-          ListEmptyComponent={<Text style={{ color: '#888', textAlign: 'center', marginTop: responsiveSize(24) }}>Henüz bildiriminiz yok.</Text>}
+          ListEmptyComponent={
+            <Text
+              style={{
+                color: '#888',
+                textAlign: 'center',
+                marginTop: responsiveSize(24),
+              }}
+            >
+              Henüz bildiriminiz yok.
+            </Text>
+          }
         />
-        <Pressable onPress={onClose} style={{ marginTop: responsiveSize(18), alignSelf: 'center', padding: responsiveSize(10) }}>
-          <Text style={{ color: '#1877f2', fontWeight: 'bold', fontSize: responsiveFontSize(16) }}>Kapat</Text>
+        <Pressable
+          onPress={onClose}
+          style={{
+            marginTop: responsiveSize(18),
+            alignSelf: 'center',
+            padding: responsiveSize(10),
+          }}
+        >
+          <Text
+            style={{
+              color: '#1877f2',
+              fontWeight: 'bold',
+              fontSize: responsiveFontSize(16),
+            }}
+          >
+            Kapat
+          </Text>
         </Pressable>
       </View>
     </View>
   </Modal>
 );
 
-const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress }: { visible: boolean; onClose: () => void; value: string; onChange: (t: string) => void; results: { title: string; image: any }[]; onResultPress: (item: { title: string; image: any }) => void }) => (
-  <Modal visible={visible} animationType="fade" transparent>
-    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.18)', justifyContent: 'flex-start', alignItems: 'center' }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ width: '100%' }}>
-        <View style={{ marginTop: responsiveSize(60), width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: responsiveSize(16), flexDirection: 'row', alignItems: 'center', paddingHorizontal: responsiveSize(14), paddingVertical: responsiveSize(8), elevation: 3 }}>
-          <Ionicons name="search" size={responsiveSize(22)} color="#888" style={{ marginRight: responsiveSize(8) }} />
+const SearchModal = ({
+  visible,
+  onClose,
+  value,
+  onChange,
+  results,
+  onResultPress,
+}: {
+  visible: boolean;
+  onClose: () => void;
+  value: string;
+  onChange: (t: string) => void;
+  results: { title: string; image: any }[];
+  onResultPress: (item: { title: string; image: any }) => void;
+}) => (
+  <Modal visible={visible} animationType='fade' transparent>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.18)',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+      }}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ width: '100%' }}
+      >
+        <View
+          style={{
+            marginTop: responsiveSize(60),
+            width: '90%',
+            alignSelf: 'center',
+            backgroundColor: '#fff',
+            borderRadius: responsiveSize(16),
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: responsiveSize(14),
+            paddingVertical: responsiveSize(8),
+            elevation: 3,
+          }}
+        >
+          <Ionicons
+            name='search'
+            size={responsiveSize(22)}
+            color='#888'
+            style={{ marginRight: responsiveSize(8) }}
+          />
           <TextInput
             autoFocus
             value={value}
             onChangeText={onChange}
-            placeholder="Ara..."
-            style={{ flex: 1, fontSize: responsiveFontSize(17), color: '#222', paddingVertical: responsiveSize(6) }}
-            returnKeyType="search"
+            placeholder='Ara...'
+            style={{
+              flex: 1,
+              fontSize: responsiveFontSize(17),
+              color: '#222',
+              paddingVertical: responsiveSize(6),
+            }}
+            returnKeyType='search'
           />
-          <TouchableOpacity onPress={onClose} style={{ marginLeft: responsiveSize(8) }}>
-            <MaterialCommunityIcons name="close" size={responsiveSize(22)} color="#888" />
+          <TouchableOpacity
+            onPress={onClose}
+            style={{ marginLeft: responsiveSize(8) }}
+          >
+            <MaterialCommunityIcons
+              name='close'
+              size={responsiveSize(22)}
+              color='#888'
+            />
           </TouchableOpacity>
         </View>
         {/* Sonuçlar */}
         {value.length > 0 && (
-          <View style={{ width: '90%', alignSelf: 'center', backgroundColor: '#fff', borderRadius: responsiveSize(16), marginTop: responsiveSize(8), maxHeight: responsiveSize(220), elevation: 2, paddingVertical: responsiveSize(4) }}>
+          <View
+            style={{
+              width: '90%',
+              alignSelf: 'center',
+              backgroundColor: '#fff',
+              borderRadius: responsiveSize(16),
+              marginTop: responsiveSize(8),
+              maxHeight: responsiveSize(220),
+              elevation: 2,
+              paddingVertical: responsiveSize(4),
+            }}
+          >
             {results.length > 0 ? (
               results.map((item, idx) => (
                 <TouchableOpacity
@@ -81,15 +269,42 @@ const SearchModal = ({ visible, onClose, value, onChange, results, onResultPress
                     onResultPress(item);
                     onClose();
                   }}
-                  style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: responsiveSize(10), paddingHorizontal: responsiveSize(8), borderBottomWidth: idx !== results.length - 1 ? 1 : 0, borderColor: '#f0f0f0' }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: responsiveSize(10),
+                    paddingHorizontal: responsiveSize(8),
+                    borderBottomWidth: idx !== results.length - 1 ? 1 : 0,
+                    borderColor: '#f0f0f0',
+                  }}
                   activeOpacity={0.7}
                 >
-                  <Image source={item.image} style={{ width: responsiveSize(32), height: responsiveSize(32), marginRight: responsiveSize(12), borderRadius: responsiveSize(8) }} />
-                  <Text style={{ fontSize: responsiveFontSize(16), color: '#222' }}>{item.title}</Text>
+                  <Image
+                    source={item.image}
+                    style={{
+                      width: responsiveSize(32),
+                      height: responsiveSize(32),
+                      marginRight: responsiveSize(12),
+                      borderRadius: responsiveSize(8),
+                    }}
+                  />
+                  <Text
+                    style={{ fontSize: responsiveFontSize(16), color: '#222' }}
+                  >
+                    {item.title}
+                  </Text>
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={{ color: '#888', textAlign: 'center', padding: responsiveSize(16) }}>Sonuç bulunamadı.</Text>
+              <Text
+                style={{
+                  color: '#888',
+                  textAlign: 'center',
+                  padding: responsiveSize(16),
+                }}
+              >
+                Sonuç bulunamadı.
+              </Text>
             )}
           </View>
         )}
@@ -119,16 +334,21 @@ const HomeScreen: React.FC = () => {
   };
 
   // Arama sonuçlarını filtrele
-  const filteredSearchResults = searchValue.length > 0
-    ? cardData.filter(card => card.title.toLowerCase().includes(searchValue.toLowerCase()))
-    : [];
+  const filteredSearchResults =
+    searchValue.length > 0
+      ? cardData.filter(card =>
+          card.title.toLowerCase().includes(searchValue.toLowerCase())
+        )
+      : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   // Navigation focus listener to handle card index when returning from other screens
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       try {
-        const savedCardIndex = await AsyncStorage.getItem('lastVisitedCardIndex');
+        const savedCardIndex = await AsyncStorage.getItem(
+          'lastVisitedCardIndex'
+        );
         if (savedCardIndex !== null) {
           const cardIndex = parseInt(savedCardIndex);
           console.log('Setting card index to:', cardIndex);
@@ -149,10 +369,11 @@ const HomeScreen: React.FC = () => {
     return unsubscribe;
   }, [navigation]);
 
-
-
   // Arama sonucuna tıklandığında yönlendirme
-  const handleSearchResultPress = async (item: { title: string; image: any }) => {
+  const handleSearchResultPress = async (item: {
+    title: string;
+    image: any;
+  }) => {
     // Store the current card index before navigating
     const cardIndex = cardData.findIndex(card => card.title === item.title);
     try {
@@ -160,7 +381,7 @@ const HomeScreen: React.FC = () => {
     } catch (error) {
       console.log('Error saving card index:', error);
     }
-    
+
     switch (item.title) {
       case 'Fen Bilimleri Sınavı':
         navigation.navigate('Fen Bilimleri');
@@ -177,18 +398,16 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-
-
   return (
     <View style={styles.container}>
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={true}
         contentContainerStyle={{ paddingBottom: responsiveSize(20) }}
         scrollEnabled={true}
         bounces={true}
         style={{ flex: 1 }}
         nestedScrollEnabled={false}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
       >
         {/* Header */}
         <View style={styles.headerRow}>
@@ -200,8 +419,11 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.userName}>{userInfo.name.split(' ')[0]}</Text>
           </View>
           <View style={styles.headerIcons}>
-            <TouchableOpacity style={{ marginRight: 12 }} onPress={() => setSearchModalVisible(true)}>
-              <Ionicons name="search" size={28} color="#222" />
+            <TouchableOpacity
+              style={{ marginRight: 12 }}
+              onPress={() => setSearchModalVisible(true)}
+            >
+              <Ionicons name='search' size={28} color='#222' />
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginRight: 12 }}
@@ -210,10 +432,29 @@ const HomeScreen: React.FC = () => {
                 setUnreadCount(0);
               }}
             >
-              <Ionicons name="notifications-outline" size={28} color="#222" />
+              <Ionicons name='notifications-outline' size={28} color='#222' />
               {unreadCount > 0 && (
-                <View style={{ position: 'absolute', top: -4, left: 9, minWidth: 18, height: 18, borderRadius: 9, backgroundColor: '#ff4757', borderWidth: 2, borderColor: '#fff', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
-                  <Text style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}>{unreadCount}</Text>
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -4,
+                    left: 9,
+                    minWidth: 18,
+                    height: 18,
+                    borderRadius: 9,
+                    backgroundColor: '#ff4757',
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingHorizontal: 3,
+                  }}
+                >
+                  <Text
+                    style={{ color: '#fff', fontSize: 11, fontWeight: 'bold' }}
+                  >
+                    {unreadCount}
+                  </Text>
                 </View>
               )}
             </TouchableOpacity>
@@ -221,10 +462,7 @@ const HomeScreen: React.FC = () => {
         </View>
 
         {/* Geliştirici Butonu - Sadece geliştirme için */}
-        <TouchableOpacity 
-          style={styles.devButton} 
-          onPress={loadSampleData}
-        >
+        <TouchableOpacity style={styles.devButton} onPress={loadSampleData}>
           <Text style={styles.devButtonText}>Örnek Verileri Yükle</Text>
         </TouchableOpacity>
 
@@ -235,18 +473,23 @@ const HomeScreen: React.FC = () => {
               ref={swiperRef}
               cardStyle={{ height: 135 }}
               cards={cardData}
-              renderCard={(item) => {
+              renderCard={item => {
                 return (
                   <TouchableOpacity
                     onPress={async () => {
                       // Store the current card index before navigating
-                      const cardIndex = cardData.findIndex(card => card.title === item.title);
+                      const cardIndex = cardData.findIndex(
+                        card => card.title === item.title
+                      );
                       try {
-                        await AsyncStorage.setItem('lastVisitedCardIndex', cardIndex.toString());
+                        await AsyncStorage.setItem(
+                          'lastVisitedCardIndex',
+                          cardIndex.toString()
+                        );
                       } catch (error) {
                         console.log('Error saving card index:', error);
                       }
-                      
+
                       switch (item.title) {
                         case 'Fen Bilimleri Sınavı':
                           navigation.navigate('Fen Bilimleri');
@@ -268,20 +511,36 @@ const HomeScreen: React.FC = () => {
                       colors={item.gradient}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
-                      style={[styles.featureCardStacked, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }]}
+                      style={[
+                        styles.featureCardStacked,
+                        {
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          position: 'relative',
+                        },
+                      ]}
                     >
-                      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'flex-start',
+                          paddingLeft: 8,
+                        }}
+                      >
                         <Text style={styles.featureTitle}>{item.title}</Text>
                         <View style={styles.featureRow}>
-                          <MaterialCommunityIcons name="alarm" size={18} color="#fff" />
+                          <MaterialCommunityIcons
+                            name='alarm'
+                            size={18}
+                            color='#fff'
+                          />
                           <Text style={styles.featureTime}>45 dakika</Text>
                         </View>
                       </View>
                       <View style={styles.swiperImageContainer}>
-                        <Image
-                          source={item.image}
-                          style={styles.swiperImage}
-                        />
+                        <Image source={item.image} style={styles.swiperImage} />
                       </View>
                     </LinearGradient>
                   </TouchableOpacity>
@@ -289,7 +548,7 @@ const HomeScreen: React.FC = () => {
               }}
               stackSize={3}
               stackSeparation={10}
-              backgroundColor="transparent"
+              backgroundColor='transparent'
               cardHorizontalMargin={8}
               cardIndex={currentCardIndex}
               infinite
@@ -297,11 +556,11 @@ const HomeScreen: React.FC = () => {
               verticalSwipe={false}
               horizontalSwipe={true}
               onSwipedAll={() => {}}
-              onSwiped={(cardIndex) => {
+              onSwiped={cardIndex => {
                 setCurrentCardIndex(cardIndex);
               }}
-              onSwipedLeft={(cardIndex) => {}}
-              onSwipedRight={(cardIndex) => {}}
+              onSwipedLeft={cardIndex => {}}
+              onSwipedRight={cardIndex => {}}
             />
           </View>
         </View>
@@ -316,7 +575,12 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#e3f2fd' }]}
             onPress={() => navigation.navigate('Fen Bilimleri')}
           >
-            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/physics.png' }} style={styles.subjectIcon} />
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/3d-fluency/94/physics.png',
+              }}
+              style={styles.subjectIcon}
+            />
             <Text style={styles.subjectGridLabel}>Fen Bilimleri</Text>
           </TouchableOpacity>
           {/* Türkçe */}
@@ -324,7 +588,10 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#ffebee' }]}
             onPress={() => navigation.navigate('Türkçe')}
           >
-            <Image source={require('../../assets/turkish.png')} style={styles.subjectIcon} />
+            <Image
+              source={require('../../assets/turkish.png')}
+              style={styles.subjectIcon}
+            />
             <Text style={styles.subjectGridLabel}>Türkçe</Text>
           </TouchableOpacity>
           {/* Matematik */}
@@ -332,7 +599,10 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#fff3e0' }]}
             onPress={() => navigation.navigate('Matematik')}
           >
-            <Image source={require('../../assets/math.png')} style={styles.subjectIcon} />
+            <Image
+              source={require('../../assets/math.png')}
+              style={styles.subjectIcon}
+            />
             <Text style={styles.subjectGridLabel}>Matematik</Text>
           </TouchableOpacity>
           {/* Sosyal Bilimler */}
@@ -340,7 +610,10 @@ const HomeScreen: React.FC = () => {
             style={[styles.subjectGridItem, { backgroundColor: '#e8f5e8' }]}
             onPress={() => navigation.navigate('Sosyal Bilimler')}
           >
-            <Image source={require('../../assets/social.png')} style={styles.subjectIcon} />
+            <Image
+              source={require('../../assets/social.png')}
+              style={styles.subjectIcon}
+            />
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </TouchableOpacity>
         </View>
@@ -352,26 +625,44 @@ const HomeScreen: React.FC = () => {
         <View style={styles.sınavDenemesiGrid}>
           {/* TYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e1f5fe' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#e1f5fe' },
+            ]}
             onPress={() => navigation.navigate('TYT')}
           >
-            <Image source={require('../../assets/tyt.png')} style={styles.examIcon} />
+            <Image
+              source={require('../../assets/tyt.png')}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>TYT</Text>
           </TouchableOpacity>
           {/* AYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f1e8ff' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#f1e8ff' },
+            ]}
             onPress={() => navigation.navigate('AYT')}
           >
-            <Image source={require('../../assets/ayt.png')} style={styles.examIcon} />
+            <Image
+              source={require('../../assets/ayt.png')}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>AYT</Text>
           </TouchableOpacity>
           {/* YDT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fff8e1' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#fff8e1' },
+            ]}
             onPress={() => navigation.navigate('YDT')}
           >
-            <Image source={require('../../assets/ydt.png')} style={styles.examIcon} />
+            <Image
+              source={require('../../assets/ydt.png')}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
@@ -383,186 +674,284 @@ const HomeScreen: React.FC = () => {
         <View style={styles.sınavDenemesiGrid}>
           {/* TYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#e0f7fa' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#e0f7fa' },
+            ]}
             onPress={() => navigation.navigate('TYT Past')}
           >
-            <Image source={{ uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp' }} style={styles.examIcon} />
+            <Image
+              source={{
+                uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp',
+              }}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>TYT</Text>
           </TouchableOpacity>
           {/* AYT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#f3e5f5' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#f3e5f5' },
+            ]}
             onPress={() => navigation.navigate('AYT Past')}
           >
-            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png' }} style={styles.examIcon} />
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png',
+              }}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>AYT</Text>
           </TouchableOpacity>
           {/* YDT */}
           <TouchableOpacity
-            style={[styles.sınavDenemesiGridItem, { backgroundColor: '#fffde7' }]}
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#fffde7' },
+            ]}
             onPress={() => navigation.navigate('YDT Past')}
           >
-            <Image source={{ uri: 'https://img.icons8.com/3d-fluency/94/language.png' }} style={styles.examIcon} />
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/3d-fluency/94/language.png',
+              }}
+              style={styles.examIcon}
+            />
             <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
-      <NotificationModal visible={notifModalVisible} onClose={() => setNotifModalVisible(false)} />
-      <SearchModal visible={searchModalVisible} onClose={() => setSearchModalVisible(false)} value={searchValue} onChange={setSearchValue} results={filteredSearchResults} onResultPress={handleSearchResultPress} />
+      <NotificationModal
+        visible={notifModalVisible}
+        onClose={() => setNotifModalVisible(false)}
+      />
+      <SearchModal
+        visible={searchModalVisible}
+        onClose={() => setSearchModalVisible(false)}
+        value={searchValue}
+        onChange={setSearchValue}
+        results={filteredSearchResults}
+        onResultPress={handleSearchResultPress}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: colors.background, 
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
     paddingTop: responsiveSize(56),
   },
-  headerRow: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    marginTop: responsiveSize(24), 
-    paddingHorizontal: responsiveSize(20) 
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveSize(24),
+    paddingHorizontal: responsiveSize(20),
   },
-  headerTitleContainer: { 
-    flex: 1, 
-    marginLeft: responsiveSize(12) 
+  headerTitleContainer: {
+    flex: 1,
+    marginLeft: responsiveSize(12),
   },
-  headerTitle: { 
-    fontSize: responsiveFontSize(26), 
-    fontWeight: 'bold', 
-    color: colors.textPrimary 
+  headerTitle: {
+    fontSize: responsiveFontSize(26),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
   },
-  userName: { 
-    fontSize: responsiveFontSize(20), 
-    fontWeight: '600', 
-    color: colors.textTertiary, 
-    marginTop: responsiveSize(2) 
+  userName: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: '600',
+    color: colors.textTertiary,
+    marginTop: responsiveSize(2),
   },
-  headerIcons: { 
-    flexDirection: 'row', 
-    alignItems: 'center' 
+  headerIcons: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  notificationDot: { 
-    position: 'absolute', 
-    top: -2, 
-    right: -2, 
-    width: responsiveSize(12), 
-    height: responsiveSize(12), 
-    borderRadius: responsiveSize(6), 
-    backgroundColor: colors.error, 
-    borderWidth: 2, 
-    borderColor: colors.background 
+  notificationDot: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: responsiveSize(12),
+    height: responsiveSize(12),
+    borderRadius: responsiveSize(6),
+    backgroundColor: colors.error,
+    borderWidth: 2,
+    borderColor: colors.background,
   },
-  avatar: { 
-    width: responsiveSize(48), 
-    height: responsiveSize(48), 
-    borderRadius: responsiveSize(24), 
-    backgroundColor: colors.borderLight 
+  avatar: {
+    width: responsiveSize(48),
+    height: responsiveSize(48),
+    borderRadius: responsiveSize(24),
+    backgroundColor: colors.borderLight,
   },
-  featureCard: { 
-    flexDirection: 'row', 
-    backgroundColor: colors.gradients.pink[0], 
-    borderRadius: responsiveSize(24), 
-    padding: responsiveSize(20), 
-    margin: responsiveSize(20), 
-    alignItems: 'center', 
-    marginTop: responsiveSize(28) 
+  featureCard: {
+    flexDirection: 'row',
+    backgroundColor: colors.gradients.pink[0],
+    borderRadius: responsiveSize(24),
+    padding: responsiveSize(20),
+    margin: responsiveSize(20),
+    alignItems: 'center',
+    marginTop: responsiveSize(28),
   },
-  featureCardStacked: { 
-    flexDirection: 'row', 
-    borderRadius: responsiveSize(24), 
-    padding: responsiveSize(12), 
-    alignItems: 'center', 
-    height: responsiveHeight(135), 
+  featureCardStacked: {
+    flexDirection: 'row',
+    borderRadius: responsiveSize(24),
+    padding: responsiveSize(12),
+    alignItems: 'center',
+    height: responsiveHeight(135),
     ...shadows.small,
-    borderWidth: 1, 
-    borderColor: colors.borderLight 
+    borderWidth: 1,
+    borderColor: colors.borderLight,
   },
-  featureTitle: { 
-    color: colors.textWhite, 
-    fontSize: responsiveFontSize(22), 
-    fontWeight: 'bold', 
-    marginBottom: responsiveSize(2), 
-    marginTop: 0 
+  featureTitle: {
+    color: colors.textWhite,
+    fontSize: responsiveFontSize(22),
+    fontWeight: 'bold',
+    marginBottom: responsiveSize(2),
+    marginTop: 0,
   },
-  featureRow: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    marginTop: responsiveSize(6), 
-    marginBottom: responsiveSize(4) 
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: responsiveSize(6),
+    marginBottom: responsiveSize(4),
   },
-  featureTime: { 
-    color: colors.textWhite, 
-    fontSize: responsiveFontSize(16), 
-    marginLeft: responsiveSize(6) 
+  featureTime: {
+    color: colors.textWhite,
+    fontSize: responsiveFontSize(16),
+    marginLeft: responsiveSize(6),
   },
-  featureImage: { 
-    width: responsiveSize(80), 
-    height: responsiveSize(80), 
-    marginLeft: responsiveSize(16), 
-    borderRadius: responsiveSize(16), 
-    backgroundColor: colors.background 
+  featureImage: {
+    width: responsiveSize(80),
+    height: responsiveSize(80),
+    marginLeft: responsiveSize(16),
+    borderRadius: responsiveSize(16),
+    backgroundColor: colors.background,
   },
-  featureImageIcon: { 
-    width: responsiveSize(90), 
-    height: responsiveSize(90), 
-    position: 'relative', 
-    right: 0, 
-    top: 0, 
-    marginLeft: responsiveSize(12), 
-    alignSelf: 'center', 
-    opacity: 1, 
-    resizeMode: 'contain' 
+  featureImageIcon: {
+    width: responsiveSize(90),
+    height: responsiveSize(90),
+    position: 'relative',
+    right: 0,
+    top: 0,
+    marginLeft: responsiveSize(12),
+    alignSelf: 'center',
+    opacity: 1,
+    resizeMode: 'contain',
   },
-  sectionRow: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    marginTop: responsiveSize(125), 
+  sectionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveSize(125),
     marginBottom: responsiveSize(6),
-    marginHorizontal: responsiveSize(20) 
+    marginHorizontal: responsiveSize(20),
   },
-  sectionRowExam: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    marginTop: responsiveSize(185), 
+  sectionRowExam: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveSize(185),
     marginBottom: responsiveSize(6),
-    marginHorizontal: responsiveSize(20) 
+    marginHorizontal: responsiveSize(20),
   },
-  sectionRowPast: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    marginTop: responsiveSize(185), 
+  sectionRowPast: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: responsiveSize(185),
     marginBottom: responsiveSize(6),
-    marginHorizontal: responsiveSize(20) 
+    marginHorizontal: responsiveSize(20),
   },
-  sectionTitle: { 
-    fontSize: responsiveFontSize(20), 
-    fontWeight: 'bold', 
-    color: colors.textPrimary 
+  sectionTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
   },
-  seeAll: { 
-    color: colors.secondary, 
-    fontWeight: 'bold', 
-    fontSize: responsiveFontSize(15) 
+  seeAll: {
+    color: colors.secondary,
+    fontWeight: 'bold',
+    fontSize: responsiveFontSize(15),
   },
-  subjectGroup: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: responsiveSize(20), marginTop: responsiveSize(14), marginBottom: responsiveSize(8), flex: 1 },
-  subjectIconBox: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafd', borderRadius: responsiveSize(16), padding: responsiveSize(14), marginHorizontal: responsiveSize(4) },
-  subjectLabelRow: { flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: responsiveSize(20), marginBottom: responsiveSize(8) },
-  subjectLabel: { fontSize: responsiveFontSize(13), color: '#222', fontWeight: '500', textAlign: 'center', flex: 1 },
-  videoCard: { flexDirection: 'row', backgroundColor: '#f8fafd', borderRadius: responsiveSize(18), padding: responsiveSize(14), marginHorizontal: responsiveSize(20), marginTop: responsiveSize(10), alignItems: 'center' },
-  videoImage: { width: responsiveSize(60), height: responsiveSize(60), borderRadius: responsiveSize(12), backgroundColor: '#fff' },
-  videoTitle: { fontSize: responsiveFontSize(16), fontWeight: 'bold', color: '#222' },
-  videoTeacher: { fontSize: responsiveFontSize(13), color: '#888', marginTop: responsiveSize(2) },
-  videoRow: { flexDirection: 'row', alignItems: 'center', marginTop: responsiveSize(4) },
-  videoRating: { fontSize: responsiveFontSize(14), color: '#222', marginLeft: responsiveSize(4), marginRight: responsiveSize(8) },
-  videoLive: { fontSize: responsiveFontSize(12), color: '#fff', backgroundColor: '#ff6b81', borderRadius: responsiveSize(8), paddingHorizontal: responsiveSize(8), paddingVertical: responsiveSize(2), marginLeft: responsiveSize(8), overflow: 'hidden' },
+  subjectGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(14),
+    marginBottom: responsiveSize(8),
+    flex: 1,
+  },
+  subjectIconBox: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8fafd',
+    borderRadius: responsiveSize(16),
+    padding: responsiveSize(14),
+    marginHorizontal: responsiveSize(4),
+  },
+  subjectLabelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: responsiveSize(20),
+    marginBottom: responsiveSize(8),
+  },
+  subjectLabel: {
+    fontSize: responsiveFontSize(13),
+    color: '#222',
+    fontWeight: '500',
+    textAlign: 'center',
+    flex: 1,
+  },
+  videoCard: {
+    flexDirection: 'row',
+    backgroundColor: '#f8fafd',
+    borderRadius: responsiveSize(18),
+    padding: responsiveSize(14),
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(10),
+    alignItems: 'center',
+  },
+  videoImage: {
+    width: responsiveSize(60),
+    height: responsiveSize(60),
+    borderRadius: responsiveSize(12),
+    backgroundColor: '#fff',
+  },
+  videoTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: '#222',
+  },
+  videoTeacher: {
+    fontSize: responsiveFontSize(13),
+    color: '#888',
+    marginTop: responsiveSize(2),
+  },
+  videoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: responsiveSize(4),
+  },
+  videoRating: {
+    fontSize: responsiveFontSize(14),
+    color: '#222',
+    marginLeft: responsiveSize(4),
+    marginRight: responsiveSize(8),
+  },
+  videoLive: {
+    fontSize: responsiveFontSize(12),
+    color: '#fff',
+    backgroundColor: '#ff6b81',
+    borderRadius: responsiveSize(8),
+    paddingHorizontal: responsiveSize(8),
+    paddingVertical: responsiveSize(2),
+    marginLeft: responsiveSize(8),
+    overflow: 'hidden',
+  },
 
   swiperContainer: {
     position: 'absolute',
@@ -594,47 +983,47 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  subjectGrid: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginHorizontal: responsiveSize(20), 
-    marginTop: responsiveSize(8), 
-    marginBottom: responsiveSize(-170) 
+  subjectGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(8),
+    marginBottom: responsiveSize(-170),
   },
-  subjectGridItem: { 
-    flex: 1, 
-    marginHorizontal: responsiveSize(6), 
-    aspectRatio: 1, 
-    borderRadius: responsiveSize(16), 
-    alignItems: 'center', 
-    justifyContent: 'center', 
+  subjectGridItem: {
+    flex: 1,
+    marginHorizontal: responsiveSize(6),
+    aspectRatio: 1,
+    borderRadius: responsiveSize(16),
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: responsiveSize(16),
     paddingHorizontal: responsiveSize(8),
     minHeight: responsiveSize(100),
     maxHeight: responsiveSize(120),
   },
-  sınavDenemesiGrid: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
-    marginHorizontal: responsiveSize(20), 
-    marginTop: responsiveSize(8), 
-    marginBottom: responsiveSize(-170) 
+  sınavDenemesiGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(8),
+    marginBottom: responsiveSize(-170),
   },
-  sınavDenemesiGridItem: { 
-    width: responsiveSize(100), 
-    height: responsiveSize(100), 
-    borderRadius: responsiveSize(20), 
-    alignItems: 'center', 
-    justifyContent: 'center', 
+  sınavDenemesiGridItem: {
+    width: responsiveSize(100),
+    height: responsiveSize(100),
+    borderRadius: responsiveSize(20),
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: responsiveSize(12),
     paddingHorizontal: responsiveSize(8),
   },
-  subjectGridLabel: { 
-    fontSize: responsiveFontSize(13), 
-    color: colors.textPrimary, 
-    fontWeight: '500', 
-    textAlign: 'center', 
-    marginTop: responsiveSize(3) 
+  subjectGridLabel: {
+    fontSize: responsiveFontSize(13),
+    color: colors.textPrimary,
+    fontWeight: '500',
+    textAlign: 'center',
+    marginTop: responsiveSize(3),
   },
   subjectIcon: {
     width: responsiveSize(40),
@@ -660,7 +1049,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.textWhite,
   },
-
 });
 
-export default HomeScreen; 
+export default HomeScreen;

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 import { QuestionService } from '../services/questionService';
@@ -16,7 +20,9 @@ const YdtScreen: React.FC = () => {
   const checkUserSelections = async () => {
     try {
       const selections = await QuestionService.getUserSelections();
-      setHasSelections(selections?.examType === 'YDT' && selections.selectedTopics.length > 0);
+      setHasSelections(
+        selections?.examType === 'YDT' && selections.selectedTopics.length > 0
+      );
     } catch (error) {
       console.error('Kullanıcı seçimleri kontrol edilirken hata:', error);
     }
@@ -37,29 +43,29 @@ const YdtScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('HomeScreen')}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.navigate('HomeScreen')}
+      >
         <Text style={styles.backText}>{'<'} Geri</Text>
       </TouchableOpacity>
-      
+
       <View style={styles.content}>
         <Text style={styles.title}>YDT</Text>
         <Text style={styles.subtitle}>Yabancı Dil Testi</Text>
-        
+
         <View style={styles.infoCard}>
           <Text style={styles.infoTitle}>YDT Hakkında</Text>
           <Text style={styles.infoText}>
-            • 80 soru, 120 dakika{'\n'}
-            • İngilizce: 80 soru{'\n'}
-            • Almanca: 80 soru{'\n'}
-            • Fransızca: 80 soru{'\n'}
-            • Arapça: 80 soru{'\n'}
-            • Rusça: 80 soru
+            • 80 soru, 120 dakika{'\n'}• İngilizce: 80 soru{'\n'}• Almanca: 80
+            soru{'\n'}• Fransızca: 80 soru{'\n'}• Arapça: 80 soru{'\n'}• Rusça:
+            80 soru
           </Text>
         </View>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={styles.primaryButton} 
+          <TouchableOpacity
+            style={styles.primaryButton}
             onPress={handleStartQuestions}
           >
             <Text style={styles.primaryButtonText}>
@@ -67,8 +73,8 @@ const YdtScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.secondaryButton} 
+          <TouchableOpacity
+            style={styles.secondaryButton}
             onPress={handleTopicSelection}
           >
             <Text style={styles.secondaryButtonText}>
@@ -90,33 +96,33 @@ const YdtScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: colors.backgroundTertiary 
+  container: {
+    flex: 1,
+    backgroundColor: colors.backgroundTertiary,
   },
-  backButton: { 
-    position: 'absolute', 
-    top: responsiveSize(40), 
-    left: responsiveSize(20), 
-    padding: responsiveSize(8), 
-    borderRadius: responsiveSize(8), 
+  backButton: {
+    position: 'absolute',
+    top: responsiveSize(40),
+    left: responsiveSize(20),
+    padding: responsiveSize(8),
+    borderRadius: responsiveSize(8),
     zIndex: 1,
-    ...shadows.small 
+    ...shadows.small,
   },
-  backText: { 
-    fontSize: responsiveFontSize(16), 
-    color: colors.gradients.blue[0], 
-    fontWeight: 'bold' 
+  backText: {
+    fontSize: responsiveFontSize(16),
+    color: colors.gradients.blue[0],
+    fontWeight: 'bold',
   },
   content: {
     flex: 1,
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: responsiveSize(20),
   },
-  title: { 
-    fontSize: responsiveFontSize(32), 
-    fontWeight: 'bold', 
+  title: {
+    fontSize: responsiveFontSize(32),
+    fontWeight: 'bold',
     color: colors.gradients.blue[0],
     marginBottom: responsiveSize(8),
   },
@@ -190,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default YdtScreen; 
+export default YdtScreen;

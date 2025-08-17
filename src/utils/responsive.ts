@@ -50,10 +50,12 @@ export const platformSelect = <T>(ios: T, android: T): T => {
 
 // Safe area adjustments
 export const getSafeAreaPadding = () => {
-  return Platform.select({
-    ios: { top: 44, bottom: 34 },
-    android: { top: 24, bottom: 0 },
-  }) || { top: 44, bottom: 34 };
+  return (
+    Platform.select({
+      ios: { top: 44, bottom: 34 },
+      android: { top: 24, bottom: 0 },
+    }) || { top: 44, bottom: 34 }
+  );
 };
 
 // Responsive spacing
@@ -199,10 +201,10 @@ export const gridSystem = {
 // Responsive aspect ratios
 export const aspectRatio = {
   square: 1,
-  portrait: 3/4,
-  landscape: 4/3,
-  wide: 16/9,
-  ultraWide: 21/9,
+  portrait: 3 / 4,
+  landscape: 4 / 3,
+  wide: 16 / 9,
+  ultraWide: 21 / 9,
 };
 
 // Responsive breakpoints
@@ -237,4 +239,4 @@ export const getResponsivePadding = (multiplier: number = 1) => ({
 export const getResponsiveMargin = (multiplier: number = 1) => ({
   marginHorizontal: responsiveSize(20 * multiplier),
   marginVertical: responsiveSize(16 * multiplier),
-}); 
+});

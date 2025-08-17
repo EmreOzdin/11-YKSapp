@@ -1,17 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, Modal } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase, useRoute, RouteProp } from '@react-navigation/native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  Modal,
+} from 'react-native';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
 import { responsiveSize, responsiveFontSize } from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 import { QuestionType, QuestionService } from '../services/questionService';
 
-type QuestionScreenRouteProp = RouteProp<{
-  QuestionScreen: { 
-    examType?: "TYT" | "AYT" | "YDT"; 
-    subject?: string; 
-    isPastQuestion?: boolean;
-  };
-}, 'QuestionScreen'>;
+type QuestionScreenRouteProp = RouteProp<
+  {
+    QuestionScreen: {
+      examType?: 'TYT' | 'AYT' | 'YDT';
+      subject?: string;
+      isPastQuestion?: boolean;
+    };
+  },
+  'QuestionScreen'
+>;
 
 const QuestionScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -33,12 +50,14 @@ const QuestionScreen: React.FC = () => {
   const loadQuestions = async () => {
     try {
       setLoading(true);
-      
+
       let userQuestions: QuestionType[] = [];
 
       // Eğer subject parametresi varsa, sadece o derse ait soruları getir
       if (route.params.subject) {
-        userQuestions = await QuestionService.getQuestionsBySubjectOnly(route.params.subject);
+        userQuestions = await QuestionService.getQuestionsBySubjectOnly(
+          route.params.subject
+        );
       } else {
         // Kullanıcı seçimlerini kontrol et
         const selections = await QuestionService.getUserSelections();
@@ -46,19 +65,20 @@ const QuestionScreen: React.FC = () => {
 
         if (!selections || selections.selectedTopics.length === 0) {
           Alert.alert(
-            "Konu Seçimi Gerekli",
-            "Çalışmak istediğiniz konuları seçmeniz gerekiyor.",
+            'Konu Seçimi Gerekli',
+            'Çalışmak istediğiniz konuları seçmeniz gerekiyor.',
             [
               {
-                text: "Konu Seç",
-                onPress: () => navigation.navigate('TopicSelectionScreen', { 
-                  examType: route.params.examType || 'TYT' 
-                })
+                text: 'Konu Seç',
+                onPress: () =>
+                  navigation.navigate('TopicSelectionScreen', {
+                    examType: route.params.examType || 'TYT',
+                  }),
               },
               {
-                text: "İptal",
-                style: "cancel"
-              }
+                text: 'İptal',
+                style: 'cancel',
+              },
             ]
           );
           return;
@@ -67,18 +87,18 @@ const QuestionScreen: React.FC = () => {
         // Seçilen konulara göre soruları getir
         userQuestions = await QuestionService.getQuestionsByUserSelections();
       }
-      
+
       if (userQuestions.length === 0) {
         Alert.alert(
-          "Soru Bulunamadı",
-          route.params.subject 
+          'Soru Bulunamadı',
+          route.params.subject
             ? `${route.params.subject} dersinde henüz soru bulunmuyor.`
-            : "Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.",
+            : 'Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.',
           [
             {
-              text: "Ana Sayfa",
-              onPress: () => navigation.navigate('HomeScreen')
-            }
+              text: 'Ana Sayfa',
+              onPress: () => navigation.navigate('HomeScreen'),
+            },
           ]
         );
         return;
@@ -87,10 +107,9 @@ const QuestionScreen: React.FC = () => {
       // Rastgele karıştır
       const shuffledQuestions = userQuestions.sort(() => 0.5 - Math.random());
       setQuestions(shuffledQuestions);
-      
     } catch (error) {
       console.error('Sorular yüklenirken hata:', error);
-      Alert.alert("Hata", "Sorular yüklenirken bir hata oluştu.");
+      Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
     } finally {
       setLoading(false);
     }
@@ -108,11 +127,13 @@ const QuestionScreen: React.FC = () => {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>Henüz soru bulunmuyor</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.emptyButton}
-          onPress={() => navigation.navigate('TopicSelectionScreen', { 
-            examType: route.params.examType || 'TYT' 
-          })}
+          onPress={() =>
+            navigation.navigate('TopicSelectionScreen', {
+              examType: route.params.examType || 'TYT',
+            })
+          }
         >
           <Text style={styles.emptyButtonText}>Konu Seç</Text>
         </TouchableOpacity>
@@ -124,13 +145,13 @@ const QuestionScreen: React.FC = () => {
 
   const handleAnswerSelect = (answer: string) => {
     if (isAnswered) return;
-    
+
     setSelectedAnswer(answer);
     setIsAnswered(true);
-    
+
     const isAnswerCorrect = answer === currentQuestion.correctAnswer;
     setIsCorrect(isAnswerCorrect);
-    
+
     if (isAnswerCorrect) {
       setScore(score + 1);
     }
@@ -146,11 +167,11 @@ const QuestionScreen: React.FC = () => {
       // Tüm sorular tamamlandı
       const percentage = Math.round((score / questions.length) * 100);
       Alert.alert(
-        "Tebrikler!",
+        'Tebrikler!',
         `Test tamamlandı!\nDoğru: ${score}/${questions.length} (%${percentage})`,
         [
           {
-            text: "Tekrar Çöz",
+            text: 'Tekrar Çöz',
             onPress: () => {
               setCurrentQuestionIndex(0);
               setSelectedAnswer(null);
@@ -158,14 +179,16 @@ const QuestionScreen: React.FC = () => {
               setIsCorrect(false);
               setScore(0);
               // Soruları tekrar karıştır
-              const shuffledQuestions = questions.sort(() => 0.5 - Math.random());
+              const shuffledQuestions = questions.sort(
+                () => 0.5 - Math.random()
+              );
               setQuestions(shuffledQuestions);
-            }
+            },
           },
           {
-            text: "Ana Sayfaya Dön",
-            onPress: () => navigation.navigate('HomeScreen')
-          }
+            text: 'Ana Sayfaya Dön',
+            onPress: () => navigation.navigate('HomeScreen'),
+          },
         ]
       );
     }
@@ -173,7 +196,10 @@ const QuestionScreen: React.FC = () => {
 
   const getOptionStyle = (option: string, index: number) => {
     if (!isAnswered) {
-      return [styles.optionButton, selectedAnswer === option && styles.selectedOption];
+      return [
+        styles.optionButton,
+        selectedAnswer === option && styles.selectedOption,
+      ];
     }
 
     const correctAnswer = currentQuestion.correctAnswer;
@@ -190,7 +216,10 @@ const QuestionScreen: React.FC = () => {
 
   const getOptionTextStyle = (option: string, index: number) => {
     if (!isAnswered) {
-      return [styles.optionText, selectedAnswer === option && styles.selectedOptionText];
+      return [
+        styles.optionText,
+        selectedAnswer === option && styles.selectedOptionText,
+      ];
     }
 
     const correctAnswer = currentQuestion.correctAnswer;
@@ -207,19 +236,27 @@ const QuestionScreen: React.FC = () => {
 
   const getDifficultyText = (difficulty: number) => {
     switch (difficulty) {
-      case 1: return 'Kolay';
-      case 2: return 'Orta';
-      case 3: return 'Zor';
-      default: return 'Bilinmiyor';
+      case 1:
+        return 'Kolay';
+      case 2:
+        return 'Orta';
+      case 3:
+        return 'Zor';
+      default:
+        return 'Bilinmiyor';
     }
   };
 
   const getDifficultyColor = (difficulty: number) => {
     switch (difficulty) {
-      case 1: return colors.success;
-      case 2: return colors.warning;
-      case 3: return colors.error;
-      default: return colors.textSecondary;
+      case 1:
+        return colors.success;
+      case 2:
+        return colors.warning;
+      case 3:
+        return colors.error;
+      default:
+        return colors.textSecondary;
     }
   };
 
@@ -227,8 +264,8 @@ const QuestionScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton} 
+        <TouchableOpacity
+          style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
           <Text style={styles.backText}>{'<'} Geri</Text>
@@ -244,13 +281,17 @@ const QuestionScreen: React.FC = () => {
       {/* Question Card */}
       <View style={styles.questionCard}>
         <View style={styles.questionHeader}>
-          <Text style={styles.questionTitle}>Soru #{currentQuestionIndex + 1}</Text>
+          <Text style={styles.questionTitle}>
+            Soru #{currentQuestionIndex + 1}
+          </Text>
           <View style={styles.questionMeta}>
             <Text style={styles.subjectText}>{currentQuestion.subject}</Text>
-            <Text style={[
-              styles.difficultyText, 
-              { color: getDifficultyColor(currentQuestion.difficulty) }
-            ]}>
+            <Text
+              style={[
+                styles.difficultyText,
+                { color: getDifficultyColor(currentQuestion.difficulty) },
+              ]}
+            >
               {getDifficultyText(currentQuestion.difficulty)}
             </Text>
           </View>
@@ -280,8 +321,15 @@ const QuestionScreen: React.FC = () => {
       {/* Answer Feedback */}
       {isAnswered && (
         <View style={styles.feedbackContainer}>
-          <View style={[styles.feedbackCard, isCorrect ? styles.correctFeedback : styles.incorrectFeedback]}>
-            <Text style={[styles.feedbackIcon, isCorrect && styles.correctIcon]}>
+          <View
+            style={[
+              styles.feedbackCard,
+              isCorrect ? styles.correctFeedback : styles.incorrectFeedback,
+            ]}
+          >
+            <Text
+              style={[styles.feedbackIcon, isCorrect && styles.correctIcon]}
+            >
               {isCorrect ? '✓' : '❌'}
             </Text>
             <Text style={styles.feedbackText}>
@@ -291,33 +339,38 @@ const QuestionScreen: React.FC = () => {
               Doğru cevap: {currentQuestion.correctAnswer}
             </Text>
           </View>
-          
+
           {/* Açıklama - Sadece doğru cevaplarda göster */}
           {isCorrect && (
             <Text style={styles.explanationText}>
-              <Text style={styles.explanationTitle}>Açıklama:</Text> {currentQuestion.explanation}
+              <Text style={styles.explanationTitle}>Açıklama:</Text>{' '}
+              {currentQuestion.explanation}
             </Text>
           )}
-          
+
           {/* Butonlar - Yan yana yerleştirilmiş */}
           <View style={styles.buttonContainer}>
             {/* Açıklama Butonu - Sadece yanlış cevaplarda göster */}
             {!isCorrect && (
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.explanationButton}
                 onPress={() => setShowExplanationModal(true)}
               >
-                <Text style={styles.explanationButtonText}>Açıklamayı Göster</Text>
+                <Text style={styles.explanationButtonText}>
+                  Açıklamayı Göster
+                </Text>
               </TouchableOpacity>
             )}
-            
+
             {/* Sonraki Soru Butonu */}
-            <TouchableOpacity 
-              style={styles.nextButton} 
+            <TouchableOpacity
+              style={styles.nextButton}
               onPress={handleNextQuestion}
             >
               <Text style={styles.nextButtonText}>
-                {currentQuestionIndex < questions.length - 1 ? 'Sonraki Soru' : 'Testi Tamamla'}
+                {currentQuestionIndex < questions.length - 1
+                  ? 'Sonraki Soru'
+                  : 'Testi Tamamla'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -328,21 +381,21 @@ const QuestionScreen: React.FC = () => {
       <Modal
         visible={showExplanationModal}
         transparent={true}
-        animationType="slide"
+        animationType='slide'
         onRequestClose={() => setShowExplanationModal(false)}
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Soru Açıklaması</Text>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setShowExplanationModal(false)}
               >
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
             </View>
-            
+
             <ScrollView style={styles.modalBody}>
               <View style={styles.explanationSection}>
                 <Text style={styles.explanationText}>
@@ -350,8 +403,8 @@ const QuestionScreen: React.FC = () => {
                 </Text>
               </View>
             </ScrollView>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => setShowExplanationModal(false)}
             >
@@ -364,11 +417,13 @@ const QuestionScreen: React.FC = () => {
       {/* Progress Bar */}
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }
-            ]} 
+              styles.progressFill,
+              {
+                width: `${((currentQuestionIndex + 1) / questions.length) * 100}%`,
+              },
+            ]}
           />
         </View>
         <Text style={styles.progressText}>

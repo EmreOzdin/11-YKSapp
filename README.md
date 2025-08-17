@@ -23,17 +23,20 @@ YKS (TYT, AYT, YDT) sınavına hazırlık için geliştirilmiş React Native mob
 ## Kurulum
 
 1. Projeyi klonlayın:
+
 ```bash
 git clone <repository-url>
 cd 11-YKSapp
 ```
 
 2. Bağımlılıkları yükleyin:
+
 ```bash
 npm install
 ```
 
 3. Uygulamayı başlatın:
+
 ```bash
 npm start
 ```
@@ -55,11 +58,13 @@ src/
 ## Geliştirme
 
 ### Yeni Ekran Ekleme
+
 1. `src/screens/` klasörüne yeni ekran dosyasını ekleyin
 2. `src/navigation/` klasöründeki navigasyon dosyalarını güncelleyin
 3. Gerekirse `App.tsx`'te route ekleyin
 
 ### Yeni Soru Ekleme
+
 1. `src/services/sampleData.ts` dosyasına yeni soruları ekleyin
 2. `addSampleData()` fonksiyonunu çağırarak veritabanına ekleyin
 

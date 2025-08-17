@@ -1,14 +1,21 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, TextInput, ScrollView, Modal } from 'react-native';
-import { 
-  responsiveSize, 
-  responsiveFontSize, 
-  cardSize, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Modal,
+} from 'react-native';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  cardSize,
   modalSize,
   spacing,
   fontSize,
   borderRadius,
-  iconSize
+  iconSize,
 } from './responsive';
 import { colors, shadows } from './theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -35,8 +42,12 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
 }) => {
   const getButtonStyle = () => {
     const baseStyle = {
-      paddingHorizontal: responsiveSize(size === 'sm' ? 16 : size === 'md' ? 24 : 32),
-      paddingVertical: responsiveSize(size === 'sm' ? 8 : size === 'md' ? 12 : 16),
+      paddingHorizontal: responsiveSize(
+        size === 'sm' ? 16 : size === 'md' ? 24 : 32
+      ),
+      paddingVertical: responsiveSize(
+        size === 'sm' ? 8 : size === 'md' ? 12 : 16
+      ),
       borderRadius: responsiveSize(8),
       alignItems: 'center',
       justifyContent: 'center',
@@ -68,7 +79,9 @@ export const ResponsiveButton: React.FC<ResponsiveButtonProps> = ({
 
   const getTextStyle = () => {
     const baseTextStyle = {
-      fontSize: responsiveFontSize(size === 'sm' ? 14 : size === 'md' ? 16 : 18),
+      fontSize: responsiveFontSize(
+        size === 'sm' ? 14 : size === 'md' ? 16 : 18
+      ),
       fontWeight: 'bold',
     };
 
@@ -123,10 +136,16 @@ export const ResponsiveInput: React.FC<ResponsiveInputProps> = ({
     <TextInput
       style={[
         {
-          paddingHorizontal: responsiveSize(size === 'sm' ? 12 : size === 'md' ? 16 : 20),
-          paddingVertical: responsiveSize(size === 'sm' ? 8 : size === 'md' ? 12 : 16),
+          paddingHorizontal: responsiveSize(
+            size === 'sm' ? 12 : size === 'md' ? 16 : 20
+          ),
+          paddingVertical: responsiveSize(
+            size === 'sm' ? 8 : size === 'md' ? 12 : 16
+          ),
           borderRadius: responsiveSize(8),
-          fontSize: responsiveFontSize(size === 'sm' ? 14 : size === 'md' ? 16 : 18),
+          fontSize: responsiveFontSize(
+            size === 'sm' ? 14 : size === 'md' ? 16 : 18
+          ),
           backgroundColor: colors.background,
           borderWidth: 1,
           borderColor: colors.border,
@@ -191,7 +210,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
   style,
 }) => {
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType='slide' transparent>
       <View
         style={{
           flex: 1,
@@ -230,7 +249,7 @@ export const ResponsiveModal: React.FC<ResponsiveModalProps> = ({
               </Text>
               <TouchableOpacity onPress={onClose}>
                 <MaterialCommunityIcons
-                  name="close"
+                  name='close'
                   size={iconSize.md}
                   color={colors.textSecondary}
                 />
@@ -350,7 +369,7 @@ export const ResponsiveGrid: React.FC<ResponsiveGridProps> = ({
         style,
       ]}
     >
-      {React.Children.map(children, (child) => (
+      {React.Children.map(children, child => (
         <View
           style={{
             width: `${100 / columns}%`,

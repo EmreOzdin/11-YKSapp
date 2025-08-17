@@ -9,8 +9,19 @@ import {
   FlatList,
   ViewToken,
 } from 'react-native';
-import { useNavigation, NavigationProp, ParamListBase } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize, responsiveWidth, responsiveHeight, screenWidth, screenHeight } from '../utils/responsive';
+import {
+  useNavigation,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native';
+import {
+  responsiveSize,
+  responsiveFontSize,
+  responsiveWidth,
+  responsiveHeight,
+  screenWidth,
+  screenHeight,
+} from '../utils/responsive';
 import { colors, typography, shadows } from '../utils/theme';
 
 const ONBOARDING_DATA = [
@@ -18,19 +29,22 @@ const ONBOARDING_DATA = [
     key: '1',
     image: require('../../assets/onboarding1.png'),
     title: 'Hayalini Yaşa',
-    description: 'TYT–AYT yolculuğunda seni başarıya taşıyacak akıllı bir rehber artık yanında.',
+    description:
+      'TYT–AYT yolculuğunda seni başarıya taşıyacak akıllı bir rehber artık yanında.',
   },
   {
     key: '2',
     image: require('../../assets/onboarding2.png'),
     title: 'Konu Takibi ve Akıllı Öneriler',
-    description: 'Zayıf olduğun konuları belirle, sana özel çalışma planı ile zamanını verimli kullan.',
+    description:
+      'Zayıf olduğun konuları belirle, sana özel çalışma planı ile zamanını verimli kullan.',
   },
   {
     key: '3',
     image: require('../../assets/onboarding3.png'),
     title: 'Deneme Sınavları',
-    description: 'Gerçek sınav deneyimini yaşa, gelişimini anlık takip et, her gün bir adım ileri git.',
+    description:
+      'Gerçek sınav deneyimini yaşa, gelişimini anlık takip et, her gün bir adım ileri git.',
   },
 ];
 
@@ -48,11 +62,13 @@ const Onboarding: React.FC = () => {
     alert('Giriş ekranına yönlendirilecek!');
   };
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
-    if (viewableItems.length > 0) {
-      setCurrentIndex(viewableItems[0].index ?? 0);
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
+      if (viewableItems.length > 0) {
+        setCurrentIndex(viewableItems[0].index ?? 0);
+      }
     }
-  }).current;
+  ).current;
 
   return (
     <View style={styles.root}>
@@ -71,13 +87,20 @@ const Onboarding: React.FC = () => {
         viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
         renderItem={({ item, index }) => (
           <View style={styles.page}>
-            <Image source={item.image} style={styles.image} resizeMode="cover" />
+            <Image
+              source={item.image}
+              style={styles.image}
+              resizeMode='cover'
+            />
             <Text style={styles.title}>{item.title}</Text>
             <Text style={styles.description}>{item.description}</Text>
             {/* Sadece son sayfada butonlar */}
             {index === ONBOARDING_DATA.length - 1 && (
               <View style={styles.buttonGroup}>
-                <TouchableOpacity style={styles.primaryButton} onPress={handleSignUp}>
+                <TouchableOpacity
+                  style={styles.primaryButton}
+                  onPress={handleSignUp}
+                >
                   <Text style={styles.primaryButtonText}>BAŞLA</Text>
                 </TouchableOpacity>
               </View>
@@ -198,4 +221,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Onboarding; 
+export default Onboarding;

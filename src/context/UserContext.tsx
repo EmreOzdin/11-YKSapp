@@ -40,14 +40,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const updateAvatar = (newAvatar: string) => {
     setUserInfo(prev => ({
       ...prev,
-      avatar: newAvatar
+      avatar: newAvatar,
     }));
   };
 
   const updateUserInfo = (newInfo: Partial<UserInfo>) => {
     setUserInfo(prev => ({
       ...prev,
-      ...newInfo
+      ...newInfo,
     }));
   };
 
