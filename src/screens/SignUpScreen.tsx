@@ -1,26 +1,23 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
-  View,
+  Alert,
+  Image,
+  Platform,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  Dimensions,
-  Platform,
+  View,
 } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
-import {
-  responsiveSize,
-  responsiveFontSize,
-  responsiveWidth,
-} from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import { useAuthStore } from '../../store/authStore';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 const policyContents = {
   terms:
@@ -34,10 +31,40 @@ const policyContents = {
 };
 
 const SignUpScreen: React.FC = () => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const { user, isLoading, register } = useAuthStore();
+
+  console.log('user is here:', user);
+
+  const handleSignUp = async () => {
+    if (!username || !email || !password) {
+      Alert.alert('Hata', 'Lütfen tüm alanları doldurun');
+      return;
+    }
+
+    if (password.length < 8) {
+      Alert.alert('Hata', 'Şifre en az 8 karakter olmalıdır');
+      return;
+    }
+
+    const result = await register(username, email, password);
+
+    if (result && result.success) {
+      Alert.alert('Başarılı', 'Kayıt işlemi tamamlandı!', [
+        {
+          text: 'Tamam',
+          onPress: () => navigation.navigate('MainApp'),
+        },
+      ]);
+    } else {
+      Alert.alert('Hata', result?.message || 'Kayıt işlemi başarısız');
+    }
+  };
 
   const openPolicy = (
     type: 'terms' | 'payment' | 'nondiscrimination' | 'privacy',
@@ -66,6 +93,15 @@ const SignUpScreen: React.FC = () => {
       </View>
       {/* Form */}
       <View style={styles.form}>
+        <Text style={styles.label}>Kullanıcı Adı</Text>
+        <TextInput
+          style={styles.input}
+          placeholder='Kullanıcı adı'
+          placeholderTextColor='#888'
+          autoCapitalize='none'
+          value={username}
+          onChangeText={setUsername}
+        />
         <Text style={styles.label}>E-posta</Text>
         <TextInput
           style={styles.input}
@@ -98,8 +134,14 @@ const SignUpScreen: React.FC = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.signUpButton}>
-          <Text style={styles.signUpButtonText}>Kayıt Ol</Text>
+        <TouchableOpacity
+          style={styles.signUpButton}
+          onPress={handleSignUp}
+          disabled={isLoading}
+        >
+          <Text style={styles.signUpButtonText}>
+            {isLoading ? 'Kaydediliyor...' : 'Kayıt Ol'}
+          </Text>
         </TouchableOpacity>
         <Text style={styles.orText}>veya</Text>
         <TouchableOpacity style={styles.socialButton}>

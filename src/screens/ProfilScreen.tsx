@@ -1,32 +1,29 @@
-import React, { useState } from 'react';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Alert,
-  Switch,
-  Modal,
-  FlatList,
-  Platform,
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  FontAwesome5,
-} from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import React, { useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 interface ProfileOption {
   id: string;
@@ -43,6 +40,7 @@ interface ProfileOption {
 const ProfilScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { userInfo, updateAvatar } = useUser();
+  const { logout } = useAuthStore();
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
@@ -140,21 +138,13 @@ const ProfilScreen: React.FC = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Çıkış Yap',
-      'Hesabınızdan çıkış yapmak istediğinizden emin misiniz?',
-      [
-        { text: 'İptal', style: 'cancel' },
-        {
-          text: 'Çıkış Yap',
-          style: 'destructive',
-          onPress: () => {
-            // Burada logout işlemi yapılacak
-            console.log('Logout pressed');
-          },
-        },
-      ]
-    );
+    // Auth store'dan logout işlemi
+    logout();
+    // Login sayfasına yönlendirme
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'EmailLogin' }],
+    });
   };
 
   const profileOptions: ProfileOption[] = [

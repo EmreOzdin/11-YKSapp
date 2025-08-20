@@ -29,24 +29,23 @@ git clone <repository-url>
 cd 11-YKSapp
 ```
 
-2. Bağımlılıkları yükleyin:
+2.Bağımlılıkları yükleyin:
 
 ```bash
 npm install
 ```
 
-3. Uygulamayı başlatın:
+3.Uygulamayı başlatın:
 
 ```bash
 npm start
 ```
 
-4. Expo Go uygulaması ile QR kodu tarayın veya emülatörde çalıştırın.
+4.Expo Go uygulaması ile QR kodu tarayın veya emülatörde çalıştırın.
 
 ## Proje Yapısı
 
-```
-src/
+```src/
 ├── screens/          # Ekranlar
 ├── components/       # UI bileşenleri
 ├── navigation/       # Navigasyon

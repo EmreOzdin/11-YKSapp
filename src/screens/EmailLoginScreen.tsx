@@ -1,25 +1,23 @@
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import React from 'react';
 import {
-  View,
+  Image,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  Image,
-  Dimensions,
+  View,
 } from 'react-native';
 import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
-import {
-  responsiveSize,
   responsiveFontSize,
-  responsiveHeight,
+  responsiveSize,
   screenHeight,
 } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import { colors, shadows } from '../utils/theme';
 
 interface EmailLoginScreenProps {
   onLogin?: () => void;
