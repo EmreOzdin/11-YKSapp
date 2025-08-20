@@ -7,33 +7,55 @@ export const useAuthStore = create((set) => ({
     isLoading: false,
 
     register: async (username, email, password) => {
+        console.log('=== AUTH STORE REGISTER ===');
+        console.log('Registering with:', { username, email, password: '***' });
+
         set({ isLoading: true });
         try {
-            const response = await fetch('http://10.0.2.2:3000/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, email, password }),
-            });
+          console.log(
+            'Making API request to: http://10.0.2.2:3000/api/auth/register'
+          );
 
-            const data = await response.json();
-
-            if(!response.ok) {
-                set({ isLoading: false });
-                return { success: false, message: data.message || 'Registration failed' };
+          const response = await fetch(
+            'http://10.0.2.2:3000/api/auth/register',
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ username, email, password }),
             }
+          );
 
-            await AsyncStorage.setItem('user', JSON.stringify(data.user));
-            await AsyncStorage.setItem('token', data.token);
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
 
-            set({ user: data.user, token: data.token, isLoading: false });
+          const data = await response.json();
+          console.log('Response data:', data);
 
-            return { success: true, message: 'Registration successful' };
-        } catch (error) {
+          if (!response.ok) {
+            console.log('Registration failed:', data.message);
             set({ isLoading: false });
-            console.error('Registration error:', error);
-            return { success: false, message: error.message || 'Network error' };
+            return {
+              success: false,
+              message: data.message || 'Registration failed',
+            };
+          }
+
+          console.log('Registration successful, saving to AsyncStorage');
+          await AsyncStorage.setItem('user', JSON.stringify(data.user));
+          await AsyncStorage.setItem('token', data.token);
+
+          console.log('Updating store state');
+          set({ user: data.user, token: data.token, isLoading: false });
+
+          console.log('=== REGISTER COMPLETE ===');
+          return { success: true, message: 'Registration successful' };
+        } catch (error) {
+          console.error('=== REGISTRATION ERROR ===');
+          console.error('Error details:', error);
+          set({ isLoading: false });
+          return { success: false, message: error.message || 'Network error' };
         }
     },
 

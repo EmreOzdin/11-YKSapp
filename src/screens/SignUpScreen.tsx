@@ -37,9 +37,7 @@ const SignUpScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
-  const { user, isLoading, register } = useAuthStore();
-
-  console.log('user is here:', user);
+  const { user, isLoading, register, token } = useAuthStore();
 
   const handleSignUp = async () => {
     if (!username || !email || !password) {
@@ -65,6 +63,8 @@ const SignUpScreen: React.FC = () => {
       Alert.alert('Hata', result?.message || 'Kayıt işlemi başarısız');
     }
   };
+  console.log(user);
+  console.log(token);
 
   const openPolicy = (
     type: 'terms' | 'payment' | 'nondiscrimination' | 'privacy',
