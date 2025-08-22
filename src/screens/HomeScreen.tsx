@@ -1,46 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  Modal,
-  FlatList,
-  Pressable,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import {
-  MaterialCommunityIcons,
-  Ionicons,
-  FontAwesome5,
-} from '@expo/vector-icons';
-import Swiper from 'react-native-deck-swiper';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  responsiveSize,
-  responsiveFontSize,
-  responsiveWidth,
-  responsiveHeight,
-  isSmallDevice,
-  isMediumDevice,
-  isLargeDevice,
-  screenWidth,
-} from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Swiper from 'react-native-deck-swiper';
+import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
 import { addSampleData } from '../services/sampleData';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveSize,
+} from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 const CARD_DATA = [
   {
@@ -315,6 +306,7 @@ const SearchModal = ({
 
 const HomeScreen: React.FC = () => {
   const { userInfo } = useUser();
+  const { user } = useAuthStore();
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -412,11 +404,16 @@ const HomeScreen: React.FC = () => {
         {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => navigation.navigate('ProfilScreen')}>
-            <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
+            <Image
+              source={{ uri: user?.profileImage || userInfo.avatar }}
+              style={styles.avatar}
+            />
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>Merhaba!</Text>
-            <Text style={styles.userName}>{userInfo.name.split(' ')[0]}</Text>
+            <Text style={styles.userName}>
+              {user?.username || userInfo.name.split(' ')[0]}
+            </Text>
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity
