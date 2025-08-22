@@ -1,31 +1,41 @@
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect } from 'react';
 import { UserProvider } from './src/context/UserContext';
-import Onboarding from './src/screens/Onboarding';
-import LogoScreen from './src/screens/LogoScreen';
+import TabNavigator from './src/navigation/TabNavigator';
+import AytPastScreen from './src/screens/AytPastScreen';
+import AytScreen from './src/screens/AytScreen';
 import EmailLoginScreen from './src/screens/EmailLoginScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import TermsOfServiceScreen from './src/screens/TermsOfServiceScreen';
+import FenBilimleriScreen from './src/screens/FenBilimleriScreen';
+import LogoScreen from './src/screens/LogoScreen';
+import MatematikScreen from './src/screens/MatematikScreen';
+import Onboarding from './src/screens/Onboarding';
 import PaymentTermsScreen from './src/screens/PaymentTermsScreen';
 import PrivacyPolicyScreen from './src/screens/PrivacyPolicyScreen';
-import TabNavigator from './src/navigation/TabNavigator';
-import FenBilimleriScreen from './src/screens/FenBilimleriScreen';
-import TurkceScreen from './src/screens/TurkceScreen';
-import MatematikScreen from './src/screens/MatematikScreen';
-import SosyalBilimlerScreen from './src/screens/SosyalBilimlerScreen';
-import TytScreen from './src/screens/TytScreen';
-import AytScreen from './src/screens/AytScreen';
-import YdtScreen from './src/screens/YdtScreen';
-import TytPastScreen from './src/screens/TytPastScreen';
-import AytPastScreen from './src/screens/AytPastScreen';
-import YdtPastScreen from './src/screens/YdtPastScreen';
 import QuestionScreen from './src/screens/QuestionScreen';
+import SignUpScreen from './src/screens/SignUpScreen';
+import SosyalBilimlerScreen from './src/screens/SosyalBilimlerScreen';
+import TermsOfServiceScreen from './src/screens/TermsOfServiceScreen';
+import TurkceScreen from './src/screens/TurkceScreen';
+import TytPastScreen from './src/screens/TytPastScreen';
+import TytScreen from './src/screens/TytScreen';
+import YdtPastScreen from './src/screens/YdtPastScreen';
+import YdtScreen from './src/screens/YdtScreen';
+import { useAuthStore } from './store/authStore';
 // Yasal ekranlar eklenecek
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const { user, token, checkAuth } = useAuthStore();
+
+  console.log(user);
+  console.log(token);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
   return (
     <UserProvider>
       <NavigationContainer>

@@ -1,71 +1,107 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 
-export const useAuthStore = create((set) => ({
-    user: null,
-    token: null,
-    isLoading: false,
+// Backend URL'ini dinamik olarak ayarla
+const getBackendUrl = () => {
+  // Android Emulator için
+  if (__DEV__) {
+    return 'http://10.0.2.2:3000';
+  }
+  // Gerçek cihaz için (bilgisayarınızın IP adresi)
+  return 'http://192.168.1.64:3000'; // Bilgisayarınızın IP adresi
+};
 
-    register: async (username, email, password) => {
-        console.log('=== AUTH STORE REGISTER ===');
-        console.log('Registering with:', { username, email, password: '***' });
+export const useAuthStore = create(set => ({
+  user: null,
+  token: null,
+  isLoading: false,
 
-        set({ isLoading: true });
-        try {
-          console.log(
-            'Making API request to: http://10.0.2.2:3000/api/auth/register'
-          );
+  register: async (username, email, password) => {
+    set({ isLoading: true });
+    try {
+      const backendUrl = getBackendUrl();
+      const response = await fetch(`${backendUrl}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
 
-          const response = await fetch(
-            'http://10.0.2.2:3000/api/auth/register',
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ username, email, password }),
-            }
-          );
+      const data = await response.json();
 
-          console.log('Response status:', response.status);
-          console.log('Response ok:', response.ok);
+      if (!response.ok) {
+        set({ isLoading: false });
+        return {
+          success: false,
+          message: data.message || 'Registration failed',
+        };
+      }
 
-          const data = await response.json();
-          console.log('Response data:', data);
+      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem('token', data.token);
 
-          if (!response.ok) {
-            console.log('Registration failed:', data.message);
-            set({ isLoading: false });
-            return {
-              success: false,
-              message: data.message || 'Registration failed',
-            };
-          }
+      set({ user: data.user, token: data.token, isLoading: false });
 
-          console.log('Registration successful, saving to AsyncStorage');
-          await AsyncStorage.setItem('user', JSON.stringify(data.user));
-          await AsyncStorage.setItem('token', data.token);
+      return { success: true, message: 'Registration successful' };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, message: error.message || 'Network error' };
+    }
+  },
 
-          console.log('Updating store state');
-          set({ user: data.user, token: data.token, isLoading: false });
+  checkAuth: async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userJson = await AsyncStorage.getItem('user');
+      const user = userJson ? JSON.parse(userJson) : null;
 
-          console.log('=== REGISTER COMPLETE ===');
-          return { success: true, message: 'Registration successful' };
-        } catch (error) {
-          console.error('=== REGISTRATION ERROR ===');
-          console.error('Error details:', error);
-          set({ isLoading: false });
-          return { success: false, message: error.message || 'Network error' };
-        }
-    },
-
-    login: (userData) => {
-        set({ user: userData, isAuthenticated: true });
-    },
-
-    logout: () => {
+      if (!token || !user) {
         set({ user: null, token: null, isAuthenticated: false });
-    },
+        return;
+      }
+    } catch (error) {
+      console.error('Auth check failed', error);
+    }
+  },
+
+  login: async (email, password) => {
+    set({ isLoading: true });
+    try {
+      const backendUrl = getBackendUrl();
+      const response = await fetch(`${backendUrl}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        set({ isLoading: false });
+        return {
+          success: false,
+          message: data.message || 'Login failed',
+        };
+      }
+
+      await AsyncStorage.setItem('token', data.token);
+      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+
+      set({ user: data.user, token: data.token, isLoading: false });
+
+      return { success: true, message: 'Login successful' };
+    } catch (error) {
+      set({ isLoading: false });
+      return { success: false, message: error.message || 'Network error' };
+    }
+  },
+
+  logout: () => {
+    set({ user: null, token: null, isAuthenticated: false });
+  },
 }));
 
 

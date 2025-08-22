@@ -1,10 +1,7 @@
+import { useNavigation } from '@react-navigation/native';
+import React, { useState } from 'react';
 import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from '@react-navigation/native';
-import React from 'react';
-import {
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -12,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useAuthStore } from '../../store/authStore';
 import {
   responsiveFontSize,
   responsiveSize,
@@ -25,7 +23,35 @@ interface EmailLoginScreenProps {
 }
 
 const EmailLoginScreen: React.FC = () => {
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const { user, isLoading, login } = useAuthStore();
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Hata', 'Lütfen e-posta ve şifre alanlarını doldurun');
+      return;
+    }
+
+    try {
+      const result = await login(email, password);
+
+      if (result && result.success) {
+        navigation.navigate('MainApp');
+      } else {
+        Alert.alert(
+          'Hata',
+          result?.message ||
+            'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.'
+        );
+      }
+    } catch (error) {
+      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
+  };
+
+  const navigation = useNavigation() as any;
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -34,20 +60,29 @@ const EmailLoginScreen: React.FC = () => {
       <View style={styles.formContainer}>
         <TextInput
           style={styles.input}
-          placeholder='Kullanıcı adı, e-posta veya telefon'
+          placeholder='E-posta'
           placeholderTextColor='#888'
+          value={email}
+          onChangeText={setEmail}
+          keyboardType='email-address'
+          autoCapitalize='none'
         />
         <TextInput
           style={styles.input}
           placeholder='Şifre'
           placeholderTextColor='#888'
-          secureTextEntry
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
         />
         <TouchableOpacity
           style={styles.loginButton}
-          onPress={() => navigation.navigate('MainApp')}
+          onPress={handleLogin}
+          disabled={isLoading}
         >
-          <Text style={styles.loginButtonText}>Giriş Yap</Text>
+          <Text style={styles.loginButtonText}>
+            {isLoading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity>
           <Text style={styles.forgot}>Şifremi unuttum?</Text>

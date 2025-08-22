@@ -1,9 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
-} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -35,7 +31,7 @@ const SignUpScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const navigation = useNavigation() as any;
 
   const { user, isLoading, register, token } = useAuthStore();
 
@@ -50,21 +46,23 @@ const SignUpScreen: React.FC = () => {
       return;
     }
 
-    const result = await register(username, email, password);
+    try {
+      const result = await register(username, email, password);
 
-    if (result && result.success) {
-      Alert.alert('Başarılı', 'Kayıt işlemi tamamlandı!', [
-        {
-          text: 'Tamam',
-          onPress: () => navigation.navigate('MainApp'),
-        },
-      ]);
-    } else {
-      Alert.alert('Hata', result?.message || 'Kayıt işlemi başarısız');
+      if (result && result.success) {
+        Alert.alert('Başarılı', 'Kayıt işlemi tamamlandı!', [
+          {
+            text: 'Tamam',
+            onPress: () => navigation.navigate('MainApp'),
+          },
+        ]);
+      } else {
+        Alert.alert('Hata', result?.message || 'Kayıt işlemi başarısız');
+      }
+    } catch (error) {
+      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
     }
   };
-  console.log(user);
-  console.log(token);
 
   const openPolicy = (
     type: 'terms' | 'payment' | 'nondiscrimination' | 'privacy',
