@@ -22,6 +22,7 @@ import {
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
+import DefaultAvatar from '../utils/defaultAvatar';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -40,31 +41,67 @@ interface ProfileOption {
 const ProfilScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { userInfo, updateAvatar } = useUser();
-  const { logout } = useAuthStore();
+  const { user, logout, initializeAuth, updateProfileImage } = useAuthStore();
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState(userInfo.avatar);
+  const [selectedAvatar, setSelectedAvatar] = useState(
+    'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+  );
+  const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
 
-  // userInfo.avatar değiştiğinde selectedAvatar'ı güncelle
+  // Initialize auth on component mount
   React.useEffect(() => {
-    setSelectedAvatar(userInfo.avatar);
-  }, [userInfo.avatar]);
+    initializeAuth();
+  }, [initializeAuth]);
+
+  // Kullanıcının mevcut profil fotoğrafına göre selectedAvatar'ı ayarla
+  React.useEffect(() => {
+    if (user?.profileImage) {
+      setSelectedAvatar(user.profileImage);
+    } else {
+      setSelectedAvatar(
+        'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+      );
+    }
+  }, [user?.profileImage]);
 
   // Avatar seçenekleri
   const avatarOptions = [
+    { id: '0', url: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' }, // Anonim avatar
+    // Erkek avatarları
     { id: '1', url: 'https://randomuser.me/api/portraits/men/32.jpg' },
     { id: '2', url: 'https://randomuser.me/api/portraits/men/33.jpg' },
     { id: '3', url: 'https://randomuser.me/api/portraits/men/34.jpg' },
     { id: '4', url: 'https://randomuser.me/api/portraits/men/35.jpg' },
     { id: '5', url: 'https://randomuser.me/api/portraits/men/36.jpg' },
-    { id: '6', url: 'https://randomuser.me/api/portraits/men/37.jpg' },
-    { id: '7', url: 'https://randomuser.me/api/portraits/men/38.jpg' },
-    { id: '8', url: 'https://randomuser.me/api/portraits/men/39.jpg' },
-    { id: '9', url: 'https://randomuser.me/api/portraits/men/40.jpg' },
-    { id: '10', url: 'https://randomuser.me/api/portraits/men/41.jpg' },
-    { id: '11', url: 'https://randomuser.me/api/portraits/men/42.jpg' },
-    { id: '12', url: 'https://randomuser.me/api/portraits/men/43.jpg' },
+    // Kadın avatarları
+    { id: '6', url: 'https://randomuser.me/api/portraits/women/32.jpg' },
+    { id: '7', url: 'https://randomuser.me/api/portraits/women/33.jpg' },
+    { id: '8', url: 'https://randomuser.me/api/portraits/women/34.jpg' },
+    { id: '9', url: 'https://randomuser.me/api/portraits/women/35.jpg' },
+    { id: '10', url: 'https://randomuser.me/api/portraits/women/36.jpg' },
+    // Sevimli hayvan avatarları
+    {
+      id: '11',
+      url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=150&h=150&fit=crop',
+    }, // Kedi
+    {
+      id: '12',
+      url: 'https://images.unsplash.com/photo-1546527868-ccb7ee7dfa6a?w=150&h=150&fit=crop',
+    }, // Köpek
+    {
+      id: '13',
+      url: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop',
+    }, // Tavşan
+    {
+      id: '14',
+      url: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=150&h=150&fit=crop',
+    }, // Panda
+    {
+      id: '15',
+      url: 'https://images.unsplash.com/photo-1584556819299-4b7b7b7b7b7b?w=150&h=150&fit=crop',
+    }, // Hamster
   ];
 
   const requestPermissions = async () => {
@@ -110,7 +147,6 @@ const ProfilScreen: React.FC = () => {
 
       if (!result.canceled && result.assets && result.assets[0]) {
         setSelectedAvatar(result.assets[0].uri);
-        setImageSourceModalVisible(false);
       }
     } catch (error) {
       Alert.alert('Hata', 'Fotoğraf seçilirken bir hata oluştu.');
@@ -130,7 +166,6 @@ const ProfilScreen: React.FC = () => {
 
       if (!result.canceled && result.assets && result.assets[0]) {
         setSelectedAvatar(result.assets[0].uri);
-        setImageSourceModalVisible(false);
       }
     } catch (error) {
       Alert.alert('Hata', 'Fotoğraf çekilirken bir hata oluştu.');
@@ -260,9 +295,13 @@ const ProfilScreen: React.FC = () => {
 
         {/* User Info Card */}
         <View style={styles.userCard}>
-          <Image source={{ uri: selectedAvatar }} style={styles.avatar} />
-          <Text style={styles.userName}>{userInfo.name}</Text>
-          <Text style={styles.userEmail}>{userInfo.email}</Text>
+          {user && user.profileImage ? (
+            <Image source={{ uri: user.profileImage }} style={styles.avatar} />
+          ) : (
+            <DefaultAvatar size={responsiveSize(80)} />
+          )}
+          <Text style={styles.userName}>{user?.username || userInfo.name}</Text>
+          <Text style={styles.userEmail}>{user?.email || userInfo.email}</Text>
           <Text style={styles.joinDate}>
             Üye olma tarihi: {userInfo.joinDate}
           </Text>
@@ -297,10 +336,14 @@ const ProfilScreen: React.FC = () => {
             {/* Avatar Selection */}
             <View style={styles.avatarSection}>
               <View style={styles.currentAvatarContainer}>
-                <Image
-                  source={{ uri: selectedAvatar }}
-                  style={styles.currentAvatar}
-                />
+                {user?.profileImage ? (
+                  <Image
+                    source={{ uri: user.profileImage }}
+                    style={styles.currentAvatar}
+                  />
+                ) : (
+                  <DefaultAvatar size={responsiveSize(80)} />
+                )}
                 <Text style={styles.currentAvatarText}>Mevcut Fotoğraf</Text>
               </View>
 
@@ -336,10 +379,80 @@ const ProfilScreen: React.FC = () => {
               </View>
 
               <Text style={styles.avatarSectionSubtitle}>
-                Varsayılan avatarlar:
+                Erkek Avatarları:
               </Text>
               <FlatList
-                data={avatarOptions}
+                data={avatarOptions.slice(1, 6)} // Erkek avatarları (1-5)
+                keyExtractor={item => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.avatarOption,
+                      selectedAvatar === item.url &&
+                        styles.avatarOptionSelected,
+                    ]}
+                    onPress={() => setSelectedAvatar(item.url)}
+                  >
+                    <Image
+                      source={{ uri: item.url }}
+                      style={styles.avatarOptionImage}
+                    />
+                    {selectedAvatar === item.url && (
+                      <View style={styles.avatarCheckmark}>
+                        <Ionicons
+                          name='checkmark'
+                          size={16}
+                          color={colors.textWhite}
+                        />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.avatarListContainer}
+              />
+
+              <Text style={styles.avatarSectionSubtitle}>
+                Kadın Avatarları:
+              </Text>
+              <FlatList
+                data={avatarOptions.slice(6, 11)} // Kadın avatarları (6-10)
+                keyExtractor={item => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.avatarOption,
+                      selectedAvatar === item.url &&
+                        styles.avatarOptionSelected,
+                    ]}
+                    onPress={() => setSelectedAvatar(item.url)}
+                  >
+                    <Image
+                      source={{ uri: item.url }}
+                      style={styles.avatarOptionImage}
+                    />
+                    {selectedAvatar === item.url && (
+                      <View style={styles.avatarCheckmark}>
+                        <Ionicons
+                          name='checkmark'
+                          size={16}
+                          color={colors.textWhite}
+                        />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                )}
+                contentContainerStyle={styles.avatarListContainer}
+              />
+
+              <Text style={styles.avatarSectionSubtitle}>
+                Sevimli Hayvanlar:
+              </Text>
+              <FlatList
+                data={avatarOptions.slice(11, 16)} // Hayvan avatarları (11-15)
                 keyExtractor={item => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -376,7 +489,13 @@ const ProfilScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.modalButtonSecondary}
                 onPress={() => {
-                  setSelectedAvatar(userInfo.avatar);
+                  if (user?.profileImage) {
+                    setSelectedAvatar(user.profileImage);
+                  } else {
+                    setSelectedAvatar(
+                      'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+                    );
+                  }
                   setEditModalVisible(false);
                 }}
               >
@@ -384,10 +503,17 @@ const ProfilScreen: React.FC = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={() => {
-                  updateAvatar(selectedAvatar);
-                  Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
-                  setEditModalVisible(false);
+                onPress={async () => {
+                  const result = await updateProfileImage(selectedAvatar);
+                  if (result.success) {
+                    Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
+                    setEditModalVisible(false);
+                  } else {
+                    Alert.alert(
+                      'Hata',
+                      'Profil fotoğrafı güncellenirken bir hata oluştu.'
+                    );
+                  }
                 }}
               >
                 <Text style={styles.modalButtonText}>Kaydet</Text>

@@ -26,6 +26,7 @@ import Swiper from 'react-native-deck-swiper';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
 import { addSampleData } from '../services/sampleData';
+import DefaultAvatar from '../utils/defaultAvatar';
 import {
   responsiveFontSize,
   responsiveHeight,
@@ -306,7 +307,7 @@ const SearchModal = ({
 
 const HomeScreen: React.FC = () => {
   const { userInfo } = useUser();
-  const { user } = useAuthStore();
+  const { user, initializeAuth, updateProfileImage } = useAuthStore();
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -333,6 +334,11 @@ const HomeScreen: React.FC = () => {
         )
       : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  // Initialize auth on component mount
+  useEffect(() => {
+    initializeAuth();
+  }, [initializeAuth]);
 
   // Navigation focus listener to handle card index when returning from other screens
   useEffect(() => {
@@ -403,11 +409,18 @@ const HomeScreen: React.FC = () => {
       >
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.navigate('ProfilScreen')}>
-            <Image
-              source={{ uri: user?.profileImage || userInfo.avatar }}
-              style={styles.avatar}
-            />
+          <TouchableOpacity
+            onPress={() => navigation.navigate('ProfilScreen')}
+            style={styles.avatarContainer}
+          >
+            {user && user.profileImage ? (
+              <Image
+                source={{ uri: user.profileImage }}
+                style={styles.avatar}
+              />
+            ) : (
+              <DefaultAvatar size={responsiveSize(48)} />
+            )}
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>Merhaba!</Text>
@@ -782,7 +795,10 @@ const styles = StyleSheet.create({
     width: responsiveSize(48),
     height: responsiveSize(48),
     borderRadius: responsiveSize(24),
-    backgroundColor: colors.borderLight,
+  },
+  avatarContainer: {
+    borderRadius: responsiveSize(24),
+    overflow: 'hidden',
   },
   featureCard: {
     flexDirection: 'row',

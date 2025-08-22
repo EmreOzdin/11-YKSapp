@@ -16,6 +16,22 @@ export const useAuthStore = create(set => ({
   token: null,
   isLoading: false,
 
+  initializeAuth: async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userJson = await AsyncStorage.getItem('user');
+      const user = userJson ? JSON.parse(userJson) : null;
+
+      if (token && user) {
+        set({ user, token, isAuthenticated: true });
+      } else {
+        set({ user: null, token: null, isAuthenticated: false });
+      }
+    } catch (error) {
+      set({ user: null, token: null, isAuthenticated: false });
+    }
+  },
+
   register: async (username, email, password) => {
     set({ isLoading: true });
     try {
@@ -101,6 +117,23 @@ export const useAuthStore = create(set => ({
 
   logout: () => {
     set({ user: null, token: null, isAuthenticated: false });
+  },
+
+  updateProfileImage: async imageUrl => {
+    try {
+      const currentUser = await AsyncStorage.getItem('user');
+      if (currentUser) {
+        const user = JSON.parse(currentUser);
+        const updatedUser = { ...user, profileImage: imageUrl };
+
+        await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+        set({ user: updatedUser });
+
+        return { success: true };
+      }
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   },
 }));
 
