@@ -26,12 +26,13 @@ import Swiper from 'react-native-deck-swiper';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
 import { addSampleData } from '../services/sampleData';
-import DefaultAvatar from '../utils/defaultAvatar';
+import DefaultAvatar, { getDefaultAvatarUrl } from '../utils/defaultAvatar';
 import {
   responsiveFontSize,
   responsiveHeight,
   responsiveSize,
 } from '../utils/responsive';
+import { capitalizeFirstLetter } from '../utils/stringUtils';
 import { colors, shadows } from '../utils/theme';
 
 const CARD_DATA = [
@@ -61,6 +62,108 @@ const notifications = [
   { id: '1', title: 'Yeni deneme sınavı eklendi!', date: '2 saat önce' },
   { id: '2', title: 'Çalışma serini 3 gün oldu!', date: 'Dün' },
   { id: '3', title: 'Matematikte yeni konu anlatımı var.', date: '2 gün önce' },
+];
+
+// Arama verileri
+const searchData = [
+  {
+    id: '1',
+    title: 'Fen Bilimleri Sınavı',
+    type: 'exam',
+    route: 'Fen Bilimleri',
+    icon: 'flask',
+  },
+  {
+    id: '2',
+    title: 'Türkçe Sınavı',
+    type: 'exam',
+    route: 'Türkçe',
+    icon: 'book',
+  },
+  {
+    id: '3',
+    title: 'Matematik Sınavı',
+    type: 'exam',
+    route: 'Matematik',
+    icon: 'calculator',
+  },
+  {
+    id: '4',
+    title: 'Sosyal Bilimler Sınavı',
+    type: 'exam',
+    route: 'Sosyal Bilimler',
+    icon: 'globe',
+  },
+  {
+    id: '5',
+    title: 'TYT Deneme Sınavı',
+    type: 'exam',
+    route: 'TytScreen',
+    icon: 'school',
+  },
+  {
+    id: '6',
+    title: 'AYT Deneme Sınavı',
+    type: 'exam',
+    route: 'AytScreen',
+    icon: 'school',
+  },
+  {
+    id: '7',
+    title: 'YDT Deneme Sınavı',
+    type: 'exam',
+    route: 'YdtScreen',
+    icon: 'school',
+  },
+  {
+    id: '8',
+    title: 'TYT Geçmiş Sınavlar',
+    type: 'past',
+    route: 'TytPastScreen',
+    icon: 'time',
+  },
+  {
+    id: '9',
+    title: 'AYT Geçmiş Sınavlar',
+    type: 'past',
+    route: 'AytPastScreen',
+    icon: 'time',
+  },
+  {
+    id: '10',
+    title: 'YDT Geçmiş Sınavlar',
+    type: 'past',
+    route: 'YdtPastScreen',
+    icon: 'time',
+  },
+  {
+    id: '11',
+    title: 'Bilgi Kartları',
+    type: 'cards',
+    route: 'CardsScreen',
+    icon: 'card',
+  },
+  {
+    id: '12',
+    title: 'Hedefler',
+    type: 'goals',
+    route: 'HedeflerScreen',
+    icon: 'target',
+  },
+  {
+    id: '13',
+    title: 'Performans',
+    type: 'performance',
+    route: 'PerformansScreen',
+    icon: 'stats-chart',
+  },
+  {
+    id: '14',
+    title: 'Profil',
+    type: 'profile',
+    route: 'ProfilScreen',
+    icon: 'person',
+  },
 ];
 
 const NotificationModal = ({
@@ -396,6 +499,278 @@ const HomeScreen: React.FC = () => {
     }
   };
 
+  // SearchModal component
+  const SearchModal = () => {
+    const [searchText, setSearchText] = useState('');
+    const [filteredData, setFilteredData] = useState(searchData);
+
+    const handleSearch = (text: string) => {
+      setSearchText(text);
+      if (text.trim() === '') {
+        setFilteredData(searchData);
+      } else {
+        const filtered = searchData.filter(item =>
+          item.title.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredData(filtered);
+      }
+    };
+
+    const handleItemPress = (item: any) => {
+      setSearchModalVisible(false);
+      setSearchText('');
+      setFilteredData(searchData);
+
+      // Navigate to the selected item
+      switch (item.route) {
+        case 'Fen Bilimleri':
+          navigation.navigate('Fen Bilimleri');
+          break;
+        case 'Türkçe':
+          navigation.navigate('Türkçe');
+          break;
+        case 'Matematik':
+          navigation.navigate('Matematik');
+          break;
+        case 'Sosyal Bilimler':
+          navigation.navigate('Sosyal Bilimler');
+          break;
+        case 'TytScreen':
+          navigation.navigate('TytScreen');
+          break;
+        case 'AytScreen':
+          navigation.navigate('AytScreen');
+          break;
+        case 'YdtScreen':
+          navigation.navigate('YdtScreen');
+          break;
+        case 'TytPastScreen':
+          navigation.navigate('TytPastScreen');
+          break;
+        case 'AytPastScreen':
+          navigation.navigate('AytPastScreen');
+          break;
+        case 'YdtPastScreen':
+          navigation.navigate('YdtPastScreen');
+          break;
+        case 'CardsScreen':
+          navigation.navigate('CardsScreen');
+          break;
+        case 'HedeflerScreen':
+          navigation.navigate('HedeflerScreen');
+          break;
+        case 'PerformansScreen':
+          navigation.navigate('PerformansScreen');
+          break;
+        case 'ProfilScreen':
+          navigation.navigate('ProfilScreen');
+          break;
+      }
+    };
+
+    const getIconName = (icon: string) => {
+      switch (icon) {
+        case 'flask':
+          return 'flask';
+        case 'book':
+          return 'book';
+        case 'calculator':
+          return 'calculator';
+        case 'globe':
+          return 'globe';
+        case 'school':
+          return 'school';
+        case 'time':
+          return 'time';
+        case 'card':
+          return 'card';
+        case 'target':
+          return 'locate';
+        case 'stats-chart':
+          return 'stats-chart';
+        case 'person':
+          return 'person';
+        default:
+          return 'search';
+      }
+    };
+
+    return (
+      <Modal visible={searchModalVisible} animationType='slide' transparent>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.25)',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          onStartShouldSetResponder={() => true}
+          onResponderRelease={() => setSearchModalVisible(false)}
+        >
+          <View
+            style={{
+              width: '90%',
+              backgroundColor: '#fff',
+              borderRadius: responsiveSize(16),
+              paddingTop: responsiveSize(20),
+              paddingHorizontal: responsiveSize(20),
+              paddingBottom: responsiveSize(20),
+              maxHeight: '80%',
+            }}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginBottom: responsiveSize(16),
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: responsiveFontSize(20),
+                  fontWeight: 'bold',
+                  flex: 1,
+                }}
+              >
+                Arama
+              </Text>
+              <TouchableOpacity onPress={() => setSearchModalVisible(false)}>
+                <Ionicons name='close' size={24} color='#666' />
+              </TouchableOpacity>
+            </View>
+
+            {/* Arama Çubuğu */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#f5f5f5',
+                borderRadius: responsiveSize(12),
+                paddingHorizontal: responsiveSize(12),
+                marginBottom: responsiveSize(16),
+              }}
+            >
+              <Ionicons
+                name='search'
+                size={20}
+                color='#666'
+                style={{ marginRight: responsiveSize(8) }}
+              />
+              <TextInput
+                value={searchText}
+                onChangeText={handleSearch}
+                placeholder='Ara...'
+                style={{
+                  flex: 1,
+                  fontSize: responsiveFontSize(16),
+                  paddingVertical: responsiveSize(12),
+                  color: '#333',
+                }}
+                autoFocus
+              />
+              {searchText.length > 0 && (
+                <TouchableOpacity onPress={() => handleSearch('')}>
+                  <Ionicons name='close-circle' size={20} color='#666' />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Arama Sonuçları */}
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {filteredData.length > 0 ? (
+                filteredData.map((item, index) => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: responsiveSize(12),
+                      borderBottomWidth:
+                        index !== filteredData.length - 1 ? 1 : 0,
+                      borderBottomColor: '#f0f0f0',
+                    }}
+                    onPress={() => handleItemPress(item)}
+                    activeOpacity={0.7}
+                  >
+                    <View
+                      style={{
+                        width: responsiveSize(40),
+                        height: responsiveSize(40),
+                        borderRadius: responsiveSize(20),
+                        backgroundColor: '#f0f0f0',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginRight: responsiveSize(12),
+                      }}
+                    >
+                      <Ionicons
+                        name={getIconName(item.icon) as any}
+                        size={20}
+                        color='#666'
+                      />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: responsiveFontSize(16),
+                          fontWeight: '600',
+                          color: '#222',
+                        }}
+                      >
+                        {item.title}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: responsiveFontSize(12),
+                          color: '#888',
+                          marginTop: responsiveSize(2),
+                        }}
+                      >
+                        {item.type === 'exam'
+                          ? 'Sınav'
+                          : item.type === 'past'
+                            ? 'Geçmiş Sınavlar'
+                            : item.type === 'cards'
+                              ? 'Bilgi Kartları'
+                              : item.type === 'goals'
+                                ? 'Hedefler'
+                                : item.type === 'performance'
+                                  ? 'Performans'
+                                  : item.type === 'profile'
+                                    ? 'Profil'
+                                    : 'Diğer'}
+                      </Text>
+                    </View>
+                    <Ionicons name='chevron-forward' size={20} color='#ccc' />
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <View
+                  style={{
+                    alignItems: 'center',
+                    paddingVertical: responsiveSize(40),
+                  }}
+                >
+                  <Ionicons name='search' size={48} color='#ccc' />
+                  <Text
+                    style={{
+                      fontSize: responsiveFontSize(16),
+                      color: '#888',
+                      marginTop: responsiveSize(12),
+                      textAlign: 'center',
+                    }}
+                  >
+                    Sonuç bulunamadı
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -413,11 +788,8 @@ const HomeScreen: React.FC = () => {
             onPress={() => navigation.navigate('ProfilScreen')}
             style={styles.avatarContainer}
           >
-            {user && user.profileImage ? (
-              <Image
-                source={{ uri: user.profileImage }}
-                style={styles.avatar}
-              />
+            {userInfo.avatar && userInfo.avatar !== getDefaultAvatarUrl() ? (
+              <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
             ) : (
               <DefaultAvatar size={responsiveSize(48)} />
             )}
@@ -425,7 +797,9 @@ const HomeScreen: React.FC = () => {
           <View style={styles.headerTitleContainer}>
             <Text style={styles.headerTitle}>Merhaba!</Text>
             <Text style={styles.userName}>
-              {user?.username || userInfo.name.split(' ')[0]}
+              {capitalizeFirstLetter(
+                user?.username || userInfo.name.split(' ')[0]
+              )}
             </Text>
           </View>
           <View style={styles.headerIcons}>
@@ -736,14 +1110,7 @@ const HomeScreen: React.FC = () => {
         visible={notifModalVisible}
         onClose={() => setNotifModalVisible(false)}
       />
-      <SearchModal
-        visible={searchModalVisible}
-        onClose={() => setSearchModalVisible(false)}
-        value={searchValue}
-        onChange={setSearchValue}
-        results={filteredSearchResults}
-        onResultPress={handleSearchResultPress}
-      />
+      <SearchModal />
     </View>
   );
 };

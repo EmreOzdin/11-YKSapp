@@ -1,24 +1,51 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors } from '../utils/theme';
 
 const HedeflerScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.navigate('HomeTab')}
+      {/* Fixed Header */}
+      <LinearGradient
+        colors={[colors.primary, colors.primaryLight]}
+        style={styles.header}
       >
-        <Text style={styles.backText}>{'<'} Geri</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Hedefler</Text>
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.navigate('HomeTab')}
+          >
+            <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Hedefler</Text>
+          <View style={styles.placeholder} />
+        </View>
+      </LinearGradient>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}
+      >
+        <View style={styles.content}>
+          <Text style={styles.title}>Hedefler</Text>
+          {/* Buraya hedef içerikleri eklenecek */}
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -26,27 +53,44 @@ const HedeflerScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.backgroundSecondary,
+  },
+  header: {
+    paddingTop: responsiveSize(50),
+    paddingBottom: responsiveSize(20),
+    paddingHorizontal: responsiveSize(20),
+    zIndex: 1000,
+    elevation: 5,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    padding: responsiveSize(8),
+  },
+  headerTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: 'bold',
+    color: colors.textWhite,
+  },
+  placeholder: {
+    width: responsiveSize(40),
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.backgroundSecondary,
+    paddingVertical: responsiveSize(40),
   },
   title: {
     fontSize: responsiveFontSize(28),
     fontWeight: 'bold',
     color: colors.secondary,
-  },
-  backButton: {
-    position: 'absolute',
-    top: responsiveSize(40),
-    left: responsiveSize(20),
-    padding: responsiveSize(8),
-    borderRadius: responsiveSize(8),
-    ...shadows.small,
-  },
-  backText: {
-    fontSize: responsiveFontSize(16),
-    color: colors.secondary,
-    fontWeight: 'bold',
   },
 });
 

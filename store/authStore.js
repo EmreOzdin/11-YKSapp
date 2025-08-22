@@ -54,12 +54,20 @@ export const useAuthStore = create(set => ({
         };
       }
 
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      // Kullanıcı verilerini hazırla
+      const userData = {
+        ...data.user,
+        username: username,
+        email: email,
+        profileImage: null, // Default avatar kullanılacak
+      };
+
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
       await AsyncStorage.setItem('token', data.token);
 
-      set({ user: data.user, token: data.token, isLoading: false });
+      set({ user: userData, token: data.token, isLoading: false });
 
-      return { success: true, message: 'Registration successful' };
+      return { success: true, message: 'Registration successful', user: userData };
     } catch (error) {
       set({ isLoading: false });
       return { success: false, message: error.message || 'Network error' };
@@ -103,20 +111,34 @@ export const useAuthStore = create(set => ({
         };
       }
 
+      // Kullanıcı verilerini hazırla
+      const userData = {
+        ...data.user,
+        email: email,
+        profileImage: data.user.profileImage || null,
+      };
+
       await AsyncStorage.setItem('token', data.token);
-      await AsyncStorage.setItem('user', JSON.stringify(data.user));
+      await AsyncStorage.setItem('user', JSON.stringify(userData));
 
-      set({ user: data.user, token: data.token, isLoading: false });
+      set({ user: userData, token: data.token, isLoading: false });
 
-      return { success: true, message: 'Login successful' };
+      return { success: true, message: 'Login successful', user: userData };
     } catch (error) {
       set({ isLoading: false });
       return { success: false, message: error.message || 'Network error' };
     }
   },
 
-  logout: () => {
-    set({ user: null, token: null, isAuthenticated: false });
+  logout: async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('userInfo');
+      set({ user: null, token: null, isAuthenticated: false });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   },
 
   updateProfileImage: async imageUrl => {

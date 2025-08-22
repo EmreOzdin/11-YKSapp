@@ -22,8 +22,9 @@ import {
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
-import DefaultAvatar from '../utils/defaultAvatar';
+import DefaultAvatar, { getDefaultAvatarUrl } from '../utils/defaultAvatar';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { capitalizeFirstLetter } from '../utils/stringUtils';
 import { colors, shadows } from '../utils/theme';
 
 interface ProfileOption {
@@ -46,7 +47,7 @@ const ProfilScreen: React.FC = () => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(
-    'https://cdn-icons-png.flaticon.com/512/149/149071.png'
+    userInfo.avatar || getDefaultAvatarUrl()
   );
   const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
 
@@ -57,14 +58,12 @@ const ProfilScreen: React.FC = () => {
 
   // Kullanıcının mevcut profil fotoğrafına göre selectedAvatar'ı ayarla
   React.useEffect(() => {
-    if (user?.profileImage) {
-      setSelectedAvatar(user.profileImage);
+    if (userInfo.avatar && userInfo.avatar !== getDefaultAvatarUrl()) {
+      setSelectedAvatar(userInfo.avatar);
     } else {
-      setSelectedAvatar(
-        'https://cdn-icons-png.flaticon.com/512/149/149071.png'
-      );
+      setSelectedAvatar(getDefaultAvatarUrl());
     }
-  }, [user?.profileImage]);
+  }, [userInfo.avatar]);
 
   // Avatar seçenekleri
   const avatarOptions = [
@@ -100,7 +99,7 @@ const ProfilScreen: React.FC = () => {
     }, // Panda
     {
       id: '15',
-      url: 'https://images.unsplash.com/photo-1584556819299-4b7b7b7b7b7b?w=150&h=150&fit=crop',
+      url: 'https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?w=150&h=150&fit=crop',
     }, // Hamster
   ];
 
@@ -275,35 +274,43 @@ const ProfilScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <LinearGradient
-          colors={[colors.primary, colors.primaryLight]}
-          style={styles.header}
-        >
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.navigate('HomeTab')}
-            >
-              <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Profil</Text>
-            <View style={styles.editButton} />
-          </View>
-        </LinearGradient>
+      {/* Fixed Header */}
+      <LinearGradient
+        colors={[colors.primary, colors.primaryLight]}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.navigate('HomeTab')}
+          >
+            <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Profil</Text>
+          <View style={styles.editButton} />
+        </View>
+      </LinearGradient>
 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}
+      >
         {/* User Info Card */}
         <View style={styles.userCard}>
-          {user && user.profileImage ? (
-            <Image source={{ uri: user.profileImage }} style={styles.avatar} />
+          {userInfo.avatar && userInfo.avatar !== getDefaultAvatarUrl() ? (
+            <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
           ) : (
             <DefaultAvatar size={responsiveSize(80)} />
           )}
-          <Text style={styles.userName}>{user?.username || userInfo.name}</Text>
+          <Text style={styles.userName}>
+            {capitalizeFirstLetter(user?.username || userInfo.name)}
+          </Text>
           <Text style={styles.userEmail}>{user?.email || userInfo.email}</Text>
           <Text style={styles.joinDate}>
-            Üye olma tarihi: {userInfo.joinDate}
+            Üye olma tarihi:{' '}
+            {user?.createdAt
+              ? new Date(user.createdAt).toLocaleDateString('tr-TR')
+              : userInfo.joinDate}
           </Text>
         </View>
 
@@ -336,9 +343,10 @@ const ProfilScreen: React.FC = () => {
             {/* Avatar Selection */}
             <View style={styles.avatarSection}>
               <View style={styles.currentAvatarContainer}>
-                {user?.profileImage ? (
+                {userInfo.avatar &&
+                userInfo.avatar !== getDefaultAvatarUrl() ? (
                   <Image
-                    source={{ uri: user.profileImage }}
+                    source={{ uri: userInfo.avatar }}
                     style={styles.currentAvatar}
                   />
                 ) : (
@@ -378,7 +386,12 @@ const ProfilScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.avatarSectionSubtitle}>
+              <Text
+                style={[
+                  styles.avatarSectionSubtitle,
+                  { marginTop: responsiveSize(4) },
+                ]}
+              >
                 Erkek Avatarları:
               </Text>
               <FlatList
@@ -489,12 +502,13 @@ const ProfilScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.modalButtonSecondary}
                 onPress={() => {
-                  if (user?.profileImage) {
-                    setSelectedAvatar(user.profileImage);
+                  if (
+                    userInfo.avatar &&
+                    userInfo.avatar !== getDefaultAvatarUrl()
+                  ) {
+                    setSelectedAvatar(userInfo.avatar);
                   } else {
-                    setSelectedAvatar(
-                      'https://cdn-icons-png.flaticon.com/512/149/149071.png'
-                    );
+                    setSelectedAvatar(getDefaultAvatarUrl());
                   }
                   setEditModalVisible(false);
                 }}
@@ -504,11 +518,26 @@ const ProfilScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={async () => {
-                  const result = await updateProfileImage(selectedAvatar);
-                  if (result.success) {
-                    Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
-                    setEditModalVisible(false);
-                  } else {
+                  try {
+                    // UserContext'te avatar'ı güncelle
+                    await updateAvatar(selectedAvatar);
+
+                    // AuthStore'da da güncelle
+                    const result = await updateProfileImage(selectedAvatar);
+
+                    if (result.success) {
+                      Alert.alert(
+                        'Başarılı',
+                        'Profil fotoğrafınız güncellendi!'
+                      );
+                      setEditModalVisible(false);
+                    } else {
+                      Alert.alert(
+                        'Hata',
+                        'Profil fotoğrafı güncellenirken bir hata oluştu.'
+                      );
+                    }
+                  } catch (error) {
                     Alert.alert(
                       'Hata',
                       'Profil fotoğrafı güncellenirken bir hata oluştu.'
@@ -535,6 +564,11 @@ const styles = StyleSheet.create({
     paddingTop: responsiveSize(50),
     paddingBottom: responsiveSize(20),
     paddingHorizontal: responsiveSize(20),
+    zIndex: 1000,
+    elevation: 5,
+  },
+  scrollView: {
+    flex: 1,
   },
   headerContent: {
     flexDirection: 'row',
@@ -556,7 +590,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     margin: responsiveSize(20),
     borderRadius: responsiveSize(16),
-    padding: responsiveSize(20),
+    padding: responsiveSize(16),
     alignItems: 'center',
     ...shadows.medium,
   },
@@ -564,7 +598,7 @@ const styles = StyleSheet.create({
     width: responsiveSize(80),
     height: responsiveSize(80),
     borderRadius: responsiveSize(40),
-    marginBottom: responsiveSize(12),
+    marginBottom: responsiveSize(8),
   },
   userName: {
     fontSize: responsiveFontSize(20),
@@ -589,6 +623,7 @@ const styles = StyleSheet.create({
   },
   optionsContainer: {
     paddingHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(-8),
   },
   optionCard: {
     backgroundColor: colors.background,

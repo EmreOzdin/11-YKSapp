@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
+import { useUser } from '../context/UserContext';
 import {
   responsiveFontSize,
   responsiveSize,
@@ -27,6 +28,7 @@ const EmailLoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { user, isLoading, login } = useAuthStore();
+  const { initializeUser } = useUser();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -38,6 +40,8 @@ const EmailLoginScreen: React.FC = () => {
       const result = await login(email, password);
 
       if (result && result.success) {
+        // Kullanıcı bilgilerini UserContext'te başlat
+        await initializeUser(result.user);
         navigation.navigate('MainApp');
       } else {
         Alert.alert(

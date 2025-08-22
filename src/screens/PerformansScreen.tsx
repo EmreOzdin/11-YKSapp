@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  Dimensions,
-} from 'react-native';
-import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -215,30 +214,29 @@ const PerformansScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <LinearGradient
-          colors={[colors.primary, colors.primaryLight]}
-          style={styles.header}
-        >
-          <View style={styles.headerContent}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.navigate('HomeTab')}
-            >
-              <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>Performans</Text>
-            <TouchableOpacity style={styles.shareButton}>
-              <Ionicons
-                name='share-outline'
-                size={24}
-                color={colors.textWhite}
-              />
-            </TouchableOpacity>
-          </View>
-        </LinearGradient>
+      {/* Fixed Header */}
+      <LinearGradient
+        colors={[colors.primary, colors.primaryLight]}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.navigate('HomeTab')}
+          >
+            <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Performans</Text>
+          <TouchableOpacity style={styles.shareButton}>
+            <Ionicons name='share-outline' size={24} color={colors.textWhite} />
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
 
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.scrollView}
+      >
         {/* Period Selector */}
         {renderPeriodSelector()}
 
@@ -358,6 +356,11 @@ const styles = StyleSheet.create({
     paddingTop: responsiveSize(50),
     paddingBottom: responsiveSize(20),
     paddingHorizontal: responsiveSize(20),
+    zIndex: 1000,
+    elevation: 5,
+  },
+  scrollView: {
+    flex: 1,
   },
   headerContent: {
     flexDirection: 'row',

@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
   Alert,
-  Image,
   Platform,
   StyleSheet,
   Text,
@@ -12,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
+import { useUser } from '../context/UserContext';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -34,6 +34,7 @@ const SignUpScreen: React.FC = () => {
   const navigation = useNavigation() as any;
 
   const { user, isLoading, register, token } = useAuthStore();
+  const { initializeUser } = useUser();
 
   const handleSignUp = async () => {
     if (!username || !email || !password) {
@@ -50,6 +51,9 @@ const SignUpScreen: React.FC = () => {
       const result = await register(username, email, password);
 
       if (result && result.success) {
+        // Kullanıcı bilgilerini UserContext'te başlat
+        await initializeUser(result.user);
+
         Alert.alert('Başarılı', 'Kayıt işlemi tamamlandı!', [
           {
             text: 'Tamam',
@@ -89,12 +93,21 @@ const SignUpScreen: React.FC = () => {
         </View>
         <View style={{ width: 36 }} />
       </View>
+
+      {/* Welcome Section */}
+      <View style={styles.welcomeSection}>
+        <Text style={styles.welcomeTitle}>YKSapp'e Hoş Geldiniz!</Text>
+        <Text style={styles.welcomeSubtitle}>
+          YKS sınavına hazırlanmak için hesabınızı oluşturun
+        </Text>
+      </View>
+
       {/* Form */}
       <View style={styles.form}>
         <Text style={styles.label}>Kullanıcı Adı</Text>
         <TextInput
           style={styles.input}
-          placeholder='Kullanıcı adı'
+          placeholder='Örn: ahmet_yilmaz veya ahmet.yilmaz'
           placeholderTextColor='#888'
           autoCapitalize='none'
           value={username}
@@ -103,7 +116,7 @@ const SignUpScreen: React.FC = () => {
         <Text style={styles.label}>E-posta</Text>
         <TextInput
           style={styles.input}
-          placeholder='E-posta'
+          placeholder='ornek@email.com'
           placeholderTextColor='#888'
           autoCapitalize='none'
           keyboardType='email-address'
@@ -114,7 +127,7 @@ const SignUpScreen: React.FC = () => {
         <View style={styles.passwordInputWrapper}>
           <TextInput
             style={[styles.input, styles.passwordInput]}
-            placeholder='Şifre'
+            placeholder='En az 8 karakter, harf ve rakam içermeli'
             placeholderTextColor='#888'
             secureTextEntry={!showPassword}
             value={password}
@@ -139,40 +152,6 @@ const SignUpScreen: React.FC = () => {
         >
           <Text style={styles.signUpButtonText}>
             {isLoading ? 'Kaydediliyor...' : 'Kayıt Ol'}
-          </Text>
-        </TouchableOpacity>
-        <Text style={styles.orText}>veya</Text>
-        <TouchableOpacity style={styles.socialButton}>
-          <Image
-            source={require('../../assets/apple.png')}
-            style={styles.socialIcon}
-          />
-          <Text
-            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
-          >
-            Apple ile devam et
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Image
-            source={require('../../assets/google.png')}
-            style={styles.socialIcon}
-          />
-          <Text
-            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
-          >
-            Google ile devam et
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <Image
-            source={require('../../assets/facebook.png')}
-            style={styles.socialIcon}
-          />
-          <Text
-            style={[styles.socialButtonText, styles.socialButtonTextCenter]}
-          >
-            Facebook ile devam et
           </Text>
         </TouchableOpacity>
         <View style={styles.loginRow}>
@@ -218,6 +197,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: Platform.OS === 'android' ? responsiveSize(36) : 0,
+    justifyContent: 'flex-start',
   },
   headerRow: {
     flexDirection: 'row',
@@ -252,6 +232,24 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(16),
     color: colors.textTertiary,
     fontWeight: '500',
+  },
+  welcomeSection: {
+    alignItems: 'center',
+    paddingHorizontal: responsiveSize(24),
+    marginBottom: responsiveSize(30),
+  },
+  welcomeTitle: {
+    fontSize: responsiveFontSize(28),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(8),
+  },
+  welcomeSubtitle: {
+    fontSize: responsiveFontSize(16),
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: responsiveSize(24),
   },
   form: {
     width: '100%',
@@ -305,40 +303,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(17),
     fontWeight: 'bold',
   },
-  orText: {
-    textAlign: 'center',
-    color: colors.textTertiary,
-    fontSize: responsiveFontSize(15),
-    marginVertical: responsiveSize(10),
-    fontWeight: '500',
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1.2,
-    borderColor: colors.border,
-    borderRadius: responsiveSize(24),
-    paddingVertical: responsiveSize(12),
-    paddingHorizontal: responsiveSize(18),
-    width: '100%',
-    marginBottom: responsiveSize(10),
-    backgroundColor: colors.background,
-  },
-  socialIcon: {
-    width: responsiveSize(24),
-    height: responsiveSize(24),
-    marginRight: responsiveSize(16),
-    resizeMode: 'contain',
-  },
-  socialButtonText: {
-    fontSize: responsiveFontSize(16),
-    color: colors.textPrimary,
-    fontWeight: '600',
-  },
-  socialButtonTextCenter: {
-    flex: 1,
-    textAlign: 'center',
-  },
+
   loginRow: {
     flexDirection: 'row',
     justifyContent: 'center',
