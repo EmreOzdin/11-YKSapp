@@ -60,8 +60,10 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       const storedUserInfo = await AsyncStorage.getItem('userInfo');
       if (storedUserInfo) {
         const parsedUserInfo = JSON.parse(storedUserInfo);
+
         setUserInfo(parsedUserInfo);
       }
+      // AsyncStorage'da veri yoksa, hiçbir şey yapma - default state'i koru
     } catch (error) {
       console.error('Kullanıcı bilgileri yüklenirken hata:', error);
     }
@@ -110,46 +112,31 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       }
     }
 
-    // Eğer aynı email ile kayıtlı kullanıcı varsa, mevcut bilgileri koru
+    // Eğer aynı email ile kayıtlı kullanıcı varsa, hiçbir şey yapma
     if (existingUserInfo && existingUserInfo.email === userData.email) {
-      // Mevcut kullanıcı bilgilerini kullan, sadece eksik olanları güncelle
-      const updatedUserInfo: UserInfo = {
-        ...existingUserInfo,
-        name: userData.username || userData.name || existingUserInfo.name,
-        email: userData.email || existingUserInfo.email,
-        // Avatar'ı sadece AuthStore'da varsa ve null değilse güncelle, yoksa mevcut olanı koru
-        avatar:
-          userData.profileImage && userData.profileImage !== null
-            ? userData.profileImage
-            : existingUserInfo.avatar,
-      };
-
-      setUserInfo(updatedUserInfo);
-      await saveUserInfo(updatedUserInfo);
-    } else {
-      // Yeni kullanıcı için yeni bilgiler oluştur
-      const newUserInfo: UserInfo = {
-        name: userData.username || userData.name || '',
-        email: userData.email || '',
-        avatar:
-          userData.profileImage && userData.profileImage !== null
-            ? userData.profileImage
-            : getDefaultAvatarUrl(),
-        joinDate: new Date().toLocaleDateString('tr-TR', {
-          month: 'long',
-          year: 'numeric',
-        }),
-        totalQuestions: 0,
-        correctAnswers: 0,
-        accuracy: 0,
-        studyStreak: 0,
-        totalStudyTime: 0,
-      };
-
-      setUserInfo(newUserInfo);
-      await saveUserInfo(newUserInfo);
+      // Mevcut kullanıcı için hiçbir şey yapma - loadUserInfo zaten yüklemiş
+      return;
     }
-  }, [userInfo]);
+
+    // Yeni kullanıcı için yeni bilgiler oluştur
+    const newUserInfo: UserInfo = {
+      name: userData.username || userData.name || '',
+      email: userData.email || '',
+      avatar: getDefaultAvatarUrl(),
+      joinDate: new Date().toLocaleDateString('tr-TR', {
+        month: 'long',
+        year: 'numeric',
+      }),
+      totalQuestions: 0,
+      correctAnswers: 0,
+      accuracy: 0,
+      studyStreak: 0,
+      totalStudyTime: 0,
+    };
+
+    setUserInfo(newUserInfo);
+    await saveUserInfo(newUserInfo);
+  }, []);
 
   return (
     <UserContext.Provider

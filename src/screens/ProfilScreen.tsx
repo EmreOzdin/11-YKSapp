@@ -58,11 +58,7 @@ const ProfilScreen: React.FC = () => {
 
   // Kullanıcının mevcut profil fotoğrafına göre selectedAvatar'ı ayarla
   React.useEffect(() => {
-    if (userInfo.avatar && userInfo.avatar !== getDefaultAvatarUrl()) {
-      setSelectedAvatar(userInfo.avatar);
-    } else {
-      setSelectedAvatar(getDefaultAvatarUrl());
-    }
+    setSelectedAvatar(userInfo.avatar || getDefaultAvatarUrl());
   }, [userInfo.avatar]);
 
   // Avatar seçenekleri - 3 erkek, 3 kadın, 3 hayvan
@@ -115,10 +111,6 @@ const ProfilScreen: React.FC = () => {
       url: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop',
       type: 'hayvan',
     }, // Tavşan
-    {
-      id: '15',
-      url: 'https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?w=150&h=150&fit=crop',
-    }, // Hamster
   ];
 
   const requestPermissions = async () => {
@@ -450,14 +442,7 @@ const ProfilScreen: React.FC = () => {
               <TouchableOpacity
                 style={styles.modalButtonSecondary}
                 onPress={() => {
-                  if (
-                    userInfo.avatar &&
-                    userInfo.avatar !== getDefaultAvatarUrl()
-                  ) {
-                    setSelectedAvatar(userInfo.avatar);
-                  } else {
-                    setSelectedAvatar(getDefaultAvatarUrl());
-                  }
+                  setSelectedAvatar(userInfo.avatar || getDefaultAvatarUrl());
                   setEditModalVisible(false);
                 }}
               >
@@ -467,24 +452,11 @@ const ProfilScreen: React.FC = () => {
                 style={styles.modalButton}
                 onPress={async () => {
                   try {
-                    // Önce AuthStore'da güncelle
-                    const result = await updateProfileImage(selectedAvatar);
+                    // Sadece UserContext'te avatar'ı güncelle
+                    await updateAvatar(selectedAvatar);
 
-                    if (result.success) {
-                      // Sonra UserContext'te avatar'ı güncelle
-                      await updateAvatar(selectedAvatar);
-
-                      Alert.alert(
-                        'Başarılı',
-                        'Profil fotoğrafınız güncellendi!'
-                      );
-                      setEditModalVisible(false);
-                    } else {
-                      Alert.alert(
-                        'Hata',
-                        'Profil fotoğrafı güncellenirken bir hata oluştu.'
-                      );
-                    }
+                    Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
+                    setEditModalVisible(false);
                   } catch (error) {
                     Alert.alert(
                       'Hata',
