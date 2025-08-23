@@ -1056,7 +1056,7 @@ const styles = StyleSheet.create({
     marginHorizontal: responsiveSize(20),
     marginTop: responsiveSize(8),
     marginBottom: responsiveSize(-170),
-  },
+  },S
   sınavDenemesiGridItem: {
     width: responsiveSize(100),
     height: responsiveSize(100),

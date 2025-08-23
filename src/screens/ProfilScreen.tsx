@@ -8,17 +8,18 @@ import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    Image,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Image,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
@@ -50,6 +51,15 @@ const ProfilScreen: React.FC = () => {
     userInfo.avatar || getDefaultAvatarUrl()
   );
   const [imageSourceModalVisible, setImageSourceModalVisible] = useState(false);
+  const [aboutModalVisible, setAboutModalVisible] = useState(false);
+  const [helpModalVisible, setHelpModalVisible] = useState(false);
+  const [helpFormData, setHelpFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+    category: 'general',
+  });
 
   // Initialize auth on component mount
   React.useEffect(() => {
@@ -191,6 +201,48 @@ const ProfilScreen: React.FC = () => {
     });
   };
 
+  const handleHelpFormSubmit = () => {
+    // Form validasyonu
+    if (
+      !helpFormData.name.trim() ||
+      !helpFormData.email.trim() ||
+      !helpFormData.subject.trim() ||
+      !helpFormData.message.trim()
+    ) {
+      Alert.alert('Hata', 'Lütfen tüm zorunlu alanları doldurun.');
+      return;
+    }
+
+    // Email formatı kontrolü
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(helpFormData.email)) {
+      Alert.alert('Hata', 'Lütfen geçerli bir e-posta adresi girin.');
+      return;
+    }
+
+    // Form gönderme simülasyonu
+    Alert.alert(
+      'Başarılı!',
+      'Destek formunuz başarıyla gönderildi. En kısa sürede size dönüş yapacağız.',
+      [
+        {
+          text: 'Tamam',
+          onPress: () => {
+            // Formu sıfırla ve modal'ı kapat
+            setHelpFormData({
+              name: '',
+              email: '',
+              subject: '',
+              message: '',
+              category: 'general',
+            });
+            setHelpModalVisible(false);
+          },
+        },
+      ]
+    );
+  };
+
   const profileOptions: ProfileOption[] = [
     {
       id: 'edit',
@@ -218,7 +270,7 @@ const ProfilScreen: React.FC = () => {
       subtitle: 'Sorularınız için bize ulaşın',
       icon: 'help-circle-outline',
       iconColor: colors.accent,
-      onPress: () => {},
+      onPress: () => setHelpModalVisible(true),
     },
     {
       id: 'about',
@@ -226,7 +278,7 @@ const ProfilScreen: React.FC = () => {
       subtitle: 'Versiyon 1.0.0',
       icon: 'information-outline',
       iconColor: colors.textTertiary,
-      onPress: () => {},
+      onPress: () => setAboutModalVisible(true),
     },
     {
       id: 'logout',
@@ -466,6 +518,241 @@ const ProfilScreen: React.FC = () => {
                 }}
               >
                 <Text style={styles.modalButtonText}>Kaydet</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* About Modal */}
+      <Modal
+        visible={aboutModalVisible}
+        animationType='slide'
+        transparent
+        onRequestClose={() => setAboutModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Uygulama Hakkında</Text>
+              <TouchableOpacity onPress={() => setAboutModalVisible(false)}>
+                <Ionicons name='close' size={24} color={colors.textPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.aboutContent}>
+                <View style={styles.appInfoSection}>
+                  <MaterialCommunityIcons
+                    name='school'
+                    size={60}
+                    color={colors.primary}
+                    style={styles.appIcon}
+                  />
+                  <Text style={styles.appName}>YKS Hazırlık Uygulaması</Text>
+                  <Text style={styles.appVersion}>Versiyon 1.0.0</Text>
+                </View>
+
+                <View style={styles.aboutSection}>
+                  <Text style={styles.aboutSectionTitle}>
+                    📚 Uygulama Hakkında
+                  </Text>
+                  <Text style={styles.aboutText}>
+                    YKS Hazırlık Uygulaması, üniversite sınavına hazırlanan
+                    öğrenciler için geliştirilmiş kapsamlı bir eğitim
+                    platformudur. TYT, AYT ve YDT sınavlarında başarı elde
+                    etmenizi sağlayacak içerikler sunar.
+                  </Text>
+                </View>
+
+                <View style={styles.aboutSection}>
+                  <Text style={styles.aboutSectionTitle}>✨ Özellikler</Text>
+                  <Text style={styles.aboutText}>
+                    • Sınav formatında sorular{'\n'}• Detaylı çözüm açıklamaları
+                    {'\n'}• İlerleme takibi{'\n'}• Konu bazında çalışma{'\n'}•
+                    Net hesaplama sistemi{'\n'}• Deneme sınavları
+                  </Text>
+                </View>
+              </View>
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setAboutModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>Tamam</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Help & Support Modal */}
+      <Modal
+        visible={helpModalVisible}
+        animationType='slide'
+        transparent
+        onRequestClose={() => {
+          setHelpModalVisible(false);
+          // Form verilerini sıfırla
+          setHelpFormData({
+            name: '',
+            email: '',
+            subject: '',
+            message: '',
+            category: 'general',
+          });
+        }}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Yardım & Destek</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setHelpModalVisible(false);
+                  // Form verilerini sıfırla
+                  setHelpFormData({
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: '',
+                    category: 'general',
+                  });
+                }}
+              >
+                <Ionicons name='close' size={24} color={colors.textPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.helpFormContent}>
+                <View style={styles.helpSection}>
+                  <Text style={styles.helpSectionTitle}>📝 Destek Formu</Text>
+                  <Text style={styles.helpFormSubtitle}>
+                    Sorununuzu detaylı bir şekilde açıklayın, size en kısa
+                    sürede dönüş yapalım.
+                  </Text>
+                </View>
+
+                <View style={styles.formSection}>
+                  <Text style={styles.formLabel}>Ad Soyad *</Text>
+                  <TextInput
+                    style={styles.formInput}
+                    placeholder='Adınızı ve soyadınızı girin'
+                    value={helpFormData.name}
+                    onChangeText={text =>
+                      setHelpFormData({ ...helpFormData, name: text })
+                    }
+                    placeholderTextColor={colors.textTertiary}
+                  />
+                </View>
+
+                <View style={styles.formSection}>
+                  <Text style={styles.formLabel}>E-posta *</Text>
+                  <TextInput
+                    style={styles.formInput}
+                    placeholder='E-posta adresinizi girin'
+                    value={helpFormData.email}
+                    onChangeText={text =>
+                      setHelpFormData({ ...helpFormData, email: text })
+                    }
+                    placeholderTextColor={colors.textTertiary}
+                    keyboardType='email-address'
+                    autoCapitalize='none'
+                  />
+                </View>
+
+                <View style={styles.formSection}>
+                  <Text style={styles.formLabel}>Kategori</Text>
+                  <View style={styles.categoryContainer}>
+                    {[
+                      { value: 'general', label: 'Genel' },
+                      { value: 'technical', label: 'Teknik Sorun' },
+                      { value: 'content', label: 'İçerik' },
+                      { value: 'payment', label: 'Ödeme' },
+                      { value: 'other', label: 'Diğer' },
+                    ].map(category => (
+                      <TouchableOpacity
+                        key={category.value}
+                        style={[
+                          styles.categoryButton,
+                          helpFormData.category === category.value &&
+                            styles.categoryButtonActive,
+                        ]}
+                        onPress={() =>
+                          setHelpFormData({
+                            ...helpFormData,
+                            category: category.value,
+                          })
+                        }
+                      >
+                        <Text
+                          style={[
+                            styles.categoryButtonText,
+                            helpFormData.category === category.value &&
+                              styles.categoryButtonTextActive,
+                          ]}
+                        >
+                          {category.label}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                </View>
+
+                <View style={styles.formSection}>
+                  <Text style={styles.formLabel}>Konu *</Text>
+                  <TextInput
+                    style={styles.formInput}
+                    placeholder='Sorununuzun kısa özetini yazın'
+                    value={helpFormData.subject}
+                    onChangeText={text =>
+                      setHelpFormData({ ...helpFormData, subject: text })
+                    }
+                    placeholderTextColor={colors.textTertiary}
+                  />
+                </View>
+
+                <View style={styles.formSection}>
+                  <Text style={styles.formLabel}>Mesaj *</Text>
+                  <TextInput
+                    style={[styles.formInput, styles.formTextArea]}
+                    placeholder='Sorununuzu detaylı bir şekilde açıklayın...'
+                    value={helpFormData.message}
+                    onChangeText={text =>
+                      setHelpFormData({ ...helpFormData, message: text })
+                    }
+                    placeholderTextColor={colors.textTertiary}
+                    multiline
+                    numberOfLines={6}
+                    textAlignVertical='top'
+                  />
+                </View>
+              </View>
+            </ScrollView>
+
+            <View style={styles.formActions}>
+              <TouchableOpacity
+                style={styles.modalButtonSecondary}
+                onPress={() => {
+                  setHelpModalVisible(false);
+                  // Form verilerini sıfırla
+                  setHelpFormData({
+                    name: '',
+                    email: '',
+                    subject: '',
+                    message: '',
+                    category: 'general',
+                  });
+                }}
+              >
+                <Text style={styles.modalButtonSecondaryText}>İptal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleHelpFormSubmit}
+              >
+                <Text style={styles.modalButtonText}>Gönder</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -721,6 +1008,179 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.primary,
     marginLeft: responsiveSize(8),
+  },
+  // About Modal Styles
+  aboutContent: {
+    paddingBottom: responsiveSize(20),
+  },
+  appInfoSection: {
+    alignItems: 'center',
+    marginBottom: responsiveSize(24),
+    paddingBottom: responsiveSize(20),
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  appIcon: {
+    marginBottom: responsiveSize(12),
+  },
+  appName: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(4),
+  },
+  appVersion: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+  },
+  aboutSection: {
+    marginBottom: responsiveSize(20),
+  },
+  aboutSectionTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(8),
+  },
+  aboutText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  // Help Modal Styles
+  helpContent: {
+    paddingBottom: responsiveSize(20),
+  },
+  helpSection: {
+    marginBottom: responsiveSize(24),
+  },
+  helpSectionTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(12),
+  },
+  helpText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    lineHeight: 20,
+  },
+  faqItem: {
+    marginBottom: responsiveSize(16),
+    padding: responsiveSize(16),
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: responsiveSize(12),
+  },
+  faqQuestion: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(8),
+  },
+  faqAnswer: {
+    fontSize: responsiveFontSize(13),
+    color: colors.textSecondary,
+    lineHeight: 18,
+  },
+  contactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: responsiveSize(12),
+    backgroundColor: colors.backgroundSecondary,
+    borderRadius: responsiveSize(12),
+    marginBottom: responsiveSize(8),
+  },
+  contactText: {
+    marginLeft: responsiveSize(12),
+    flex: 1,
+  },
+  contactTitle: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(2),
+  },
+  contactSubtitle: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textSecondary,
+  },
+  // Help Form Styles
+  helpFormButton: {
+    backgroundColor: colors.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: responsiveSize(16),
+    borderRadius: responsiveSize(12),
+    marginTop: responsiveSize(8),
+  },
+  helpFormButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
+    color: colors.textWhite,
+    marginLeft: responsiveSize(8),
+  },
+  helpFormContent: {
+    paddingBottom: responsiveSize(20),
+  },
+  helpFormSubtitle: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: responsiveSize(16),
+  },
+  formSection: {
+    marginBottom: responsiveSize(16),
+  },
+  formLabel: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(8),
+  },
+  formInput: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: responsiveSize(8),
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(12),
+    fontSize: responsiveFontSize(14),
+    color: colors.textPrimary,
+  },
+  formTextArea: {
+    height: responsiveSize(120),
+    textAlignVertical: 'top',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: responsiveSize(8),
+  },
+  categoryButton: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: responsiveSize(8),
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(8),
+  },
+  categoryButtonActive: {
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
+  },
+  categoryButtonText: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textSecondary,
+  },
+  categoryButtonTextActive: {
+    color: colors.textWhite,
+    fontWeight: '600',
+  },
+  formActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: responsiveSize(12),
   },
 });
 
