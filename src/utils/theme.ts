@@ -1,12 +1,11 @@
 import { Platform } from 'react-native';
 import {
-  spacing,
-  fontSize,
   borderRadius,
+  fontSize,
   iconSize,
-  isSmallDevice,
   isMediumDevice,
-  isLargeDevice,
+  isSmallDevice,
+  spacing,
 } from './responsive';
 
 export const colors = {
@@ -45,6 +44,9 @@ export const colors = {
     purple: ['#6c47ff', '#b983ff'],
     orange: ['#f7b731', '#ffb347'],
     pink: ['#ff6b81', '#ffb6b9'],
+    green: ['#28a745', '#6ee7b7'],
+    red: ['#ff4757', '#ff6b6b'],
+    teal: ['#17a2b8', '#6ee7b7'],
   },
 };
 

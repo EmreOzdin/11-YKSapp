@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   ReactNode,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -79,6 +80,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       ...userInfo,
       avatar: newAvatar,
     };
+
     setUserInfo(updatedInfo);
     await saveUserInfo(updatedInfo);
   };
@@ -92,25 +94,62 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     await saveUserInfo(updatedInfo);
   };
 
-  const initializeUser = async (userData: any) => {
-    const newUserInfo: UserInfo = {
-      name: userData.username || userData.name || '',
-      email: userData.email || '',
-      avatar: userData.profileImage || getDefaultAvatarUrl(),
-      joinDate: new Date().toLocaleDateString('tr-TR', {
-        month: 'long',
-        year: 'numeric',
-      }),
-      totalQuestions: 0,
-      correctAnswers: 0,
-      accuracy: 0,
-      studyStreak: 0,
-      totalStudyTime: 0,
-    };
+  const initializeUser = useCallback(async (userData: any) => {
+    // Önce mevcut kullanıcı bilgilerini kontrol et
+    const storedUserInfo = await AsyncStorage.getItem('userInfo');
+    let existingUserInfo: UserInfo | null = null;
 
-    setUserInfo(newUserInfo);
-    await saveUserInfo(newUserInfo);
-  };
+    if (storedUserInfo) {
+      try {
+        existingUserInfo = JSON.parse(storedUserInfo);
+      } catch (error) {
+        console.error(
+          'Mevcut kullanıcı bilgileri parse edilirken hata:',
+          error
+        );
+      }
+    }
+
+    // Eğer aynı email ile kayıtlı kullanıcı varsa, mevcut bilgileri koru
+    if (existingUserInfo && existingUserInfo.email === userData.email) {
+      // Mevcut kullanıcı bilgilerini kullan, sadece eksik olanları güncelle
+      const updatedUserInfo: UserInfo = {
+        ...existingUserInfo,
+        name: userData.username || userData.name || existingUserInfo.name,
+        email: userData.email || existingUserInfo.email,
+        // Avatar'ı sadece AuthStore'da varsa ve null değilse güncelle, yoksa mevcut olanı koru
+        avatar:
+          userData.profileImage && userData.profileImage !== null
+            ? userData.profileImage
+            : existingUserInfo.avatar,
+      };
+
+      setUserInfo(updatedUserInfo);
+      await saveUserInfo(updatedUserInfo);
+    } else {
+      // Yeni kullanıcı için yeni bilgiler oluştur
+      const newUserInfo: UserInfo = {
+        name: userData.username || userData.name || '',
+        email: userData.email || '',
+        avatar:
+          userData.profileImage && userData.profileImage !== null
+            ? userData.profileImage
+            : getDefaultAvatarUrl(),
+        joinDate: new Date().toLocaleDateString('tr-TR', {
+          month: 'long',
+          year: 'numeric',
+        }),
+        totalQuestions: 0,
+        correctAnswers: 0,
+        accuracy: 0,
+        studyStreak: 0,
+        totalStudyTime: 0,
+      };
+
+      setUserInfo(newUserInfo);
+      await saveUserInfo(newUserInfo);
+    }
+  }, [userInfo]);
 
   return (
     <UserContext.Provider

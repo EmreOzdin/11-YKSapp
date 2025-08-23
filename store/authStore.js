@@ -84,8 +84,11 @@ export const useAuthStore = create(set => ({
         set({ user: null, token: null, isAuthenticated: false });
         return;
       }
+
+      // Kullanıcı bilgileri varsa state'e set et
+      set({ user: user, token: token, isAuthenticated: true });
     } catch (error) {
-      console.error('Auth check failed', error);
+      set({ user: null, token: null, isAuthenticated: false });
     }
   },
 
@@ -137,7 +140,7 @@ export const useAuthStore = create(set => ({
       await AsyncStorage.removeItem('userInfo');
       set({ user: null, token: null, isAuthenticated: false });
     } catch (error) {
-      console.error('Logout error:', error);
+      // Logout error silently handled
     }
   },
 

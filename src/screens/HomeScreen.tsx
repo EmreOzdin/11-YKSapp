@@ -64,107 +64,7 @@ const notifications = [
   { id: '3', title: 'Matematikte yeni konu anlatımı var.', date: '2 gün önce' },
 ];
 
-// Arama verileri
-const searchData = [
-  {
-    id: '1',
-    title: 'Fen Bilimleri Sınavı',
-    type: 'exam',
-    route: 'Fen Bilimleri',
-    icon: 'flask',
-  },
-  {
-    id: '2',
-    title: 'Türkçe Sınavı',
-    type: 'exam',
-    route: 'Türkçe',
-    icon: 'book',
-  },
-  {
-    id: '3',
-    title: 'Matematik Sınavı',
-    type: 'exam',
-    route: 'Matematik',
-    icon: 'calculator',
-  },
-  {
-    id: '4',
-    title: 'Sosyal Bilimler Sınavı',
-    type: 'exam',
-    route: 'Sosyal Bilimler',
-    icon: 'globe',
-  },
-  {
-    id: '5',
-    title: 'TYT Deneme Sınavı',
-    type: 'exam',
-    route: 'TytScreen',
-    icon: 'school',
-  },
-  {
-    id: '6',
-    title: 'AYT Deneme Sınavı',
-    type: 'exam',
-    route: 'AytScreen',
-    icon: 'school',
-  },
-  {
-    id: '7',
-    title: 'YDT Deneme Sınavı',
-    type: 'exam',
-    route: 'YdtScreen',
-    icon: 'school',
-  },
-  {
-    id: '8',
-    title: 'TYT Geçmiş Sınavlar',
-    type: 'past',
-    route: 'TytPastScreen',
-    icon: 'time',
-  },
-  {
-    id: '9',
-    title: 'AYT Geçmiş Sınavlar',
-    type: 'past',
-    route: 'AytPastScreen',
-    icon: 'time',
-  },
-  {
-    id: '10',
-    title: 'YDT Geçmiş Sınavlar',
-    type: 'past',
-    route: 'YdtPastScreen',
-    icon: 'time',
-  },
-  {
-    id: '11',
-    title: 'Bilgi Kartları',
-    type: 'cards',
-    route: 'CardsScreen',
-    icon: 'card',
-  },
-  {
-    id: '12',
-    title: 'Hedefler',
-    type: 'goals',
-    route: 'HedeflerScreen',
-    icon: 'target',
-  },
-  {
-    id: '13',
-    title: 'Performans',
-    type: 'performance',
-    route: 'PerformansScreen',
-    icon: 'stats-chart',
-  },
-  {
-    id: '14',
-    title: 'Profil',
-    type: 'profile',
-    route: 'ProfilScreen',
-    icon: 'person',
-  },
-];
+
 
 const NotificationModal = ({
   visible,
@@ -322,7 +222,8 @@ const SearchModal = ({
             autoFocus
             value={value}
             onChangeText={onChange}
-            placeholder='Ara...'
+            placeholder='Ne aramak istiyorsunuz?'
+            placeholderTextColor='#888'
             style={{
               flex: 1,
               fontSize: responsiveFontSize(17),
@@ -330,6 +231,10 @@ const SearchModal = ({
               paddingVertical: responsiveSize(6),
             }}
             returnKeyType='search'
+            clearButtonMode='while-editing'
+            autoCorrect={false}
+            autoCapitalize='none'
+            blurOnSubmit={false}
           />
           <TouchableOpacity
             onPress={onClose}
@@ -412,10 +317,11 @@ const HomeScreen: React.FC = () => {
   const { userInfo } = useUser();
   const { user, initializeAuth, updateProfileImage } = useAuthStore();
   const [notifModalVisible, setNotifModalVisible] = useState(false);
+  const [searchModalVisible, setSearchModalVisible] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const [unreadCount, setUnreadCount] = useState(notifications.length);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [searchModalVisible, setSearchModalVisible] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
+
   const swiperRef = React.useRef<any>(null);
   const [cardData, setCardData] = useState(CARD_DATA);
 
@@ -429,13 +335,6 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  // Arama sonuçlarını filtrele
-  const filteredSearchResults =
-    searchValue.length > 0
-      ? cardData.filter(card =>
-          card.title.toLowerCase().includes(searchValue.toLowerCase())
-        )
-      : [];
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   // Initialize auth on component mount
@@ -470,6 +369,14 @@ const HomeScreen: React.FC = () => {
     return unsubscribe;
   }, [navigation]);
 
+  // Arama sonuçlarını filtrele
+  const filteredSearchResults =
+    searchText.length > 0
+      ? cardData.filter(card =>
+          card.title.toLowerCase().includes(searchText.toLowerCase())
+        )
+      : [];
+
   // Arama sonucuna tıklandığında yönlendirme
   const handleSearchResultPress = async (item: {
     title: string;
@@ -497,278 +404,6 @@ const HomeScreen: React.FC = () => {
         navigation.navigate('Sosyal Bilimler');
         break;
     }
-  };
-
-  // SearchModal component
-  const SearchModal = () => {
-    const [searchText, setSearchText] = useState('');
-    const [filteredData, setFilteredData] = useState(searchData);
-
-    const handleSearch = (text: string) => {
-      setSearchText(text);
-      if (text.trim() === '') {
-        setFilteredData(searchData);
-      } else {
-        const filtered = searchData.filter(item =>
-          item.title.toLowerCase().includes(text.toLowerCase())
-        );
-        setFilteredData(filtered);
-      }
-    };
-
-    const handleItemPress = (item: any) => {
-      setSearchModalVisible(false);
-      setSearchText('');
-      setFilteredData(searchData);
-
-      // Navigate to the selected item
-      switch (item.route) {
-        case 'Fen Bilimleri':
-          navigation.navigate('Fen Bilimleri');
-          break;
-        case 'Türkçe':
-          navigation.navigate('Türkçe');
-          break;
-        case 'Matematik':
-          navigation.navigate('Matematik');
-          break;
-        case 'Sosyal Bilimler':
-          navigation.navigate('Sosyal Bilimler');
-          break;
-        case 'TytScreen':
-          navigation.navigate('TytScreen');
-          break;
-        case 'AytScreen':
-          navigation.navigate('AytScreen');
-          break;
-        case 'YdtScreen':
-          navigation.navigate('YdtScreen');
-          break;
-        case 'TytPastScreen':
-          navigation.navigate('TytPastScreen');
-          break;
-        case 'AytPastScreen':
-          navigation.navigate('AytPastScreen');
-          break;
-        case 'YdtPastScreen':
-          navigation.navigate('YdtPastScreen');
-          break;
-        case 'CardsScreen':
-          navigation.navigate('CardsScreen');
-          break;
-        case 'HedeflerScreen':
-          navigation.navigate('HedeflerScreen');
-          break;
-        case 'PerformansScreen':
-          navigation.navigate('PerformansScreen');
-          break;
-        case 'ProfilScreen':
-          navigation.navigate('ProfilScreen');
-          break;
-      }
-    };
-
-    const getIconName = (icon: string) => {
-      switch (icon) {
-        case 'flask':
-          return 'flask';
-        case 'book':
-          return 'book';
-        case 'calculator':
-          return 'calculator';
-        case 'globe':
-          return 'globe';
-        case 'school':
-          return 'school';
-        case 'time':
-          return 'time';
-        case 'card':
-          return 'card';
-        case 'target':
-          return 'locate';
-        case 'stats-chart':
-          return 'stats-chart';
-        case 'person':
-          return 'person';
-        default:
-          return 'search';
-      }
-    };
-
-    return (
-      <Modal visible={searchModalVisible} animationType='slide' transparent>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0,0,0,0.25)',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          onStartShouldSetResponder={() => true}
-          onResponderRelease={() => setSearchModalVisible(false)}
-        >
-          <View
-            style={{
-              width: '90%',
-              backgroundColor: '#fff',
-              borderRadius: responsiveSize(16),
-              paddingTop: responsiveSize(20),
-              paddingHorizontal: responsiveSize(20),
-              paddingBottom: responsiveSize(20),
-              maxHeight: '80%',
-            }}
-          >
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: responsiveSize(16),
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: responsiveFontSize(20),
-                  fontWeight: 'bold',
-                  flex: 1,
-                }}
-              >
-                Arama
-              </Text>
-              <TouchableOpacity onPress={() => setSearchModalVisible(false)}>
-                <Ionicons name='close' size={24} color='#666' />
-              </TouchableOpacity>
-            </View>
-
-            {/* Arama Çubuğu */}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#f5f5f5',
-                borderRadius: responsiveSize(12),
-                paddingHorizontal: responsiveSize(12),
-                marginBottom: responsiveSize(16),
-              }}
-            >
-              <Ionicons
-                name='search'
-                size={20}
-                color='#666'
-                style={{ marginRight: responsiveSize(8) }}
-              />
-              <TextInput
-                value={searchText}
-                onChangeText={handleSearch}
-                placeholder='Ara...'
-                style={{
-                  flex: 1,
-                  fontSize: responsiveFontSize(16),
-                  paddingVertical: responsiveSize(12),
-                  color: '#333',
-                }}
-                autoFocus
-              />
-              {searchText.length > 0 && (
-                <TouchableOpacity onPress={() => handleSearch('')}>
-                  <Ionicons name='close-circle' size={20} color='#666' />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Arama Sonuçları */}
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {filteredData.length > 0 ? (
-                filteredData.map((item, index) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      paddingVertical: responsiveSize(12),
-                      borderBottomWidth:
-                        index !== filteredData.length - 1 ? 1 : 0,
-                      borderBottomColor: '#f0f0f0',
-                    }}
-                    onPress={() => handleItemPress(item)}
-                    activeOpacity={0.7}
-                  >
-                    <View
-                      style={{
-                        width: responsiveSize(40),
-                        height: responsiveSize(40),
-                        borderRadius: responsiveSize(20),
-                        backgroundColor: '#f0f0f0',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginRight: responsiveSize(12),
-                      }}
-                    >
-                      <Ionicons
-                        name={getIconName(item.icon) as any}
-                        size={20}
-                        color='#666'
-                      />
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(16),
-                          fontWeight: '600',
-                          color: '#222',
-                        }}
-                      >
-                        {item.title}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: responsiveFontSize(12),
-                          color: '#888',
-                          marginTop: responsiveSize(2),
-                        }}
-                      >
-                        {item.type === 'exam'
-                          ? 'Sınav'
-                          : item.type === 'past'
-                            ? 'Geçmiş Sınavlar'
-                            : item.type === 'cards'
-                              ? 'Bilgi Kartları'
-                              : item.type === 'goals'
-                                ? 'Hedefler'
-                                : item.type === 'performance'
-                                  ? 'Performans'
-                                  : item.type === 'profile'
-                                    ? 'Profil'
-                                    : 'Diğer'}
-                      </Text>
-                    </View>
-                    <Ionicons name='chevron-forward' size={20} color='#ccc' />
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    paddingVertical: responsiveSize(40),
-                  }}
-                >
-                  <Ionicons name='search' size={48} color='#ccc' />
-                  <Text
-                    style={{
-                      fontSize: responsiveFontSize(16),
-                      color: '#888',
-                      marginTop: responsiveSize(12),
-                      textAlign: 'center',
-                    }}
-                  >
-                    Sonuç bulunamadı
-                  </Text>
-                </View>
-              )}
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-    );
   };
 
   return (
@@ -804,17 +439,43 @@ const HomeScreen: React.FC = () => {
           </View>
           <View style={styles.headerIcons}>
             <TouchableOpacity
-              style={{ marginRight: 12 }}
-              onPress={() => setSearchModalVisible(true)}
+              style={{
+                marginRight: 12,
+                padding: 12,
+                borderRadius: 24,
+                backgroundColor: 'rgba(0,0,0,0.05)',
+                minWidth: 48,
+                minHeight: 48,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              onPress={() => {
+                console.log('Arama ikonuna tıklandı');
+                setSearchModalVisible(true);
+              }}
+              activeOpacity={0.6}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
             >
               <Ionicons name='search' size={28} color='#222' />
             </TouchableOpacity>
+
             <TouchableOpacity
-              style={{ marginRight: 12 }}
+              style={{
+                marginRight: 12,
+                padding: 12,
+                borderRadius: 24,
+                backgroundColor: 'rgba(0,0,0,0.05)',
+                minWidth: 48,
+                minHeight: 48,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
               onPress={() => {
                 setNotifModalVisible(true);
                 setUnreadCount(0);
               }}
+              activeOpacity={0.6}
+              hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
             >
               <Ionicons name='notifications-outline' size={28} color='#222' />
               {unreadCount > 0 && (
@@ -822,7 +483,7 @@ const HomeScreen: React.FC = () => {
                   style={{
                     position: 'absolute',
                     top: -4,
-                    left: 9,
+                    right: 4,
                     minWidth: 18,
                     height: 18,
                     borderRadius: 9,
@@ -1110,7 +771,14 @@ const HomeScreen: React.FC = () => {
         visible={notifModalVisible}
         onClose={() => setNotifModalVisible(false)}
       />
-      <SearchModal />
+      <SearchModal
+        visible={searchModalVisible}
+        onClose={() => setSearchModalVisible(false)}
+        value={searchText}
+        onChange={setSearchText}
+        results={filteredSearchResults}
+        onResultPress={handleSearchResultPress}
+      />
     </View>
   );
 };
@@ -1146,6 +814,7 @@ const styles = StyleSheet.create({
   headerIcons: {
     flexDirection: 'row',
     alignItems: 'center',
+    zIndex: 10,
   },
   notificationDot: {
     position: 'absolute',

@@ -1,24 +1,24 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
+    NavigationProp,
+    ParamListBase,
+    useNavigation,
 } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  Image,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    Image,
+    Modal,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Switch,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
@@ -519,13 +519,13 @@ const ProfilScreen: React.FC = () => {
                 style={styles.modalButton}
                 onPress={async () => {
                   try {
-                    // UserContext'te avatar'ı güncelle
-                    await updateAvatar(selectedAvatar);
-
-                    // AuthStore'da da güncelle
+                    // Önce AuthStore'da güncelle
                     const result = await updateProfileImage(selectedAvatar);
 
                     if (result.success) {
+                      // Sonra UserContext'te avatar'ı güncelle
+                      await updateAvatar(selectedAvatar);
+
                       Alert.alert(
                         'Başarılı',
                         'Profil fotoğrafınız güncellendi!'
