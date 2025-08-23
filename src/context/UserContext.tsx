@@ -49,6 +49,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     studyStreak: 0,
     totalStudyTime: 0,
   });
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // AsyncStorage'dan kullanıcı bilgilerini yükle
   useEffect(() => {
@@ -61,23 +62,49 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       if (storedUserInfo) {
         const parsedUserInfo = JSON.parse(storedUserInfo);
 
-        setUserInfo(parsedUserInfo);
+        // Avatar değerini doğrula - geçersizse default kullan
+        const validatedUserInfo = {
+          ...parsedUserInfo,
+          avatar:
+            parsedUserInfo.avatar && parsedUserInfo.avatar.trim() !== ''
+              ? parsedUserInfo.avatar
+              : getDefaultAvatarUrl(),
+        };
+
+        setUserInfo(validatedUserInfo);
       }
       // AsyncStorage'da veri yoksa, hiçbir şey yapma - default state'i koru
+      setIsLoaded(true);
     } catch (error) {
       console.error('Kullanıcı bilgileri yüklenirken hata:', error);
+      setIsLoaded(true);
     }
   };
 
   const saveUserInfo = async (info: UserInfo) => {
     try {
-      await AsyncStorage.setItem('userInfo', JSON.stringify(info));
+      // Avatar değerini son kez doğrula
+      const validatedInfo = {
+        ...info,
+        avatar:
+          info.avatar && info.avatar.trim() !== ''
+            ? info.avatar
+            : getDefaultAvatarUrl(),
+      };
+
+      await AsyncStorage.setItem('userInfo', JSON.stringify(validatedInfo));
     } catch (error) {
       console.error('Kullanıcı bilgileri kaydedilirken hata:', error);
     }
   };
 
   const updateAvatar = async (newAvatar: string) => {
+    // Avatar değişikliğini doğrula - boş string veya geçersiz değer kontrolü
+    if (!newAvatar || newAvatar.trim() === '') {
+      console.warn('Geçersiz avatar değeri:', newAvatar);
+      return;
+    }
+
     const updatedInfo = {
       ...userInfo,
       avatar: newAvatar,
@@ -88,55 +115,83 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   const updateUserInfo = async (newInfo: Partial<UserInfo>) => {
+    // Avatar değişikliği varsa, sadece geçerli değerlerle güncelle
     const updatedInfo = {
       ...userInfo,
       ...newInfo,
+      // Avatar'ı koruma - sadece updateAvatar fonksiyonu ile değiştirilebilir
+      avatar:
+        newInfo.avatar && newInfo.avatar.trim() !== ''
+          ? newInfo.avatar
+          : userInfo.avatar,
     };
     setUserInfo(updatedInfo);
     await saveUserInfo(updatedInfo);
   };
 
-  const initializeUser = useCallback(async (userData: any) => {
-    // Önce mevcut kullanıcı bilgilerini kontrol et
-    const storedUserInfo = await AsyncStorage.getItem('userInfo');
-    let existingUserInfo: UserInfo | null = null;
-
-    if (storedUserInfo) {
-      try {
-        existingUserInfo = JSON.parse(storedUserInfo);
-      } catch (error) {
-        console.error(
-          'Mevcut kullanıcı bilgileri parse edilirken hata:',
-          error
-        );
+  const initializeUser = useCallback(
+    async (userData: any) => {
+      // loadUserInfo henüz tamamlanmamışsa bekle
+      if (!isLoaded) {
+        return;
       }
-    }
 
-    // Eğer aynı email ile kayıtlı kullanıcı varsa, hiçbir şey yapma
-    if (existingUserInfo && existingUserInfo.email === userData.email) {
-      // Mevcut kullanıcı için hiçbir şey yapma - loadUserInfo zaten yüklemiş
-      return;
-    }
+      // Mevcut userInfo state'ini kontrol et - eğer email aynıysa hiçbir şey yapma
+      if (userInfo.email === userData.email) {
+        // Aynı kullanıcı için hiçbir şey yapma - mevcut avatar'ı koru
+        return;
+      }
 
-    // Yeni kullanıcı için yeni bilgiler oluştur
-    const newUserInfo: UserInfo = {
-      name: userData.username || userData.name || '',
-      email: userData.email || '',
-      avatar: getDefaultAvatarUrl(),
-      joinDate: new Date().toLocaleDateString('tr-TR', {
-        month: 'long',
-        year: 'numeric',
-      }),
-      totalQuestions: 0,
-      correctAnswers: 0,
-      accuracy: 0,
-      studyStreak: 0,
-      totalStudyTime: 0,
-    };
+      // Farklı kullanıcı için AsyncStorage'ı kontrol et
+      const storedUserInfo = await AsyncStorage.getItem('userInfo');
+      let existingUserInfo: UserInfo | null = null;
 
-    setUserInfo(newUserInfo);
-    await saveUserInfo(newUserInfo);
-  }, []);
+      if (storedUserInfo) {
+        try {
+          existingUserInfo = JSON.parse(storedUserInfo);
+        } catch (error) {
+          console.error(
+            'Mevcut kullanıcı bilgileri parse edilirken hata:',
+            error
+          );
+        }
+      }
+
+      // Eğer aynı email ile kayıtlı kullanıcı varsa, mevcut bilgileri yükle
+      if (existingUserInfo && existingUserInfo.email === userData.email) {
+        // Avatar değerini doğrula
+        const validatedUserInfo = {
+          ...existingUserInfo,
+          avatar:
+            existingUserInfo.avatar && existingUserInfo.avatar.trim() !== ''
+              ? existingUserInfo.avatar
+              : getDefaultAvatarUrl(),
+        };
+        setUserInfo(validatedUserInfo);
+        return;
+      }
+
+      // Yeni kullanıcı için yeni bilgiler oluştur
+      const newUserInfo: UserInfo = {
+        name: userData.username || userData.name || '',
+        email: userData.email || '',
+        avatar: getDefaultAvatarUrl(),
+        joinDate: new Date().toLocaleDateString('tr-TR', {
+          month: 'long',
+          year: 'numeric',
+        }),
+        totalQuestions: 0,
+        correctAnswers: 0,
+        accuracy: 0,
+        studyStreak: 0,
+        totalStudyTime: 0,
+      };
+
+      setUserInfo(newUserInfo);
+      await saveUserInfo(newUserInfo);
+    },
+    [userInfo.email, isLoaded]
+  );
 
   return (
     <UserContext.Provider
