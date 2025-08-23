@@ -65,38 +65,56 @@ const ProfilScreen: React.FC = () => {
     }
   }, [userInfo.avatar]);
 
-  // Avatar seçenekleri
+  // Avatar seçenekleri - 3 erkek, 3 kadın, 3 hayvan
   const avatarOptions = [
-    { id: '0', url: 'https://cdn-icons-png.flaticon.com/512/149/149071.png' }, // Anonim avatar
-    // Erkek avatarları
-    { id: '1', url: 'https://randomuser.me/api/portraits/men/32.jpg' },
-    { id: '2', url: 'https://randomuser.me/api/portraits/men/33.jpg' },
-    { id: '3', url: 'https://randomuser.me/api/portraits/men/34.jpg' },
-    { id: '4', url: 'https://randomuser.me/api/portraits/men/35.jpg' },
-    { id: '5', url: 'https://randomuser.me/api/portraits/men/36.jpg' },
-    // Kadın avatarları
-    { id: '6', url: 'https://randomuser.me/api/portraits/women/32.jpg' },
-    { id: '7', url: 'https://randomuser.me/api/portraits/women/33.jpg' },
-    { id: '8', url: 'https://randomuser.me/api/portraits/women/34.jpg' },
-    { id: '9', url: 'https://randomuser.me/api/portraits/women/35.jpg' },
-    { id: '10', url: 'https://randomuser.me/api/portraits/women/36.jpg' },
-    // Sevimli hayvan avatarları
+    // Erkek avatarları (3 adet)
     {
-      id: '11',
+      id: '1',
+      url: 'https://randomuser.me/api/portraits/men/32.jpg',
+      type: 'erkek',
+    },
+    {
+      id: '2',
+      url: 'https://randomuser.me/api/portraits/men/33.jpg',
+      type: 'erkek',
+    },
+    {
+      id: '3',
+      url: 'https://randomuser.me/api/portraits/men/34.jpg',
+      type: 'erkek',
+    },
+    // Kadın avatarları (3 adet)
+    {
+      id: '4',
+      url: 'https://randomuser.me/api/portraits/women/32.jpg',
+      type: 'kadın',
+    },
+    {
+      id: '5',
+      url: 'https://randomuser.me/api/portraits/women/33.jpg',
+      type: 'kadın',
+    },
+    {
+      id: '6',
+      url: 'https://randomuser.me/api/portraits/women/34.jpg',
+      type: 'kadın',
+    },
+    // Hayvan avatarları (3 adet)
+    {
+      id: '7',
       url: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=150&h=150&fit=crop',
+      type: 'hayvan',
     }, // Kedi
     {
-      id: '12',
+      id: '8',
       url: 'https://images.unsplash.com/photo-1546527868-ccb7ee7dfa6a?w=150&h=150&fit=crop',
+      type: 'hayvan',
     }, // Köpek
     {
-      id: '13',
+      id: '9',
       url: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=150&h=150&fit=crop',
+      type: 'hayvan',
     }, // Tavşan
-    {
-      id: '14',
-      url: 'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=150&h=150&fit=crop',
-    }, // Panda
     {
       id: '15',
       url: 'https://images.unsplash.com/photo-1557008075-7f2c5efa4cfd?w=150&h=150&fit=crop',
@@ -392,80 +410,10 @@ const ProfilScreen: React.FC = () => {
                   { marginTop: responsiveSize(4) },
                 ]}
               >
-                Erkek Avatarları:
+                Avatar Seçenekleri:
               </Text>
               <FlatList
-                data={avatarOptions.slice(1, 6)} // Erkek avatarları (1-5)
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.avatarOption,
-                      selectedAvatar === item.url &&
-                        styles.avatarOptionSelected,
-                    ]}
-                    onPress={() => setSelectedAvatar(item.url)}
-                  >
-                    <Image
-                      source={{ uri: item.url }}
-                      style={styles.avatarOptionImage}
-                    />
-                    {selectedAvatar === item.url && (
-                      <View style={styles.avatarCheckmark}>
-                        <Ionicons
-                          name='checkmark'
-                          size={16}
-                          color={colors.textWhite}
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                )}
-                contentContainerStyle={styles.avatarListContainer}
-              />
-
-              <Text style={styles.avatarSectionSubtitle}>
-                Kadın Avatarları:
-              </Text>
-              <FlatList
-                data={avatarOptions.slice(6, 11)} // Kadın avatarları (6-10)
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.avatarOption,
-                      selectedAvatar === item.url &&
-                        styles.avatarOptionSelected,
-                    ]}
-                    onPress={() => setSelectedAvatar(item.url)}
-                  >
-                    <Image
-                      source={{ uri: item.url }}
-                      style={styles.avatarOptionImage}
-                    />
-                    {selectedAvatar === item.url && (
-                      <View style={styles.avatarCheckmark}>
-                        <Ionicons
-                          name='checkmark'
-                          size={16}
-                          color={colors.textWhite}
-                        />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                )}
-                contentContainerStyle={styles.avatarListContainer}
-              />
-
-              <Text style={styles.avatarSectionSubtitle}>
-                Sevimli Hayvanlar:
-              </Text>
-              <FlatList
-                data={avatarOptions.slice(11, 16)} // Hayvan avatarları (11-15)
+                data={avatarOptions}
                 keyExtractor={item => item.id}
                 horizontal
                 showsHorizontalScrollIndicator={false}
