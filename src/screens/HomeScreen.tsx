@@ -450,7 +450,6 @@ const HomeScreen: React.FC = () => {
                 justifyContent: 'center',
               }}
               onPress={() => {
-                console.log('Arama ikonuna tıklandı');
                 setSearchModalVisible(true);
               }}
               activeOpacity={0.6}
