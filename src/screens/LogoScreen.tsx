@@ -1,26 +1,34 @@
-import React, { useEffect } from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
 import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import {
-  responsiveSize,
-  responsiveWidth,
-  screenWidth,
-} from '../utils/responsive';
+import React, { useEffect } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { useAuthStore } from '../../store/authStore';
+import { screenWidth } from '../utils/responsive';
 import { colors } from '../utils/theme';
 
 const LogoScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const { user, token, isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('Onboarding');
+      // Eğer kullanıcı zaten giriş yapmışsa direkt ana uygulamaya yönlendir
+      if (isAuthenticated && user && token) {
+        console.log(
+          'Kullanıcı zaten giriş yapmış, ana uygulamaya yönlendiriliyor'
+        );
+        navigation.navigate('MainApp');
+      } else {
+        // Giriş yapmamışsa onboarding'e yönlendir
+        console.log("Kullanıcı giriş yapmamış, onboarding'e yönlendiriliyor");
+        navigation.navigate('Onboarding');
+      }
     }, 1500);
     return () => clearTimeout(timer);
-  }, [navigation]);
+  }, [navigation, isAuthenticated, user, token]);
 
   return (
     <View style={styles.container}>

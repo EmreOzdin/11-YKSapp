@@ -15,6 +15,7 @@ export const useAuthStore = create(set => ({
   user: null,
   token: null,
   isLoading: false,
+  isAuthenticated: false,
 
   initializeAuth: async () => {
     try {
@@ -65,9 +66,18 @@ export const useAuthStore = create(set => ({
       await AsyncStorage.setItem('user', JSON.stringify(userData));
       await AsyncStorage.setItem('token', data.token);
 
-      set({ user: userData, token: data.token, isLoading: false });
+      set({
+        user: userData,
+        token: data.token,
+        isAuthenticated: true,
+        isLoading: false,
+      });
 
-      return { success: true, message: 'Registration successful', user: userData };
+      return {
+        success: true,
+        message: 'Registration successful',
+        user: userData,
+      };
     } catch (error) {
       set({ isLoading: false });
       return { success: false, message: error.message || 'Network error' };
@@ -124,7 +134,12 @@ export const useAuthStore = create(set => ({
       await AsyncStorage.setItem('token', data.token);
       await AsyncStorage.setItem('user', JSON.stringify(userData));
 
-      set({ user: userData, token: data.token, isLoading: false });
+      set({
+        user: userData,
+        token: data.token,
+        isAuthenticated: true,
+        isLoading: false,
+      });
 
       return { success: true, message: 'Login successful', user: userData };
     } catch (error) {

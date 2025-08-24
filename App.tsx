@@ -27,7 +27,7 @@ import { useAuthStore } from './store/authStore';
 const Stack = createStackNavigator();
 
 const AppContent = () => {
-  const { user, token, checkAuth } = useAuthStore();
+  const { user, token, isAuthenticated, checkAuth } = useAuthStore();
   const { initializeUser } = useUser();
 
   useEffect(() => {

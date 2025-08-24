@@ -333,16 +333,22 @@ const QuestionScreen: React.FC = () => {
               {isCorrect ? '✓' : '❌'}
             </Text>
             <Text style={styles.feedbackText}>
-              {isCorrect ? 'Tebrikler! Doğru cevap!' : 'Yanlış!'}
+              {isCorrect ? 'Doğru!' : 'Yanlış!'}
             </Text>
-            {!isCorrect && (
-              <Text style={styles.correctAnswerText}>
-                Doğru cevap: {currentQuestion.correctAnswer}
-              </Text>
-            )}
+            <Text style={styles.correctAnswerText}>
+              Doğru cevap: {currentQuestion.correctAnswer}
+            </Text>
           </View>
 
-          {/* Butonlar */}
+          {/* Açıklama - Sadece doğru cevaplarda göster */}
+          {isCorrect && (
+            <Text style={styles.explanationText}>
+              <Text style={styles.explanationTitle}>Açıklama:</Text>{' '}
+              {currentQuestion.explanation}
+            </Text>
+          )}
+
+          {/* Butonlar - Yan yana yerleştirilmiş */}
           <View style={styles.buttonContainer}>
             {/* Açıklama Butonu - Sadece yanlış cevaplarda göster */}
             {!isCorrect && (
@@ -358,10 +364,7 @@ const QuestionScreen: React.FC = () => {
 
             {/* Sonraki Soru Butonu */}
             <TouchableOpacity
-              style={[
-                styles.nextButton,
-                isCorrect && styles.nextButtonFullWidth,
-              ]}
+              style={styles.nextButton}
               onPress={handleNextQuestion}
             >
               <Text style={styles.nextButtonText}>
@@ -652,10 +655,6 @@ const styles = StyleSheet.create({
     borderRadius: responsiveSize(12),
     alignItems: 'center',
     ...shadows.medium,
-  },
-  nextButtonFullWidth: {
-    flex: 1,
-    width: '100%',
   },
   nextButtonText: {
     fontSize: responsiveFontSize(16),
