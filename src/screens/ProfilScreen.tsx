@@ -504,8 +504,9 @@ const ProfilScreen: React.FC = () => {
                 style={styles.modalButton}
                 onPress={async () => {
                   try {
-                    // Sadece UserContext'te avatar'ı güncelle
+                    // Hem UserContext hem de AuthStore'da avatar'ı güncelle
                     await updateAvatar(selectedAvatar);
+                    await updateProfileImage(selectedAvatar);
 
                     Alert.alert('Başarılı', 'Profil fotoğrafınız güncellendi!');
                     setEditModalVisible(false);

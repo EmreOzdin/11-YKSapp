@@ -56,9 +56,48 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     loadUserInfo();
   }, []);
 
+  // Kullanıcı değiştiğinde userInfo'yu yeniden yükle
+  useEffect(() => {
+    const checkUserChange = async () => {
+      try {
+        const currentUser = await AsyncStorage.getItem('user');
+        if (currentUser) {
+          const user = JSON.parse(currentUser);
+          if (user.email !== userInfo.email) {
+            // Kullanıcı değişmiş, userInfo'yu yeniden yükle
+            console.log(
+              'Kullanıcı değişikliği tespit edildi:',
+              user.email,
+              '->',
+              userInfo.email
+            );
+            await loadUserInfo();
+          }
+        }
+      } catch (error) {
+        console.error('Kullanıcı değişikliği kontrol edilirken hata:', error);
+      }
+    };
+
+    checkUserChange();
+  }, [userInfo.email]);
+
   const loadUserInfo = async () => {
     try {
-      const storedUserInfo = await AsyncStorage.getItem('userInfo');
+      // Önce mevcut kullanıcıyı al
+      const currentUser = await AsyncStorage.getItem('user');
+      if (!currentUser) {
+        setIsLoaded(true);
+        return;
+      }
+
+      const user = JSON.parse(currentUser);
+      const userEmail = user.email;
+
+      // Kullanıcıya özel userInfo key'i oluştur
+      const userInfoKey = `userInfo_${userEmail}`;
+      const storedUserInfo = await AsyncStorage.getItem(userInfoKey);
+
       if (storedUserInfo) {
         const parsedUserInfo = JSON.parse(storedUserInfo);
 
@@ -83,6 +122,19 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const saveUserInfo = async (info: UserInfo) => {
     try {
+      // Önce mevcut kullanıcıyı al
+      const currentUser = await AsyncStorage.getItem('user');
+      if (!currentUser) {
+        console.error('Kullanıcı bilgisi bulunamadı');
+        return;
+      }
+
+      const user = JSON.parse(currentUser);
+      const userEmail = user.email;
+
+      // Kullanıcıya özel userInfo key'i oluştur
+      const userInfoKey = `userInfo_${userEmail}`;
+
       // Avatar değerini son kez doğrula
       const validatedInfo = {
         ...info,
@@ -92,7 +144,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             : getDefaultAvatarUrl(),
       };
 
-      await AsyncStorage.setItem('userInfo', JSON.stringify(validatedInfo));
+      await AsyncStorage.setItem(userInfoKey, JSON.stringify(validatedInfo));
     } catch (error) {
       console.error('Kullanıcı bilgileri kaydedilirken hata:', error);
     }
@@ -136,14 +188,23 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         return;
       }
 
+      const userEmail = userData.email;
+      if (!userEmail) {
+        console.error('Kullanıcı email bilgisi bulunamadı');
+        return;
+      }
+
+      // Kullanıcıya özel userInfo key'i oluştur
+      const userInfoKey = `userInfo_${userEmail}`;
+
       // Mevcut userInfo state'ini kontrol et - eğer email aynıysa hiçbir şey yapma
-      if (userInfo.email === userData.email) {
+      if (userInfo.email === userEmail) {
         // Aynı kullanıcı için hiçbir şey yapma - mevcut avatar'ı koru
         return;
       }
 
       // Farklı kullanıcı için AsyncStorage'ı kontrol et
-      const storedUserInfo = await AsyncStorage.getItem('userInfo');
+      const storedUserInfo = await AsyncStorage.getItem(userInfoKey);
       let existingUserInfo: UserInfo | null = null;
 
       if (storedUserInfo) {
@@ -158,7 +219,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       }
 
       // Eğer aynı email ile kayıtlı kullanıcı varsa, mevcut bilgileri yükle
-      if (existingUserInfo && existingUserInfo.email === userData.email) {
+      if (existingUserInfo && existingUserInfo.email === userEmail) {
         // Avatar değerini doğrula
         const validatedUserInfo = {
           ...existingUserInfo,
@@ -174,7 +235,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       // Yeni kullanıcı için yeni bilgiler oluştur
       const newUserInfo: UserInfo = {
         name: userData.username || userData.name || '',
-        email: userData.email || '',
+        email: userEmail,
         avatar: getDefaultAvatarUrl(),
         joinDate: new Date().toLocaleDateString('tr-TR', {
           month: 'long',

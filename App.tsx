@@ -37,6 +37,7 @@ const AppContent = () => {
   // Kullanıcı bilgileri yüklendiğinde UserContext'i başlat
   useEffect(() => {
     if (user) {
+      console.log('Kullanıcı değişti, UserContext güncelleniyor:', user.email);
       initializeUser(user);
     }
   }, [user, initializeUser]);
