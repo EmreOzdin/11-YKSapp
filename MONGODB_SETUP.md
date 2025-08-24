@@ -13,11 +13,13 @@ Bu rehber, YKS App'in MongoDB ile entegrasyonu için gerekli adımları açıkla
 ### 1. MongoDB Atlas Kurulumu (Önerilen)
 
 #### 1.1 MongoDB Atlas Hesabı Oluşturma
+
 1. [MongoDB Atlas](https://www.mongodb.com/atlas) sitesine gidin
 2. Ücretsiz hesap oluşturun
 3. Yeni bir cluster oluşturun (M0 Free tier önerilir)
 
 #### 1.2 Database ve Collection Oluşturma
+
 1. Atlas Dashboard'da "Browse Collections" tıklayın
 2. "Create Database" butonuna tıklayın
 3. Database adı: `yksapp`
@@ -25,6 +27,7 @@ Bu rehber, YKS App'in MongoDB ile entegrasyonu için gerekli adımları açıkla
 5. "Create" butonuna tıklayın
 
 #### 1.3 API Key Oluşturma
+
 1. Atlas Dashboard'da "Access Manager" > "API Keys" gidin
 2. "Create API Key" butonuna tıklayın
 3. API Key adı: `yksapp-api`
@@ -34,12 +37,14 @@ Bu rehber, YKS App'in MongoDB ile entegrasyonu için gerekli adımları açıkla
 ### 2. Soruları MongoDB'ye Yükleme
 
 #### 2.1 MongoDB Compass ile Manuel Yükleme
+
 1. [MongoDB Compass](https://www.mongodb.com/products/compass) indirin
 2. Atlas connection string'inizi kullanarak bağlanın
 3. `yksapp.questions` collection'ını açın
 4. `sampleData.ts` dosyasındaki soruları JSON formatında yükleyin
 
 #### 2.2 Script ile Otomatik Yükleme
+
 ```javascript
 // upload-questions.js
 const { MongoClient } = require('mongodb');
@@ -71,12 +76,14 @@ uploadQuestions().catch(console.error);
 ### 3. API Endpoint'leri Oluşturma
 
 #### 3.1 MongoDB Atlas App Services (Realm) Kullanımı
+
 1. Atlas Dashboard'da "App Services" gidin
 2. "Build a new app" tıklayın
 3. App adı: `yksapp-api`
 4. "Create app" tıklayın
 
 #### 3.2 Endpoint'leri Tanımlama
+
 ```javascript
 // Endpoints/Questions.js
 exports = async function(payload, response) {
@@ -116,6 +123,7 @@ exports = async function(payload, response) {
 ### 4. Uygulama Konfigürasyonu
 
 #### 4.1 Environment Dosyasını Güncelleme
+
 `mobile/src/config/environment.ts` dosyasında API URL'sini güncelleyin:
 
 ```typescript
@@ -129,6 +137,7 @@ MONGODB_API: {
 ```
 
 #### 4.2 API Key'i Güvenli Şekilde Saklama
+
 ```typescript
 // mobile/src/config/secrets.ts (gitignore'a ekleyin)
 export const MONGODB_API_KEY = 'your-api-key-here';
@@ -137,6 +146,7 @@ export const MONGODB_API_KEY = 'your-api-key-here';
 ### 5. Test Etme
 
 #### 5.1 API Bağlantısını Test Etme
+
 ```typescript
 import apiService from '../services/apiService';
 
@@ -154,6 +164,7 @@ async function testMongoDBConnection() {
 ```
 
 #### 5.2 Offline Mode Test Etme
+
 ```typescript
 // MongoDB kapalıyken local storage'dan soruları al
 import { QuestionService } from '../services/questionService';
@@ -169,19 +180,25 @@ async function testOfflineMode() {
 ### Yaygın Hatalar
 
 #### 1. "MongoDB API is disabled" Hatası
+
 **Çözüm:** `environment.ts` dosyasında `USE_MONGODB: true` olduğundan emin olun.
 
 #### 2. "HTTP error! status: 401" Hatası
+
 **Çözüm:** API key'inizin doğru olduğundan ve gerekli izinlere sahip olduğundan emin olun.
 
 #### 3. "Network request failed" Hatası
-**Çözüm:** 
+
+**Çözüm:**
+
 - İnternet bağlantınızı kontrol edin
 - API URL'sinin doğru olduğundan emin olun
 - Firewall ayarlarını kontrol edin
 
 #### 4. "No questions found" Hatası
+
 **Çözüm:**
+
 - MongoDB'de soruların yüklü olduğundan emin olun
 - Collection adının `questions` olduğunu kontrol edin
 - Database adının `yksapp` olduğunu kontrol edin
@@ -189,6 +206,7 @@ async function testOfflineMode() {
 ## 📊 Performans Optimizasyonu
 
 ### 1. Caching
+
 ```typescript
 // Soruları cache'leme
 const CACHE_KEY = 'questions_cache';
@@ -207,6 +225,7 @@ async function getCachedQuestions() {
 ```
 
 ### 2. Pagination
+
 ```typescript
 // Sayfalama ile soruları alma
 async function getQuestionsWithPagination(page = 1, limit = 20) {
@@ -218,11 +237,13 @@ async function getQuestionsWithPagination(page = 1, limit = 20) {
 ## 🔒 Güvenlik
 
 ### 1. API Key Güvenliği
+
 - API key'leri asla client-side kodda saklamayın
 - Environment variables kullanın
 - API key'leri düzenli olarak yenileyin
 
 ### 2. Rate Limiting
+
 ```typescript
 // Rate limiting implementasyonu
 class RateLimiter {
@@ -249,6 +270,7 @@ class RateLimiter {
 ## 📱 Offline Desteği
 
 ### 1. Local Storage Sync
+
 ```typescript
 // Offline veri senkronizasyonu
 async function syncOfflineData() {
@@ -261,6 +283,7 @@ async function syncOfflineData() {
 ```
 
 ### 2. Background Sync
+
 ```typescript
 // Arka plan senkronizasyonu
 import BackgroundFetch from 'react-native-background-fetch';
@@ -285,6 +308,7 @@ BackgroundFetch.configure({
 ## 📞 Destek
 
 Herhangi bir sorunla karşılaşırsanız:
+
 1. Bu rehberi tekrar gözden geçirin
 2. MongoDB Atlas dokümantasyonunu inceleyin
 3. GitHub Issues'da sorun bildirin

@@ -19,7 +19,8 @@ Bu rehber, `sampleData.ts` dosyasındaki soruları MongoDB Atlas'a yüklemek iç
 4. **Connection string**'i kopyalayın
 
 Örnek connection string:
-```
+
+```javascript
 mongodb+srv://username:password@cluster.mongodb.net/yksapp?retryWrites=true&w=majority
 ```
 
@@ -32,6 +33,7 @@ const uri = "mongodb+srv://YOUR_USERNAME:YOUR_PASSWORD@YOUR_CLUSTER.mongodb.net/
 ```
 
 **Yerine:**
+
 ```javascript
 const uri = "mongodb+srv://gerçek_kullanıcı_adı:gerçek_şifre@cluster.mongodb.net/yksapp?retryWrites=true&w=majority";
 ```
@@ -43,8 +45,8 @@ node test-mongodb-connection.js
 ```
 
 Başarılı çıktı:
-```
-🔗 MongoDB bağlantısı test ediliyor...
+
+```🔗 MongoDB bağlantısı test ediliyor...
 ✅ MongoDB'ye başarıyla bağlandı!
 📊 Veritabanında 0 soru bulunuyor
 🎉 MongoDB bağlantısı başarılı! Soruları yükleyebilirsiniz.
@@ -57,8 +59,8 @@ node upload-questions.js
 ```
 
 Başarılı çıktı:
-```
-🚀 Soru yükleme işlemi başlatılıyor...
+
+```🚀 Soru yükleme işlemi başlatılıyor...
 📋 Yüklenecek soru sayısı: 50
 
 🔗 MongoDB'ye bağlanılıyor...
@@ -80,31 +82,33 @@ Başarılı çıktı:
 ## 🔧 Sorun Giderme
 
 ### Hata 1: "authentication failed"
-```
-❌ Hata oluştu: authentication failed
+
+```❌ Hata oluştu: authentication failed
 🔐 Kimlik doğrulama hatası!
 MongoDB Atlas'ta kullanıcı adı ve şifrenizi kontrol edin.
 ```
 
 **Çözüm:**
+
 1. MongoDB Atlas'ta kullanıcı adı ve şifrenizi kontrol edin
 2. Kullanıcının `yksapp` database'ine erişim izni olduğundan emin olun
 
 ### Hata 2: "ENOTFOUND"
-```
-❌ Hata oluştu: ENOTFOUND
+
+```❌ Hata oluştu: ENOTFOUND
 🌐 Bağlantı hatası!
 MongoDB Atlas connection string'inizi kontrol edin.
 ```
 
 **Çözüm:**
+
 1. Connection string'in doğru olduğundan emin olun
 2. Cluster adının doğru olduğunu kontrol edin
 3. İnternet bağlantınızı kontrol edin
 
 ### Hata 3: "Veritabanında zaten sorular var"
-```
-⚠️  Veritabanında zaten sorular var.
+
+```⚠️  Veritabanında zaten sorular var.
 Mevcut soruları silmek için aşağıdaki komutu çalıştırın:
 await collection.deleteMany({});
 ```
@@ -135,6 +139,7 @@ MongoDB Compass veya Atlas Dashboard'dan mevcut soruları silin.
 ## 📞 Destek
 
 Herhangi bir sorunla karşılaşırsanız:
+
 1. Bu rehberi tekrar gözden geçirin
 2. MongoDB Atlas dokümantasyonunu inceleyin
 3. Hata mesajlarını dikkatlice okuyun
