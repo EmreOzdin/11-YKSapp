@@ -6,34 +6,34 @@ export const ENVIRONMENT = {
   MONGODB_API: {
     // MongoDB Atlas App Services (Realm) için örnek URL:
     // BASE_URL: 'https://data.mongodb-api.com/app/YOUR_APP_ID/endpoint/data/v1/action',
-    
+
     // MongoDB Atlas Data API için örnek URL:
     // BASE_URL: 'https://cloud.mongodb.com/api/atlas/v1.0/groups/YOUR_GROUP_ID/clusters/YOUR_CLUSTER_NAME',
-    
+
     // Kendi sunucunuz için örnek URL:
     // BASE_URL: 'https://your-server.com/api',
-    
+
     // Şu anki URL'yi kendi API adresinizle değiştirin:
-    BASE_URL: 'https://your-mongodb-api-url.com/api',
-    
+    BASE_URL: 'http://localhost:3000/api',
+
     TIMEOUT: 10000, // 10 saniye
     RETRY_ATTEMPTS: 3,
   },
-  
+
   // App Configuration
   APP: {
     NAME: 'YKS App',
     VERSION: '1.0.0',
     BUILD_NUMBER: '1',
   },
-  
+
   // Feature Flags
   FEATURES: {
     USE_MONGODB: true, // MongoDB kullanımını açıp kapatmak için
     OFFLINE_MODE: true, // Offline mod desteği
     CACHE_ENABLED: true, // Cache desteği
   },
-  
+
   // Cache Configuration
   CACHE: {
     QUESTIONS_TTL: 3600000, // 1 saat (milisaniye)
