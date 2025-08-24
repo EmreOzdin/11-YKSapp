@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PastQuestionBadge from '../components/PastQuestionBadge';
 import { QuestionService, QuestionType } from '../services/questionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -296,6 +297,17 @@ const QuestionScreen: React.FC = () => {
             </Text>
           </View>
         </View>
+
+        {/* Önceden çıkmış soru badge'i */}
+        {currentQuestion.isPastQuestion && currentQuestion.year && (
+          <View style={styles.pastQuestionContainer}>
+            <PastQuestionBadge year={currentQuestion.year} size='medium' />
+            <Text style={styles.pastQuestionText}>
+              Bu soru {currentQuestion.year} YKS'de çıkmıştır
+            </Text>
+          </View>
+        )}
+
         <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
         <Text style={styles.topicText}>Konu: {currentQuestion.topic}</Text>
       </View>
@@ -333,22 +345,16 @@ const QuestionScreen: React.FC = () => {
               {isCorrect ? '✓' : '❌'}
             </Text>
             <Text style={styles.feedbackText}>
-              {isCorrect ? 'Doğru!' : 'Yanlış!'}
+              {isCorrect ? 'Tebrikler! Doğru cevap!' : 'Yanlış!'}
             </Text>
-            <Text style={styles.correctAnswerText}>
-              Doğru cevap: {currentQuestion.correctAnswer}
-            </Text>
+            {!isCorrect && (
+              <Text style={styles.correctAnswerText}>
+                Doğru cevap: {currentQuestion.correctAnswer}
+              </Text>
+            )}
           </View>
 
-          {/* Açıklama - Sadece doğru cevaplarda göster */}
-          {isCorrect && (
-            <Text style={styles.explanationText}>
-              <Text style={styles.explanationTitle}>Açıklama:</Text>{' '}
-              {currentQuestion.explanation}
-            </Text>
-          )}
-
-          {/* Butonlar - Yan yana yerleştirilmiş */}
+          {/* Butonlar */}
           <View style={styles.buttonContainer}>
             {/* Açıklama Butonu - Sadece yanlış cevaplarda göster */}
             {!isCorrect && (
@@ -364,7 +370,10 @@ const QuestionScreen: React.FC = () => {
 
             {/* Sonraki Soru Butonu */}
             <TouchableOpacity
-              style={styles.nextButton}
+              style={[
+                styles.nextButton,
+                isCorrect && styles.nextButtonFullWidth,
+              ]}
               onPress={handleNextQuestion}
             >
               <Text style={styles.nextButtonText}>
@@ -656,6 +665,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...shadows.medium,
   },
+  nextButtonFullWidth: {
+    flex: 1,
+    width: '100%',
+  },
   nextButtonText: {
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
@@ -829,6 +842,24 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
     color: colors.textWhite,
+  },
+  pastQuestionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: responsiveSize(15),
+    paddingVertical: responsiveSize(8),
+    paddingHorizontal: responsiveSize(12),
+    backgroundColor: colors.primary + '10',
+    borderRadius: responsiveSize(8),
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+  },
+  pastQuestionText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.primary,
+    fontWeight: '600',
+    marginLeft: responsiveSize(8),
+    flex: 1,
   },
 });
 
