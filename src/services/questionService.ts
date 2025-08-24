@@ -1,4 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isMongoDbEnabled } from '../config/environment';
+import apiService from './apiService';
 
 // Konu kategorileri
 export interface TopicCategory {
@@ -443,11 +445,34 @@ export class QuestionService {
   // Tüm soruları getirme
   static async getAllQuestions(): Promise<QuestionType[]> {
     try {
+      // MongoDB kullanımı açıksa MongoDB'den al
+      if (isMongoDbEnabled()) {
+        try {
+          const mongoQuestions = await apiService.getAllQuestions();
+
+          // Eğer MongoDB'den soru gelirse onları kullan
+          if (mongoQuestions && mongoQuestions.length > 0) {
+            return mongoQuestions;
+          }
+        } catch (mongoError) {
+          console.error("MongoDB'den sorular alınırken hata:", mongoError);
+        }
+      }
+
+      // MongoDB kapalıysa veya hata varsa local storage'dan al (fallback)
       const questionsData = await AsyncStorage.getItem(this.QUESTIONS_KEY);
       return questionsData ? JSON.parse(questionsData) : [];
     } catch (error) {
       console.error('Sorular getirilirken hata:', error);
-      return [];
+
+      // Hata durumunda local storage'dan al (fallback)
+      try {
+        const questionsData = await AsyncStorage.getItem(this.QUESTIONS_KEY);
+        return questionsData ? JSON.parse(questionsData) : [];
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
     }
   }
 
@@ -456,22 +481,56 @@ export class QuestionService {
     examType: 'TYT' | 'AYT' | 'YDT'
   ): Promise<QuestionType[]> {
     try {
+      // Önce MongoDB'den sınav tipine göre soruları al
+      const mongoQuestions = await apiService.getQuestionsByExamType(examType);
+
+      // Eğer MongoDB'den soru gelirse onları kullan
+      if (mongoQuestions && mongoQuestions.length > 0) {
+        return mongoQuestions;
+      }
+
+      // MongoDB'den soru gelmezse local storage'dan al ve filtrele
       const questions = await this.getAllQuestions();
       return questions.filter(question => question.examType === examType);
     } catch (error) {
       console.error('Sınav tipine göre sorular getirilirken hata:', error);
-      return [];
+
+      // Hata durumunda local storage'dan al ve filtrele (fallback)
+      try {
+        const questions = await this.getAllQuestions();
+        return questions.filter(question => question.examType === examType);
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
     }
   }
 
   // Derse göre soruları getirme
   static async getQuestionsBySubject(subject: string): Promise<QuestionType[]> {
     try {
+      // Önce MongoDB'den derse göre soruları al
+      const mongoQuestions = await apiService.getQuestionsBySubject(subject);
+
+      // Eğer MongoDB'den soru gelirse onları kullan
+      if (mongoQuestions && mongoQuestions.length > 0) {
+        return mongoQuestions;
+      }
+
+      // MongoDB'den soru gelmezse local storage'dan al ve filtrele
       const questions = await this.getAllQuestions();
       return questions.filter(question => question.subject === subject);
     } catch (error) {
       console.error('Derse göre sorular getirilirken hata:', error);
-      return [];
+
+      // Hata durumunda local storage'dan al ve filtrele (fallback)
+      try {
+        const questions = await this.getAllQuestions();
+        return questions.filter(question => question.subject === subject);
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
     }
   }
 
@@ -491,11 +550,98 @@ export class QuestionService {
   // Çıkmış soruları getirme
   static async getPastQuestions(): Promise<QuestionType[]> {
     try {
+      // Önce MongoDB'den çıkmış soruları al
+      const mongoQuestions = await apiService.getPastQuestions();
+
+      // Eğer MongoDB'den soru gelirse onları kullan
+      if (mongoQuestions && mongoQuestions.length > 0) {
+        return mongoQuestions;
+      }
+
+      // MongoDB'den soru gelmezse local storage'dan al ve filtrele
       const questions = await this.getAllQuestions();
       return questions.filter(question => question.isPastQuestion);
     } catch (error) {
       console.error('Çıkmış sorular getirilirken hata:', error);
-      return [];
+
+      // Hata durumunda local storage'dan al ve filtrele (fallback)
+      try {
+        const questions = await this.getAllQuestions();
+        return questions.filter(question => question.isPastQuestion);
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
+    }
+  }
+
+  // Yıla göre çıkmış soruları getirme
+  static async getPastQuestionsByYear(year: number): Promise<QuestionType[]> {
+    try {
+      // Önce MongoDB'den yıla göre çıkmış soruları al
+      const mongoQuestions = await apiService.getPastQuestionsByYear(year);
+
+      // Eğer MongoDB'den soru gelirse onları kullan
+      if (mongoQuestions && mongoQuestions.length > 0) {
+        return mongoQuestions;
+      }
+
+      // MongoDB'den soru gelmezse local storage'dan al ve filtrele
+      const questions = await this.getAllQuestions();
+      return questions.filter(
+        question => question.isPastQuestion && question.year === year
+      );
+    } catch (error) {
+      console.error('Yıla göre çıkmış sorular getirilirken hata:', error);
+
+      // Hata durumunda local storage'dan al ve filtrele (fallback)
+      try {
+        const questions = await this.getAllQuestions();
+        return questions.filter(
+          question => question.isPastQuestion && question.year === year
+        );
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
+    }
+  }
+
+  // Sınav tipine göre çıkmış soruları getirme
+  static async getPastQuestionsByExamType(
+    examType: 'TYT' | 'AYT' | 'YDT'
+  ): Promise<QuestionType[]> {
+    try {
+      // Önce MongoDB'den sınav tipine göre çıkmış soruları al
+      const mongoQuestions =
+        await apiService.getPastQuestionsByExamType(examType);
+
+      // Eğer MongoDB'den soru gelirse onları kullan
+      if (mongoQuestions && mongoQuestions.length > 0) {
+        return mongoQuestions;
+      }
+
+      // MongoDB'den soru gelmezse local storage'dan al ve filtrele
+      const questions = await this.getAllQuestions();
+      return questions.filter(
+        question => question.isPastQuestion && question.examType === examType
+      );
+    } catch (error) {
+      console.error(
+        'Sınav tipine göre çıkmış sorular getirilirken hata:',
+        error
+      );
+
+      // Hata durumunda local storage'dan al ve filtrele (fallback)
+      try {
+        const questions = await this.getAllQuestions();
+        return questions.filter(
+          question => question.isPastQuestion && question.examType === examType
+        );
+      } catch (localError) {
+        console.error("Local storage'dan sorular alınırken hata:", localError);
+        return [];
+      }
     }
   }
 
