@@ -65,12 +65,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           const user = JSON.parse(currentUser);
           if (user.email !== userInfo.email) {
             // Kullanıcı değişmiş, userInfo'yu yeniden yükle
-            console.log(
-              'Kullanıcı değişikliği tespit edildi:',
-              user.email,
-              '->',
-              userInfo.email
-            );
+
             await loadUserInfo();
           }
         }

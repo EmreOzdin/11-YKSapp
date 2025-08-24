@@ -314,13 +314,10 @@ export const sampleQuestions: QuestionType[] = [
 
 // Örnek verileri database'e ekle
 export const addSampleData = async () => {
-  console.log('Örnek veriler ekleniyor...');
-
   // Önce mevcut soruları kontrol et
   const existingQuestions = await QuestionService.getAllQuestions();
 
   if (existingQuestions.length > 0) {
-    console.log('Veritabanında zaten sorular mevcut, ekleme yapılmıyor.');
     return;
   }
 
@@ -328,23 +325,16 @@ export const addSampleData = async () => {
     const questionData = sampleQuestions[i];
     try {
       await QuestionService.addQuestion(questionData);
-      console.log(
-        `Soru ${i + 1} eklendi: ${questionData.questionText.substring(0, 30)}...`
-      );
     } catch (error) {
       console.error(`Soru ${i + 1} eklenirken hata:`, error);
     }
   }
-
-  console.log('Örnek veriler başarıyla eklendi!');
 };
 
 // Database'i temizle (sadece geliştirme için)
 export const clearDatabase = async () => {
-  console.log('Database temizleniyor...');
   try {
     await QuestionService.clearDatabase();
-    console.log('Database başarıyla temizlendi!');
   } catch (error) {
     console.error('Database temizlenirken hata:', error);
   }

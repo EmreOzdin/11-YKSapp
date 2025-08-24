@@ -351,7 +351,7 @@ const HomeScreen: React.FC = () => {
         );
         if (savedCardIndex !== null) {
           const cardIndex = parseInt(savedCardIndex);
-          console.log('Setting card index to:', cardIndex);
+
           // Reorder cards to show the visited card first
           const reorderedCards = [...CARD_DATA];
           const visitedCard = reorderedCards[cardIndex];
@@ -361,9 +361,7 @@ const HomeScreen: React.FC = () => {
           setCurrentCardIndex(0);
           await AsyncStorage.removeItem('lastVisitedCardIndex');
         }
-      } catch (error) {
-        console.log('Error loading card index:', error);
-      }
+      } catch (error) {}
     });
 
     return unsubscribe;
@@ -386,9 +384,7 @@ const HomeScreen: React.FC = () => {
     const cardIndex = cardData.findIndex(card => card.title === item.title);
     try {
       await AsyncStorage.setItem('lastVisitedCardIndex', cardIndex.toString());
-    } catch (error) {
-      console.log('Error saving card index:', error);
-    }
+    } catch (error) {}
 
     switch (item.title) {
       case 'Fen Bilimleri Sınavı':
@@ -530,9 +526,7 @@ const HomeScreen: React.FC = () => {
                           'lastVisitedCardIndex',
                           cardIndex.toString()
                         );
-                      } catch (error) {
-                        console.log('Error saving card index:', error);
-                      }
+                      } catch (error) {}
 
                       switch (item.title) {
                         case 'Fen Bilimleri Sınavı':

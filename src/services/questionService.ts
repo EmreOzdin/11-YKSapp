@@ -763,7 +763,6 @@ export class QuestionService {
     try {
       await AsyncStorage.removeItem(this.QUESTIONS_KEY);
       await AsyncStorage.removeItem(this.USER_SELECTIONS_KEY);
-      console.log('Veritabanı temizlendi');
     } catch (error) {
       console.error('Veritabanı temizlenirken hata:', error);
     }

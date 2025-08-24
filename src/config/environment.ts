@@ -14,7 +14,7 @@ export const ENVIRONMENT = {
     // BASE_URL: 'https://your-server.com/api',
 
     // Şu anki URL'yi kendi API adresinizle değiştirin:
-    BASE_URL: 'http://localhost:3000/api',
+    BASE_URL: 'http://10.0.2.2:3000/api', // Android emülatörü için
 
     TIMEOUT: 10000, // 10 saniye
     RETRY_ATTEMPTS: 3,
@@ -46,7 +46,7 @@ export const DEV_ENVIRONMENT = {
   ...ENVIRONMENT,
   MONGODB_API: {
     ...ENVIRONMENT.MONGODB_API,
-    BASE_URL: 'http://localhost:3000/api', // Local development için
+    BASE_URL: 'http://10.0.2.2:3000/api', // Android emülatörü için
   },
   FEATURES: {
     ...ENVIRONMENT.FEATURES,

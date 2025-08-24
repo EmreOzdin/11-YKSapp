@@ -17,13 +17,10 @@ const LogoScreen: React.FC = () => {
     const timer = setTimeout(() => {
       // Eğer kullanıcı zaten giriş yapmışsa direkt ana uygulamaya yönlendir
       if (isAuthenticated && user && token) {
-        console.log(
-          'Kullanıcı zaten giriş yapmış, ana uygulamaya yönlendiriliyor'
-        );
         navigation.navigate('MainApp');
       } else {
         // Giriş yapmamışsa onboarding'e yönlendir
-        console.log("Kullanıcı giriş yapmamış, onboarding'e yönlendiriliyor");
+
         navigation.navigate('Onboarding');
       }
     }, 1500);
