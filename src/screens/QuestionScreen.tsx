@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Modal,
-} from 'react-native';
-import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
-  useRoute,
   RouteProp,
+  useNavigation,
+  useRoute,
 } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
-import { QuestionType, QuestionService } from '../services/questionService';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { QuestionService, QuestionType } from '../services/questionService';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 type QuestionScreenRouteProp = RouteProp<
   {
@@ -333,22 +333,16 @@ const QuestionScreen: React.FC = () => {
               {isCorrect ? '✓' : '❌'}
             </Text>
             <Text style={styles.feedbackText}>
-              {isCorrect ? 'Doğru!' : 'Yanlış!'}
+              {isCorrect ? 'Tebrikler! Doğru cevap!' : 'Yanlış!'}
             </Text>
-            <Text style={styles.correctAnswerText}>
-              Doğru cevap: {currentQuestion.correctAnswer}
-            </Text>
+            {!isCorrect && (
+              <Text style={styles.correctAnswerText}>
+                Doğru cevap: {currentQuestion.correctAnswer}
+              </Text>
+            )}
           </View>
 
-          {/* Açıklama - Sadece doğru cevaplarda göster */}
-          {isCorrect && (
-            <Text style={styles.explanationText}>
-              <Text style={styles.explanationTitle}>Açıklama:</Text>{' '}
-              {currentQuestion.explanation}
-            </Text>
-          )}
-
-          {/* Butonlar - Yan yana yerleştirilmiş */}
+          {/* Butonlar */}
           <View style={styles.buttonContainer}>
             {/* Açıklama Butonu - Sadece yanlış cevaplarda göster */}
             {!isCorrect && (
@@ -364,7 +358,10 @@ const QuestionScreen: React.FC = () => {
 
             {/* Sonraki Soru Butonu */}
             <TouchableOpacity
-              style={styles.nextButton}
+              style={[
+                styles.nextButton,
+                isCorrect && styles.nextButtonFullWidth,
+              ]}
               onPress={handleNextQuestion}
             >
               <Text style={styles.nextButtonText}>
@@ -655,6 +652,10 @@ const styles = StyleSheet.create({
     borderRadius: responsiveSize(12),
     alignItems: 'center',
     ...shadows.medium,
+  },
+  nextButtonFullWidth: {
+    flex: 1,
+    width: '100%',
   },
   nextButtonText: {
     fontSize: responsiveFontSize(16),
