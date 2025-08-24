@@ -26,6 +26,9 @@ type QuestionScreenRouteProp = RouteProp<
       examType?: 'TYT' | 'AYT' | 'YDT';
       subject?: string;
       isPastQuestion?: boolean;
+      questions?: QuestionType[];
+      examTitle?: string;
+      examYear?: number;
     };
   },
   'QuestionScreen'
@@ -54,8 +57,12 @@ const QuestionScreen: React.FC = () => {
 
       let userQuestions: QuestionType[] = [];
 
+      // Eğer çıkmış sınav soruları parametresi varsa, onları kullan
+      if (route.params.questions && route.params.questions.length > 0) {
+        userQuestions = route.params.questions;
+      }
       // Eğer subject parametresi varsa, sadece o derse ait soruları getir
-      if (route.params.subject) {
+      else if (route.params.subject) {
         userQuestions = await QuestionService.getQuestionsBySubjectOnly(
           route.params.subject
         );
@@ -92,9 +99,11 @@ const QuestionScreen: React.FC = () => {
       if (userQuestions.length === 0) {
         Alert.alert(
           'Soru Bulunamadı',
-          route.params.subject
-            ? `${route.params.subject} dersinde henüz soru bulunmuyor.`
-            : 'Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.',
+          route.params.questions
+            ? 'Bu sınavda henüz soru bulunmuyor.'
+            : route.params.subject
+              ? `${route.params.subject} dersinde henüz soru bulunmuyor.`
+              : 'Seçtiğiniz konularda henüz soru bulunmuyor. Lütfen farklı konular seçin veya daha sonra tekrar deneyin.',
           [
             {
               text: 'Ana Sayfa',
@@ -105,9 +114,14 @@ const QuestionScreen: React.FC = () => {
         return;
       }
 
-      // Rastgele karıştır
-      const shuffledQuestions = userQuestions.sort(() => 0.5 - Math.random());
-      setQuestions(shuffledQuestions);
+      // Çıkmış sınav soruları ise karıştırma, sıralı göster
+      if (route.params.questions) {
+        setQuestions(userQuestions);
+      } else {
+        // Rastgele karıştır
+        const shuffledQuestions = userQuestions.sort(() => 0.5 - Math.random());
+        setQuestions(shuffledQuestions);
+      }
     } catch (error) {
       console.error('Sorular yüklenirken hata:', error);
       Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
@@ -272,6 +286,9 @@ const QuestionScreen: React.FC = () => {
           <Text style={styles.backText}>{'<'} Geri</Text>
         </TouchableOpacity>
         <View style={styles.headerInfo}>
+          {route.params.examTitle && (
+            <Text style={styles.examTitle}>{route.params.examTitle}</Text>
+          )}
           <Text style={styles.questionCounter}>
             Soru {currentQuestionIndex + 1}/{questions.length}
           </Text>
@@ -860,6 +877,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginLeft: responsiveSize(8),
     flex: 1,
+  },
+  examTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.primary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(4),
   },
 });
 

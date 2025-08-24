@@ -39,10 +39,10 @@ class ApiService {
       }
 
       const url = `${this.baseURL}${endpoint}`;
-      
+
       const defaultHeaders = {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        Accept: 'application/json',
       };
 
       const config: RequestInit = {
@@ -54,7 +54,7 @@ class ApiService {
       };
 
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -71,7 +71,7 @@ class ApiService {
   async getAllQuestions(): Promise<QuestionType[]> {
     try {
       const response = await this.request<QuestionsResponse>('/questions');
-      
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch questions');
       }
@@ -84,12 +84,18 @@ class ApiService {
   }
 
   // Get questions by exam type
-  async getQuestionsByExamType(examType: 'TYT' | 'AYT' | 'YDT'): Promise<QuestionType[]> {
+  async getQuestionsByExamType(
+    examType: 'TYT' | 'AYT' | 'YDT'
+  ): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/exam-type/${examType}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/exam-type/${examType}`
+      );
+
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch questions by exam type');
+        throw new Error(
+          response.error || 'Failed to fetch questions by exam type'
+        );
       }
 
       return response.data;
@@ -102,10 +108,14 @@ class ApiService {
   // Get questions by subject
   async getQuestionsBySubject(subject: string): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/subject/${encodeURIComponent(subject)}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/subject/${encodeURIComponent(subject)}`
+      );
+
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch questions by subject');
+        throw new Error(
+          response.error || 'Failed to fetch questions by subject'
+        );
       }
 
       return response.data;
@@ -118,8 +128,10 @@ class ApiService {
   // Get questions by topic
   async getQuestionsByTopic(topic: string): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/topic/${encodeURIComponent(topic)}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/topic/${encodeURIComponent(topic)}`
+      );
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch questions by topic');
       }
@@ -135,7 +147,7 @@ class ApiService {
   async getPastQuestions(): Promise<QuestionType[]> {
     try {
       const response = await this.request<QuestionsResponse>('/questions/past');
-      
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch past questions');
       }
@@ -150,10 +162,14 @@ class ApiService {
   // Get past questions by year
   async getPastQuestionsByYear(year: number): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/past/year/${year}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/past/year/${year}`
+      );
+
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch past questions by year');
+        throw new Error(
+          response.error || 'Failed to fetch past questions by year'
+        );
       }
 
       return response.data;
@@ -164,12 +180,18 @@ class ApiService {
   }
 
   // Get past questions by exam type
-  async getPastQuestionsByExamType(examType: 'TYT' | 'AYT' | 'YDT'): Promise<QuestionType[]> {
+  async getPastQuestionsByExamType(
+    examType: 'TYT' | 'AYT' | 'YDT'
+  ): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/past/exam-type/${examType}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/past/exam-type/${examType}`
+      );
+
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch past questions by exam type');
+        throw new Error(
+          response.error || 'Failed to fetch past questions by exam type'
+        );
       }
 
       return response.data;
@@ -179,13 +201,40 @@ class ApiService {
     }
   }
 
+  // Get questions by year and exam type
+  async getQuestionsByYearAndExamType(
+    year: number,
+    examType: 'TYT' | 'AYT' | 'YDT'
+  ): Promise<QuestionType[]> {
+    try {
+      const response = await this.request<QuestionsResponse>(
+        `/questions/year/${year}/exam-type/${examType}`
+      );
+
+      if (!response.success || !response.data) {
+        throw new Error(
+          response.error || 'Failed to fetch questions by year and exam type'
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching questions by year and exam type:', error);
+      throw error;
+    }
+  }
+
   // Get questions by difficulty
   async getQuestionsByDifficulty(difficulty: number): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/difficulty/${difficulty}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/difficulty/${difficulty}`
+      );
+
       if (!response.success || !response.data) {
-        throw new Error(response.error || 'Failed to fetch questions by difficulty');
+        throw new Error(
+          response.error || 'Failed to fetch questions by difficulty'
+        );
       }
 
       return response.data;
@@ -198,8 +247,10 @@ class ApiService {
   // Get random questions (for practice)
   async getRandomQuestions(count: number = 10): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/random?count=${count}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/random?count=${count}`
+      );
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch random questions');
       }
@@ -214,8 +265,10 @@ class ApiService {
   // Search questions by text
   async searchQuestions(searchTerm: string): Promise<QuestionType[]> {
     try {
-      const response = await this.request<QuestionsResponse>(`/questions/search?q=${encodeURIComponent(searchTerm)}`);
-      
+      const response = await this.request<QuestionsResponse>(
+        `/questions/search?q=${encodeURIComponent(searchTerm)}`
+      );
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to search questions');
       }
@@ -231,7 +284,7 @@ class ApiService {
   async getQuestionById(id: string): Promise<QuestionType> {
     try {
       const response = await this.request<QuestionResponse>(`/questions/${id}`);
-      
+
       if (!response.success || !response.data) {
         throw new Error(response.error || 'Failed to fetch question');
       }
@@ -246,7 +299,8 @@ class ApiService {
   // Health check
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.request<ApiResponse<{ status: string }>>('/health');
+      const response =
+        await this.request<ApiResponse<{ status: string }>>('/health');
       return response.success;
     } catch (error) {
       console.error('Health check failed:', error);
