@@ -33,7 +33,7 @@ export const useAuthStore = create(set => ({
     }
   },
 
-  register: async (username, email, password) => {
+  register: async (username, email, password, verificationCode) => {
     set({ isLoading: true });
     try {
       const backendUrl = getBackendUrl();
@@ -42,7 +42,7 @@ export const useAuthStore = create(set => ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, verificationCode }),
       });
 
       const data = await response.json();
@@ -60,7 +60,8 @@ export const useAuthStore = create(set => ({
         ...data.user,
         username: username,
         email: email,
-        profileImage: null, // Default avatar kullanılacak
+        profileImage: data.user.profileImage || null,
+        emailVerified: data.user.emailVerified || false,
       };
 
       await AsyncStorage.setItem('user', JSON.stringify(userData));

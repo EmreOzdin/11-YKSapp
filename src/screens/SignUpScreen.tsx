@@ -2,7 +2,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
-  Alert,
   Platform,
   StyleSheet,
   Text,
@@ -102,25 +101,12 @@ const SignUpScreen: React.FC = () => {
       return;
     }
 
-    try {
-      const result = await register(username, email, password);
-
-      if (result && result.success) {
-        // Kullanıcı bilgilerini UserContext'te başlat
-        await initializeUser(result.user);
-
-        Alert.alert('Başarılı', 'Kayıt işlemi tamamlandı!', [
-          {
-            text: 'Tamam',
-            onPress: () => navigation.navigate('MainApp'),
-          },
-        ]);
-      } else {
-        Alert.alert('Hata', result?.message || 'Kayıt işlemi başarısız');
-      }
-    } catch (error) {
-      Alert.alert('Hata', 'Bir hata oluştu. Lütfen tekrar deneyin.');
-    }
+    // E-posta doğrulama ekranına yönlendir
+    navigation.navigate('EmailVerification', {
+      email,
+      username,
+      password,
+    });
   };
 
   const openPolicy = (
