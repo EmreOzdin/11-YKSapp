@@ -6,7 +6,7 @@ import TabNavigator from './src/navigation/TabNavigator';
 import AytPastScreen from './src/screens/AytPastScreen';
 import AytScreen from './src/screens/AytScreen';
 import EmailLoginScreen from './src/screens/EmailLoginScreen';
-import EmailVerificationScreen from './src/screens/EmailVerificationScreen';
+
 import FenBilimleriScreen from './src/screens/FenBilimleriScreen';
 import LogoScreen from './src/screens/LogoScreen';
 import MatematikScreen from './src/screens/MatematikScreen';
@@ -52,10 +52,7 @@ const AppContent = () => {
         <Stack.Screen name='Onboarding' component={Onboarding} />
         <Stack.Screen name='EmailLogin' component={EmailLoginScreen} />
         <Stack.Screen name='SignUp' component={SignUpScreen} />
-        <Stack.Screen
-          name='EmailVerification'
-          component={EmailVerificationScreen}
-        />
+
         <Stack.Screen name='MainApp' component={TabNavigator} />
         <Stack.Screen name='Fen Bilimleri' component={FenBilimleriScreen} />
         <Stack.Screen name='Türkçe' component={TurkceScreen} />

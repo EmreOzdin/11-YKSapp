@@ -101,12 +101,16 @@ const SignUpScreen: React.FC = () => {
       return;
     }
 
-    // E-posta doğrulama ekranına yönlendir
-    navigation.navigate('EmailVerification', {
-      email,
-      username,
-      password,
-    });
+    // Direkt kayıt işlemini yap
+    const result = await register(username, email, password);
+
+    if (result.success) {
+      // Kayıt başarılı, ana uygulamaya yönlendir
+      navigation.navigate('MainApp');
+    } else {
+      // Hata durumunda kullanıcıya bilgi ver
+      alert(result.message || 'Kayıt işlemi başarısız. Lütfen tekrar deneyin.');
+    }
   };
 
   const openPolicy = (

@@ -33,7 +33,7 @@ export const useAuthStore = create(set => ({
     }
   },
 
-  register: async (username, email, password, verificationCode) => {
+  register: async (username, email, password) => {
     set({ isLoading: true });
     try {
       const backendUrl = getBackendUrl();
@@ -42,7 +42,7 @@ export const useAuthStore = create(set => ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password, verificationCode }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await response.json();
