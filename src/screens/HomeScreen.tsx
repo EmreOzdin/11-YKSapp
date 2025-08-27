@@ -59,9 +59,24 @@ const CARD_DATA = [
 ];
 
 const notifications = [
-  { id: '1', title: 'Yeni deneme sınavı eklendi!', date: '2 saat önce' },
-  { id: '2', title: 'Çalışma serini 3 gün oldu!', date: 'Dün' },
-  { id: '3', title: 'Matematikte yeni konu anlatımı var.', date: '2 gün önce' },
+  {
+    id: '1',
+    title: 'Yeni deneme sınavı eklendi!',
+    date: '2 saat önce',
+    timestamp: Date.now() - 2 * 60 * 60 * 1000, // 2 saat önce
+  },
+  {
+    id: '2',
+    title: 'Çalışma serini 3 gün oldu!',
+    date: 'Dün',
+    timestamp: Date.now() - 24 * 60 * 60 * 1000, // 1 gün önce
+  },
+  {
+    id: '3',
+    title: 'Matematikte yeni konu anlatımı var.',
+    date: '2 gün önce',
+    timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 gün önce
+  },
 ];
 
 
@@ -319,11 +334,57 @@ const HomeScreen: React.FC = () => {
   const [notifModalVisible, setNotifModalVisible] = useState(false);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
-  const [unreadCount, setUnreadCount] = useState(notifications.length);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const swiperRef = React.useRef<any>(null);
   const [cardData, setCardData] = useState(CARD_DATA);
+
+  // Bildirim durumunu yükle
+  useEffect(() => {
+    const loadNotificationStatus = async () => {
+      try {
+        const lastViewedTime = await AsyncStorage.getItem(
+          'lastNotificationViewTime'
+        );
+        const currentTime = Date.now();
+
+        if (lastViewedTime) {
+          const lastViewed = parseInt(lastViewedTime);
+          // Son görüntüleme zamanından sonra gelen bildirimleri say
+          const newNotificationsCount = notifications.filter(
+            notification => notification.timestamp > lastViewed
+          ).length;
+
+          setUnreadCount(newNotificationsCount);
+        } else {
+          // İlk kez açılıyorsa tüm bildirimleri okunmamış olarak göster
+          setUnreadCount(notifications.length);
+        }
+      } catch (error) {
+        console.error('Bildirim durumu yüklenirken hata:', error);
+        setUnreadCount(notifications.length);
+      }
+    };
+
+    loadNotificationStatus();
+  }, []);
+
+  // Bildirim modalını açma fonksiyonu
+  const openNotificationModal = async () => {
+    setNotifModalVisible(true);
+    setUnreadCount(0);
+
+    // Bildirim görüntüleme zamanını kaydet
+    try {
+      await AsyncStorage.setItem(
+        'lastNotificationViewTime',
+        Date.now().toString()
+      );
+    } catch (error) {
+      console.error('Bildirim durumu kaydedilirken hata:', error);
+    }
+  };
 
   // Örnek verileri yükleme fonksiyonu
   const loadSampleData = async () => {
@@ -465,10 +526,7 @@ const HomeScreen: React.FC = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onPress={() => {
-                setNotifModalVisible(true);
-                setUnreadCount(0);
-              }}
+              onPress={openNotificationModal}
               activeOpacity={0.6}
               hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
             >
