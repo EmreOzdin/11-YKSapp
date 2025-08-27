@@ -11,12 +11,12 @@ import {
   Alert,
   Dimensions,
   FlatList,
+  PanResponder,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import {
   CardCategory,
   MemoryCard,
@@ -87,6 +87,21 @@ const CardsScreen: React.FC = () => {
     loadCategoriesAndCards();
   }, []);
 
+  // Tüm kartların sayısını al
+  const [totalCardsCount, setTotalCardsCount] = useState(0);
+
+  useEffect(() => {
+    const getTotalCardsCount = async () => {
+      try {
+        const allCards = await asyncStorageService.getAllCards();
+        setTotalCardsCount(allCards.length);
+      } catch (error) {
+        // Hata durumunda sessizce devam et
+      }
+    };
+    getTotalCardsCount();
+  }, []);
+
   const loadCategoriesAndCards = async () => {
     try {
       setLoading(true);
@@ -99,7 +114,6 @@ const CardsScreen: React.FC = () => {
       const allCards = await asyncStorageService.getAllCards();
       setCards(allCards);
     } catch (error) {
-      console.error('Kategoriler ve kartlar yüklenirken hata:', error);
       Alert.alert(
         'Hata',
         'Kartlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
@@ -131,7 +145,6 @@ const CardsScreen: React.FC = () => {
       setCurrentCardIndex(0);
       setFlippedCards(new Set());
     } catch (error) {
-      console.error('Kategori kartları yüklenirken hata:', error);
       Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
     }
   };
@@ -150,7 +163,8 @@ const CardsScreen: React.FC = () => {
   // Sonraki kart
   const nextCard = () => {
     if (currentCardIndex < cards.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1);
+      const newIndex = currentCardIndex + 1;
+      setCurrentCardIndex(newIndex);
       setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
     }
   };
@@ -158,22 +172,29 @@ const CardsScreen: React.FC = () => {
   // Önceki kart
   const previousCard = () => {
     if (currentCardIndex > 0) {
-      setCurrentCardIndex(currentCardIndex - 1);
+      const newIndex = currentCardIndex - 1;
+      setCurrentCardIndex(newIndex);
       setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
     }
   };
 
-  // Swipe gesture handler
-  const panGesture = Gesture.Pan().onEnd(event => {
-    const { translationX } = event;
+  // PanResponder for swipe gestures
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: (evt, gestureState) => {
+      const { dx, dy } = gestureState;
+      return Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10;
+    },
+    onPanResponderRelease: (evt, gestureState) => {
+      const { dx, vx } = gestureState;
 
-    if (translationX > 100) {
-      // Sağa çekildi - önceki kart
-      previousCard();
-    } else if (translationX < -100) {
-      // Sola çekildi - sonraki kart
-      nextCard();
-    }
+      // Swipe detection - daha hassas
+      if (dx > 20 || vx > 0.3) {
+        previousCard();
+      } else if (dx < -20 || vx < -0.3) {
+        nextCard();
+      }
+    },
   });
 
   // Kategori kartını render et
@@ -211,7 +232,7 @@ const CardsScreen: React.FC = () => {
               color={colors.textWhite}
             />
             <Text style={styles.categoryTitle}>Tümü</Text>
-            <Text style={styles.categoryCount}>{cards.length} kart</Text>
+            <Text style={styles.categoryCount}>{totalCardsCount} kart</Text>
           </View>
         </TouchableOpacity>
       );
@@ -272,10 +293,6 @@ const CardsScreen: React.FC = () => {
       categoryNameMapping[item.name as keyof typeof categoryNameMapping] ||
       item.name;
 
-    console.log(
-      `Rendering category: "${item.name}" -> "${displayName}" with color: ${color}`
-    );
-
     return (
       <TouchableOpacity
         style={[
@@ -322,110 +339,109 @@ const CardsScreen: React.FC = () => {
 
     return (
       <View style={styles.mainCardContainer}>
-        <GestureDetector gesture={panGesture}>
-          <View style={styles.cardWrapper}>
-            <TouchableOpacity
-              style={styles.mainCard}
-              onPress={() => flipCard(currentCard.id)}
-              activeOpacity={0.9}
-            >
-              {/* Kartın Ön Yüzü - Soru */}
-              {!isFlipped && (
-                <View style={styles.cardContent}>
-                  <View style={styles.cardHeader}>
-                    <View style={styles.difficultyBadge}>
-                      <Text style={styles.difficultyText}>
-                        {currentCard.difficulty === 'easy'
-                          ? 'Kolay'
-                          : currentCard.difficulty === 'medium'
-                            ? 'Orta'
-                            : 'Zor'}
-                      </Text>
-                    </View>
-                    <Text style={styles.cardNumber}>
-                      {currentCardIndex + 1} / {cards.length}
+        <View {...panResponder.panHandlers}>
+          <TouchableOpacity
+            style={styles.mainCard}
+            onPress={() => flipCard(currentCard.id)}
+            activeOpacity={0.9}
+            delayPressIn={200}
+          >
+            {/* Kartın Ön Yüzü - Soru */}
+            {!isFlipped && (
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.difficultyBadge}>
+                    <Text style={styles.difficultyText}>
+                      {currentCard.difficulty === 'easy'
+                        ? 'Kolay'
+                        : currentCard.difficulty === 'medium'
+                          ? 'Orta'
+                          : 'Zor'}
                     </Text>
                   </View>
+                  <Text style={styles.cardNumber}>
+                    {currentCardIndex + 1} / {cards.length}
+                  </Text>
+                </View>
 
-                  <View style={styles.questionContainer}>
-                    <Text style={styles.questionText}>
-                      {currentCard.question}
+                <View style={styles.questionContainer}>
+                  <Text style={styles.questionText}>
+                    {currentCard.question}
+                  </Text>
+                </View>
+
+                <View style={styles.cardFooter}>
+                  <View style={styles.flipHintContainer}>
+                    <Ionicons
+                      name='hand-left'
+                      size={16}
+                      color={colors.textTertiary}
+                    />
+                    <Text style={styles.flipHint}>
+                      Cevabı görmek için dokun
                     </Text>
-                  </View>
-
-                  <View style={styles.cardFooter}>
-                    <View style={styles.flipHintContainer}>
-                      <Ionicons
-                        name='hand-left'
-                        size={16}
-                        color={colors.textTertiary}
-                      />
-                      <Text style={styles.flipHint}>
-                        Cevabı görmek için dokun
-                      </Text>
-                    </View>
                   </View>
                 </View>
-              )}
+              </View>
+            )}
 
-              {/* Kartın Arka Yüzü - Cevap */}
-              {isFlipped && (
-                <View style={styles.cardContent}>
-                  <View style={styles.cardHeader}>
-                    <View style={styles.difficultyBadge}>
-                      <Text style={styles.difficultyText}>
-                        {currentCard.difficulty === 'easy'
-                          ? 'Kolay'
-                          : currentCard.difficulty === 'medium'
-                            ? 'Orta'
-                            : 'Zor'}
-                      </Text>
-                    </View>
-                    <Text style={styles.cardNumber}>
-                      {currentCardIndex + 1} / {cards.length}
+            {/* Kartın Arka Yüzü - Cevap */}
+            {isFlipped && (
+              <View style={styles.cardContent}>
+                <View style={styles.cardHeader}>
+                  <View style={styles.difficultyBadge}>
+                    <Text style={styles.difficultyText}>
+                      {currentCard.difficulty === 'easy'
+                        ? 'Kolay'
+                        : currentCard.difficulty === 'medium'
+                          ? 'Orta'
+                          : 'Zor'}
                     </Text>
                   </View>
+                  <Text style={styles.cardNumber}>
+                    {currentCardIndex + 1} / {cards.length}
+                  </Text>
+                </View>
 
-                  <View style={styles.answerContainer}>
-                    <Text style={styles.answerText}>{currentCard.answer}</Text>
+                <View style={styles.answerContainer}>
+                  <Text style={styles.answerText}>{currentCard.answer}</Text>
 
-                    {currentCard.explanation && (
-                      <View style={styles.explanationContainer}>
-                        <Text style={styles.explanationTitle}>Açıklama:</Text>
-                        <Text style={styles.explanationText}>
-                          {currentCard.explanation}
-                        </Text>
-                      </View>
-                    )}
-
-                    {currentCard.tags && currentCard.tags.length > 0 && (
-                      <View style={styles.tagsContainer}>
-                        {currentCard.tags.map((tag, tagIndex) => (
-                          <View key={tagIndex} style={styles.tag}>
-                            <Text style={styles.tagText}>{tag}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-                  </View>
-
-                  <View style={styles.cardFooter}>
-                    <View style={styles.flipHintContainer}>
-                      <Ionicons
-                        name='hand-left'
-                        size={16}
-                        color={colors.textTertiary}
-                      />
-                      <Text style={styles.flipHint}>
-                        Soruyu görmek için dokun
+                  {currentCard.explanation && (
+                    <View style={styles.explanationContainer}>
+                      <Text style={styles.explanationTitle}>Açıklama:</Text>
+                      <Text style={styles.explanationText}>
+                        {currentCard.explanation}
                       </Text>
                     </View>
+                  )}
+
+                  {currentCard.tags && currentCard.tags.length > 0 && (
+                    <View style={styles.tagsContainer}>
+                      {currentCard.tags.map((tag, tagIndex) => (
+                        <View key={tagIndex} style={styles.tag}>
+                          <Text style={styles.tagText}>{tag}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+                </View>
+
+                <View style={styles.cardFooter}>
+                  <View style={styles.flipHintContainer}>
+                    <Ionicons
+                      name='hand-left'
+                      size={16}
+                      color={colors.textTertiary}
+                    />
+                    <Text style={styles.flipHint}>
+                      Soruyu görmek için dokun
+                    </Text>
                   </View>
                 </View>
-              )}
-            </TouchableOpacity>
-          </View>
-        </GestureDetector>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
 
         {/* Swipe İpuçları */}
         <View style={styles.swipeHints}>
@@ -489,7 +505,7 @@ const CardsScreen: React.FC = () => {
             data={[
               {
                 name: 'Tümü',
-                count: cards.length,
+                count: totalCardsCount,
                 easyCount: 0,
                 mediumCount: 0,
                 hardCount: 0,
@@ -638,7 +654,6 @@ const styles = StyleSheet.create({
   selectedCategoryCard: {
     borderWidth: 3,
     borderColor: '#ffffff',
-    transform: [{ scale: 1.05 }],
     elevation: 12,
     shadowColor: '#000',
     shadowOffset: {
@@ -730,13 +745,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cardWrapper: {
+
+  mainCard: {
     width: screenWidth - responsiveSize(80),
     height: responsiveSize(400),
-  },
-  mainCard: {
-    width: '100%',
-    height: '100%',
     backgroundColor: '#fff',
     borderRadius: responsiveSize(24),
     padding: responsiveSize(24),
@@ -744,6 +756,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.05)',
   },
+
   cardContent: {
     flex: 1,
   },
