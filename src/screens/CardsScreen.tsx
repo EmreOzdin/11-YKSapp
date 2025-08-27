@@ -5,10 +5,11 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Animated,
   Dimensions,
   FlatList,
   PanResponder,
@@ -35,6 +36,11 @@ const CardsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cards, setCards] = useState<MemoryCard[]>([]);
   const [categories, setCategories] = useState<CardCategory[]>([]);
+
+  // Animasyon değerleri
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
 
   // Kart kategorileri
   const cardCategories: CardCategory[] = [
@@ -102,6 +108,13 @@ const CardsScreen: React.FC = () => {
     getTotalCardsCount();
   }, []);
 
+  // Kart değiştiğinde animasyon değerlerini sıfırla
+  useEffect(() => {
+    slideAnim.setValue(0);
+    scaleAnim.setValue(1);
+    opacityAnim.setValue(1);
+  }, [currentCardIndex]);
+
   const loadCategoriesAndCards = async () => {
     try {
       setLoading(true);
@@ -163,18 +176,56 @@ const CardsScreen: React.FC = () => {
   // Sonraki kart
   const nextCard = () => {
     if (currentCardIndex < cards.length - 1) {
-      const newIndex = currentCardIndex + 1;
-      setCurrentCardIndex(newIndex);
-      setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
+      // Sola kaydırma animasyonu - daha hızlı
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: -screenWidth,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 0.8,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        const newIndex = currentCardIndex + 1;
+        setCurrentCardIndex(newIndex);
+        setFlippedCards(new Set());
+      });
     }
   };
 
   // Önceki kart
   const previousCard = () => {
     if (currentCardIndex > 0) {
-      const newIndex = currentCardIndex - 1;
-      setCurrentCardIndex(newIndex);
-      setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
+      // Sağa kaydırma animasyonu - daha hızlı
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: screenWidth,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnim, {
+          toValue: 0.8,
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        const newIndex = currentCardIndex - 1;
+        setCurrentCardIndex(newIndex);
+        setFlippedCards(new Set());
+      });
     }
   };
 
@@ -185,6 +236,17 @@ const CardsScreen: React.FC = () => {
       const { dx, dy } = gestureState;
       return Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10;
     },
+    onPanResponderMove: (evt, gestureState) => {
+      const { dx } = gestureState;
+      // Kartı hareket ettir
+      slideAnim.setValue(dx);
+      // Kartı küçült
+      const scale = Math.max(0.8, 1 - (Math.abs(dx) / screenWidth) * 0.2);
+      scaleAnim.setValue(scale);
+      // Opaklığı azalt
+      const opacity = Math.max(0.5, 1 - (Math.abs(dx) / screenWidth) * 0.5);
+      opacityAnim.setValue(opacity);
+    },
     onPanResponderRelease: (evt, gestureState) => {
       const { dx, vx } = gestureState;
 
@@ -193,6 +255,28 @@ const CardsScreen: React.FC = () => {
         previousCard();
       } else if (dx < -20 || vx < -0.3) {
         nextCard();
+      } else {
+        // Geri dön animasyonu
+        Animated.parallel([
+          Animated.spring(slideAnim, {
+            toValue: 0,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 8,
+          }),
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 8,
+          }),
+          Animated.spring(opacityAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 100,
+            friction: 8,
+          }),
+        ]).start();
       }
     },
   });
@@ -339,7 +423,16 @@ const CardsScreen: React.FC = () => {
 
     return (
       <View style={styles.mainCardContainer}>
-        <View {...panResponder.panHandlers}>
+        <Animated.View
+          {...panResponder.panHandlers}
+          style={[
+            styles.animatedCard,
+            {
+              transform: [{ translateX: slideAnim }, { scale: scaleAnim }],
+              opacity: opacityAnim,
+            },
+          ]}
+        >
           <TouchableOpacity
             style={styles.mainCard}
             onPress={() => flipCard(currentCard.id)}
@@ -441,7 +534,7 @@ const CardsScreen: React.FC = () => {
               </View>
             )}
           </TouchableOpacity>
-        </View>
+        </Animated.View>
 
         {/* Swipe İpuçları */}
         <View style={styles.swipeHints}>
@@ -746,9 +839,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  mainCard: {
+  animatedCard: {
     width: screenWidth - responsiveSize(80),
     height: responsiveSize(400),
+  },
+
+  mainCard: {
+    width: '100%',
+    height: '100%',
     backgroundColor: '#fff',
     borderRadius: responsiveSize(24),
     padding: responsiveSize(24),
