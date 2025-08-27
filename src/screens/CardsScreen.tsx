@@ -176,20 +176,20 @@ const CardsScreen: React.FC = () => {
   // Sonraki kart
   const nextCard = () => {
     if (currentCardIndex < cards.length - 1) {
-      // Sola kaydırma animasyonu - daha hızlı
+      // Sola kaydırma animasyonu - hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {
-          toValue: -screenWidth,
+          toValue: -screenWidth * 0.8,
           duration: 150,
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 0.8,
-          duration: 100,
+          toValue: 0.9,
+          duration: 150,
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
-          toValue: 0,
+          toValue: 0.3,
           duration: 150,
           useNativeDriver: true,
         }),
@@ -204,20 +204,20 @@ const CardsScreen: React.FC = () => {
   // Önceki kart
   const previousCard = () => {
     if (currentCardIndex > 0) {
-      // Sağa kaydırma animasyonu - daha hızlı
+      // Sağa kaydırma animasyonu - hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {
-          toValue: screenWidth,
+          toValue: screenWidth * 0.8,
           duration: 150,
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
-          toValue: 0.8,
-          duration: 100,
+          toValue: 0.9,
+          duration: 150,
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
-          toValue: 0,
+          toValue: 0.3,
           duration: 150,
           useNativeDriver: true,
         }),
@@ -256,25 +256,22 @@ const CardsScreen: React.FC = () => {
       } else if (dx < -20 || vx < -0.3) {
         nextCard();
       } else {
-        // Geri dön animasyonu
+        // Geri dön animasyonu - hızlı
         Animated.parallel([
-          Animated.spring(slideAnim, {
+          Animated.timing(slideAnim, {
             toValue: 0,
+            duration: 120,
             useNativeDriver: true,
-            tension: 100,
-            friction: 8,
           }),
-          Animated.spring(scaleAnim, {
+          Animated.timing(scaleAnim, {
             toValue: 1,
+            duration: 120,
             useNativeDriver: true,
-            tension: 100,
-            friction: 8,
           }),
-          Animated.spring(opacityAnim, {
+          Animated.timing(opacityAnim, {
             toValue: 1,
+            duration: 120,
             useNativeDriver: true,
-            tension: 100,
-            friction: 8,
           }),
         ]).start();
       }
@@ -763,17 +760,17 @@ const styles = StyleSheet.create({
     ...shadows.medium,
   },
   selectedCategoryCard: {
-    borderWidth: 4,
+    borderWidth: 5,
     borderColor: '#ffffff',
-    elevation: 15,
+    elevation: 25,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 15,
     },
-    shadowOpacity: 0.35,
-    shadowRadius: 12,
-    transform: [{ scale: 1.05 }],
+    shadowOpacity: 0.55,
+    shadowRadius: 20,
+    transform: [{ scale: 1.08 }],
   },
   categoryGradient: {
     flex: 1,
