@@ -6,6 +6,7 @@ import TabNavigator from './src/navigation/TabNavigator';
 import AytPastScreen from './src/screens/AytPastScreen';
 import AytScreen from './src/screens/AytScreen';
 import EmailLoginScreen from './src/screens/EmailLoginScreen';
+import { initializeApp } from './src/services/initializeApp';
 
 import FenBilimleriScreen from './src/screens/FenBilimleriScreen';
 import LogoScreen from './src/screens/LogoScreen';
@@ -33,6 +34,11 @@ const AppContent = () => {
 
   useEffect(() => {
     checkAuth();
+  }, []);
+
+  // App initialization
+  useEffect(() => {
+    initializeApp();
   }, []);
 
   // Kullanıcı bilgileri yüklendiğinde UserContext'i başlat

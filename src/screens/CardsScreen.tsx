@@ -5,478 +5,459 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import {
+  CardCategory,
+  MemoryCard,
+  asyncStorageService,
+} from '../services/asyncStorageService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
-const { width: screenWidth } = Dimensions.get('window');
-
-interface MemoryCard {
-  id: string;
-  category: string;
-  question: string;
-  answer: string;
-  difficulty: 'easy' | 'medium' | 'hard';
-}
-
-interface CardCategory {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  cardCount: number;
-}
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const CardsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [cards, setCards] = useState<MemoryCard[]>([]);
+  const [categories, setCategories] = useState<CardCategory[]>([]);
 
   // Kart kategorileri
   const cardCategories: CardCategory[] = [
     {
-      id: 'math',
       name: 'Matematik',
-      icon: 'calculator',
-      color: '#228be6',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
     {
-      id: 'physics',
       name: 'Fizik',
-      icon: 'atom',
-      color: '#f7b731',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
     {
-      id: 'chemistry',
       name: 'Kimya',
-      icon: 'flask',
-      color: '#6c47ff',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
     {
-      id: 'biology',
       name: 'Biyoloji',
-      icon: 'leaf',
-      color: '#ff6b81',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
     {
-      id: 'turkish',
       name: 'Türkçe',
-      icon: 'book-open-variant',
-      color: '#17a2b8',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
     {
-      id: 'history',
       name: 'Tarih',
-      icon: 'castle',
-      color: '#D2691E',
-      cardCount: 6,
+      count: 0,
+      easyCount: 0,
+      mediumCount: 0,
+      hardCount: 0,
     },
   ];
 
-  // Örnek hap bilgi kartları
-  const memoryCards: MemoryCard[] = [
-    // Matematik Kartları
-    {
-      id: '1',
-      category: 'math',
-      question: 'İkinci dereceden denklem formülü nedir?',
-      answer: 'x = (-b ± √(b² - 4ac)) / 2a',
-      difficulty: 'medium',
-    },
-    {
-      id: '2',
-      category: 'math',
-      question: 'Pisagor teoremi nedir?',
-      answer:
-        'a² + b² = c² (Dik üçgende hipotenüsün karesi, diğer iki kenarın karelerinin toplamına eşittir)',
-      difficulty: 'easy',
-    },
-    {
-      id: '3',
-      category: 'math',
-      question: 'Logaritma nedir?',
-      answer:
-        'Bir sayının belirli bir tabana göre üssüdür. logₐb = c ise a^c = b',
-      difficulty: 'hard',
-    },
-    {
-      id: '4',
-      category: 'math',
-      question: 'Türev nedir?',
-      answer:
-        'Bir fonksiyonun belirli bir noktadaki değişim hızını gösteren matematiksel kavramdır.',
-      difficulty: 'hard',
-    },
-    {
-      id: '5',
-      category: 'math',
-      question: 'İntegral nedir?',
-      answer:
-        'Bir fonksiyonun belirli bir aralıktaki toplam değişimini hesaplayan matematiksel işlemdir.',
-      difficulty: 'hard',
-    },
-    {
-      id: '6',
-      category: 'math',
-      question: 'Trigonometrik fonksiyonlar nelerdir?',
-      answer: 'sin, cos, tan, cot, sec, csc fonksiyonlarıdır.',
-      difficulty: 'medium',
-    },
+  // Kategorileri ve kartları yükle
+  useEffect(() => {
+    loadCategoriesAndCards();
+  }, []);
 
-    // Fizik Kartları
-    {
-      id: '7',
-      category: 'physics',
-      question: "Newton'un 1. Yasası nedir?",
-      answer:
-        'Bir cisim üzerine net kuvvet etki etmiyorsa, cisim durumunu korur (durgun kalır veya sabit hızla hareket eder).',
-      difficulty: 'easy',
-    },
-    {
-      id: '8',
-      category: 'physics',
-      question: "Newton'un 2. Yasası nedir?",
-      answer: 'F = m × a (Kuvvet, kütle ile ivmenin çarpımına eşittir)',
-      difficulty: 'medium',
-    },
-    {
-      id: '9',
-      category: 'physics',
-      question: "Newton'un 3. Yasası nedir?",
-      answer: 'Her etkiye karşılık eşit ve zıt yönde bir tepki vardır.',
-      difficulty: 'medium',
-    },
-    {
-      id: '10',
-      category: 'physics',
-      question: 'Enerji korunumu yasası nedir?',
-      answer:
-        'Enerji yoktan var edilemez, vardan yok edilemez, sadece bir türden diğerine dönüşür.',
-      difficulty: 'medium',
-    },
-    {
-      id: '11',
-      category: 'physics',
-      question: 'Momentum nedir?',
-      answer: 'p = m × v (Momentum, kütle ile hızın çarpımıdır)',
-      difficulty: 'medium',
-    },
-    {
-      id: '12',
-      category: 'physics',
-      question: 'Elektrik akımı birimi nedir?',
-      answer: 'Amper (A)',
-      difficulty: 'easy',
-    },
+  const loadCategoriesAndCards = async () => {
+    try {
+      setLoading(true);
 
-    // Kimya Kartları
-    {
-      id: '13',
-      category: 'chemistry',
-      question: 'Periyodik tabloda kaç periyot vardır?',
-      answer: '7 periyot vardır.',
-      difficulty: 'easy',
-    },
-    {
-      id: '14',
-      category: 'chemistry',
-      question: 'Atom numarası nedir?',
-      answer: 'Bir elementin çekirdeğindeki proton sayısıdır.',
-      difficulty: 'easy',
-    },
-    {
-      id: '15',
-      category: 'chemistry',
-      question: 'Kütle numarası nedir?',
-      answer: 'Proton ve nötron sayılarının toplamıdır.',
-      difficulty: 'easy',
-    },
-    {
-      id: '16',
-      category: 'chemistry',
-      question: 'İyon nedir?',
-      answer:
-        'Elektron alarak veya vererek yük kazanmış atom veya atom gruplarıdır.',
-      difficulty: 'medium',
-    },
-    {
-      id: '17',
-      category: 'chemistry',
-      question: 'pH nedir?',
-      answer:
-        'Çözeltinin asitlik veya bazlık derecesini gösteren ölçektir (0-14 arası).',
-      difficulty: 'medium',
-    },
-    {
-      id: '18',
-      category: 'chemistry',
-      question: 'Kovalent bağ nedir?',
-      answer:
-        'İki atom arasında elektron paylaşımı ile oluşan kimyasal bağdır.',
-      difficulty: 'medium',
-    },
+      // Kategori istatistiklerini al
+      const categoryStats = await asyncStorageService.getCategoryStats();
+      setCategories(categoryStats);
 
-    // Biyoloji Kartları
-    {
-      id: '19',
-      category: 'biology',
-      question: "DNA'nın açılımı nedir?",
-      answer: 'Deoksiribo Nükleik Asit',
-      difficulty: 'easy',
-    },
-    {
-      id: '20',
-      category: 'biology',
-      question: "RNA'nın açılımı nedir?",
-      answer: 'Ribo Nükleik Asit',
-      difficulty: 'easy',
-    },
-    {
-      id: '21',
-      category: 'biology',
-      question: 'Hücre nedir?',
-      answer: 'Canlıların en küçük yapı ve işlev birimidir.',
-      difficulty: 'easy',
-    },
-    {
-      id: '22',
-      category: 'biology',
-      question: 'Mitokondri nedir?',
-      answer: 'Hücrede enerji üretiminden sorumlu organeldir.',
-      difficulty: 'medium',
-    },
-    {
-      id: '23',
-      category: 'biology',
-      question: 'Fotosentez nedir?',
-      answer: 'Bitkilerin güneş ışığı kullanarak besin üretmesi sürecidir.',
-      difficulty: 'medium',
-    },
-    {
-      id: '24',
-      category: 'biology',
-      question: 'Osmoz nedir?',
-      answer:
-        'Su moleküllerinin yarı geçirgen zar üzerinden yoğunluk farkı nedeniyle hareketidir.',
-      difficulty: 'medium',
-    },
+      // Tüm kartları al
+      const allCards = await asyncStorageService.getAllCards();
+      setCards(allCards);
+    } catch (error) {
+      console.error('Kategoriler ve kartlar yüklenirken hata:', error);
+      Alert.alert(
+        'Hata',
+        'Kartlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
+      );
 
-    // Türkçe Kartları
-    {
-      id: '25',
-      category: 'turkish',
-      question: 'Türkçede kaç ünlü harf vardır?',
-      answer: '8 ünlü harf vardır: a, e, ı, i, o, ö, u, ü',
-      difficulty: 'easy',
-    },
-    {
-      id: '26',
-      category: 'turkish',
-      question: 'Türkçede kaç ünsüz harf vardır?',
-      answer: '21 ünsüz harf vardır.',
-      difficulty: 'easy',
-    },
-    {
-      id: '27',
-      category: 'turkish',
-      question: 'Büyük ünlü uyumu nedir?',
-      answer:
-        'Türkçe kelimelerde ünlülerin kalınlık-incelik bakımından uyum göstermesidir.',
-      difficulty: 'medium',
-    },
-    {
-      id: '28',
-      category: 'turkish',
-      question: 'Küçük ünlü uyumu nedir?',
-      answer:
-        'Türkçe kelimelerde ünlülerin düzlük-yuvarlaklık bakımından uyum göstermesidir.',
-      difficulty: 'medium',
-    },
-    {
-      id: '29',
-      category: 'turkish',
-      question: 'Fiil nedir?',
-      answer: 'İş, oluş, hareket ve durum bildiren kelimelerdir.',
-      difficulty: 'easy',
-    },
-    {
-      id: '30',
-      category: 'turkish',
-      question: 'İsim nedir?',
-      answer: 'Varlıkları, kavramları karşılayan kelimelerdir.',
-      difficulty: 'easy',
-    },
-
-    // Tarih Kartları
-    {
-      id: '31',
-      category: 'history',
-      question: "İstanbul'un fethi hangi yılda gerçekleşmiştir?",
-      answer: '1453 yılında Fatih Sultan Mehmet tarafından fethedilmiştir.',
-      difficulty: 'medium',
-    },
-    {
-      id: '32',
-      category: 'history',
-      question: 'Malazgirt Savaşı hangi yılda yapılmıştır?',
-      answer:
-        '1071 yılında Alparslan komutasındaki Selçuklular ile Bizans arasında yapılmıştır.',
-      difficulty: 'medium',
-    },
-    {
-      id: '33',
-      category: 'history',
-      question: 'Kurtuluş Savaşı hangi yıllar arasında yapılmıştır?',
-      answer: '1919-1923 yılları arasında yapılmıştır.',
-      difficulty: 'medium',
-    },
-    {
-      id: '34',
-      category: 'history',
-      question: 'Cumhuriyet hangi tarihte ilan edilmiştir?',
-      answer: '29 Ekim 1923 tarihinde ilan edilmiştir.',
-      difficulty: 'easy',
-    },
-    {
-      id: '35',
-      category: 'history',
-      question: 'TBMM hangi tarihte açılmıştır?',
-      answer: '23 Nisan 1920 tarihinde açılmıştır.',
-      difficulty: 'easy',
-    },
-    {
-      id: '36',
-      category: 'history',
-      question: 'Çanakkale Savaşı hangi yıllar arasında yapılmıştır?',
-      answer: '1915-1916 yılları arasında yapılmıştır.',
-      difficulty: 'medium',
-    },
-  ];
-
-  const filteredCards = selectedCategory
-    ? memoryCards.filter(card => card.category === selectedCategory)
-    : memoryCards;
-
-  const handleCategoryChange = (categoryId: string) => {
-    setSelectedCategory(selectedCategory === categoryId ? null : categoryId);
-    setFlippedCards(new Set());
-    setCurrentCardIndex(0);
+      // Hata durumunda varsayılan kategorileri kullan
+      setCategories(cardCategories);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCardFlip = (cardId: string) => {
-    setFlippedCards(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(cardId)) {
-        newSet.delete(cardId);
+  // Kategori seçildiğinde kartları filtrele
+  const handleCategorySelect = async (categoryName: string) => {
+    try {
+      if (categoryName === '') {
+        // Tüm kartları göster
+        setSelectedCategory(null);
+        const allCards = await asyncStorageService.getAllCards();
+        setCards(allCards);
       } else {
-        newSet.add(cardId);
+        // Seçilen kategoriye ait kartları al
+        setSelectedCategory(categoryName);
+        const categoryCards =
+          await asyncStorageService.getCardsByCategory(categoryName);
+        setCards(categoryCards);
       }
-      return newSet;
-    });
+
+      setCurrentCardIndex(0);
+      setFlippedCards(new Set());
+    } catch (error) {
+      console.error('Kategori kartları yüklenirken hata:', error);
+      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
+    }
   };
 
-  const renderCategoryCard = ({ item }: { item: CardCategory }) => (
-    <TouchableOpacity
-      style={[
-        styles.categoryCard,
-        selectedCategory === item.id && styles.categoryCardSelected,
-      ]}
-      onPress={() => handleCategoryChange(item.id)}
-    >
-      <LinearGradient
-        colors={[item.color, item.color + '80']}
-        style={styles.categoryGradient}
-      >
-        <MaterialCommunityIcons
-          name={item.icon as any}
-          size={32}
-          color={colors.textWhite}
-        />
-        <Text style={styles.categoryName}>{item.name}</Text>
-        <Text style={styles.categoryCount}>{item.cardCount} kart</Text>
-      </LinearGradient>
-    </TouchableOpacity>
-  );
+  // Kartı çevir
+  const flipCard = (cardId: string) => {
+    const newFlippedCards = new Set(flippedCards);
+    if (newFlippedCards.has(cardId)) {
+      newFlippedCards.delete(cardId);
+    } else {
+      newFlippedCards.add(cardId);
+    }
+    setFlippedCards(newFlippedCards);
+  };
 
-  const renderMemoryCard = ({
-    item,
-    index,
-  }: {
-    item: MemoryCard;
-    index: number;
-  }) => {
-    const isCardFlipped = flippedCards.has(item.id);
+  // Sonraki kart
+  const nextCard = () => {
+    if (currentCardIndex < cards.length - 1) {
+      setCurrentCardIndex(currentCardIndex + 1);
+      setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
+    }
+  };
 
-    // Kategori rengini bul
-    const categoryColor = selectedCategory
-      ? cardCategories.find(cat => cat.id === selectedCategory)?.color ||
-        colors.primary
-      : cardCategories.find(cat => cat.id === item.category)?.color ||
-        colors.primary;
+  // Önceki kart
+  const previousCard = () => {
+    if (currentCardIndex > 0) {
+      setCurrentCardIndex(currentCardIndex - 1);
+      setFlippedCards(new Set()); // Yeni kartta flip durumunu sıfırla
+    }
+  };
+
+  // Swipe gesture handler
+  const panGesture = Gesture.Pan().onEnd(event => {
+    const { translationX } = event;
+
+    if (translationX > 100) {
+      // Sağa çekildi - önceki kart
+      previousCard();
+    } else if (translationX < -100) {
+      // Sola çekildi - sonraki kart
+      nextCard();
+    }
+  });
+
+  // Kategori kartını render et
+  const renderCategoryCard = ({ item }: { item: CardCategory }) => {
+    // Eğer bu "Tümü" butonu ise
+    if (item.name === 'all' || item.name === 'Tümü') {
+      return (
+        <TouchableOpacity
+          style={[
+            styles.categoryCard,
+            selectedCategory === null && styles.selectedCategoryCard,
+          ]}
+          onPress={() => handleCategorySelect('')}
+          activeOpacity={0.7}
+        >
+          <View
+            style={[
+              styles.categoryGradient,
+              {
+                backgroundColor: '#6366f1', // Modern indigo
+                shadowColor: '#6366f1',
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 8,
+              },
+            ]}
+          >
+            <MaterialCommunityIcons
+              name='view-grid'
+              size={responsiveSize(24)}
+              color={colors.textWhite}
+            />
+            <Text style={styles.categoryTitle}>Tümü</Text>
+            <Text style={styles.categoryCount}>{cards.length} kart</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    const categoryColors = {
+      Matematik: '#FF0000', // Kırmızı
+      Fizik: '#0000FF', // Mavi
+      Kimya: '#800080', // Mor
+      Biyoloji: '#00FF00', // Yeşil
+      Türkçe: '#FFA500', // Turuncu
+      Tarih: '#FF4500', // Turuncu-Kırmızı
+    };
+
+    const categoryIcons = {
+      Matematik: 'math-integral',
+      Fizik: 'atom-variant',
+      Kimya: 'flask-outline',
+      Biyoloji: 'leaf-maple',
+      Türkçe: 'book-open-page-variant',
+      Tarih: 'castle-turret',
+    };
+
+    // Kategori ismini kontrol et ve doğru renk/ikon ata
+    let color = '#6366f1'; // Varsayılan modern indigo
+    let icon = 'calculator-variant'; // Varsayılan modern ikon
+
+    if (item.name === 'math' || item.name === 'Matematik') {
+      color = '#ef4444'; // Modern kırmızı
+      icon = 'function-variant';
+    } else if (item.name === 'physics' || item.name === 'Fizik') {
+      color = '#3b82f6'; // Modern mavi
+      icon = 'atom';
+    } else if (item.name === 'chemistry' || item.name === 'Kimya') {
+      color = '#8b5cf6'; // Modern mor
+      icon = 'test-tube';
+    } else if (item.name === 'biology' || item.name === 'Biyoloji') {
+      color = '#10b981'; // Modern yeşil
+      icon = 'dna';
+    } else if (item.name === 'turkish' || item.name === 'Türkçe') {
+      color = '#f59e0b'; // Modern turuncu
+      icon = 'book-open-variant';
+    } else if (item.name === 'history' || item.name === 'Tarih') {
+      color = '#dc2626'; // Modern koyu kırmızı
+      icon = 'castle';
+    }
+
+    // Kategori ismini Türkçe'ye çevir
+    const categoryNameMapping = {
+      math: 'Matematik',
+      physics: 'Fizik',
+      chemistry: 'Kimya',
+      biology: 'Biyoloji',
+      turkish: 'Türkçe',
+      history: 'Tarih',
+    };
+
+    const displayName =
+      categoryNameMapping[item.name as keyof typeof categoryNameMapping] ||
+      item.name;
+
+    console.log(
+      `Rendering category: "${item.name}" -> "${displayName}" with color: ${color}`
+    );
 
     return (
-      <View style={styles.cardContainer}>
-        <View style={styles.cardHeader}>
-          <Text style={styles.cardCounter}>
-            {index + 1} / {filteredCards.length}
-          </Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.memoryCard}
-          onPress={() => handleCardFlip(item.id)}
-          activeOpacity={0.9}
+      <TouchableOpacity
+        style={[
+          styles.categoryCard,
+          selectedCategory === item.name && styles.selectedCategoryCard,
+        ]}
+        onPress={() => handleCategorySelect(item.name)}
+        activeOpacity={0.7}
+      >
+        <View
+          style={[
+            styles.categoryGradient,
+            {
+              backgroundColor: color,
+              shadowColor: color,
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 8,
+            },
+          ]}
         >
-          <LinearGradient
-            colors={[categoryColor, categoryColor + '80']}
-            style={styles.cardGradient}
-          >
-            <View style={styles.cardContent}>
-              <MaterialCommunityIcons
-                name={isCardFlipped ? 'lightbulb-on' : 'help-circle'}
-                size={40}
-                color={colors.textWhite}
-              />
-              <Text style={styles.cardText}>
-                {isCardFlipped ? item.answer : item.question}
-              </Text>
-              <Text style={styles.cardHint}>
-                {isCardFlipped ? 'Cevap' : 'Kartı çevirmek için dokun'}
-              </Text>
-            </View>
-          </LinearGradient>
-        </TouchableOpacity>
+          <MaterialCommunityIcons
+            name={icon as any}
+            size={responsiveSize(24)}
+            color={colors.textWhite}
+          />
+          <Text style={styles.categoryTitle}>{displayName}</Text>
+          <Text style={styles.categoryCount}>{item.count} kart</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  // Ana kart görünümü
+  const renderMainCard = () => {
+    if (cards.length === 0) return null;
+
+    const currentCard = cards[currentCardIndex];
+    const isFlipped = flippedCards.has(currentCard.id);
+
+    return (
+      <View style={styles.mainCardContainer}>
+        <GestureDetector gesture={panGesture}>
+          <View style={styles.cardWrapper}>
+            <TouchableOpacity
+              style={styles.mainCard}
+              onPress={() => flipCard(currentCard.id)}
+              activeOpacity={0.9}
+            >
+              {/* Kartın Ön Yüzü - Soru */}
+              {!isFlipped && (
+                <View style={styles.cardContent}>
+                  <View style={styles.cardHeader}>
+                    <View style={styles.difficultyBadge}>
+                      <Text style={styles.difficultyText}>
+                        {currentCard.difficulty === 'easy'
+                          ? 'Kolay'
+                          : currentCard.difficulty === 'medium'
+                            ? 'Orta'
+                            : 'Zor'}
+                      </Text>
+                    </View>
+                    <Text style={styles.cardNumber}>
+                      {currentCardIndex + 1} / {cards.length}
+                    </Text>
+                  </View>
+
+                  <View style={styles.questionContainer}>
+                    <Text style={styles.questionText}>
+                      {currentCard.question}
+                    </Text>
+                  </View>
+
+                  <View style={styles.cardFooter}>
+                    <View style={styles.flipHintContainer}>
+                      <Ionicons
+                        name='hand-left'
+                        size={16}
+                        color={colors.textTertiary}
+                      />
+                      <Text style={styles.flipHint}>
+                        Cevabı görmek için dokun
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+
+              {/* Kartın Arka Yüzü - Cevap */}
+              {isFlipped && (
+                <View style={styles.cardContent}>
+                  <View style={styles.cardHeader}>
+                    <View style={styles.difficultyBadge}>
+                      <Text style={styles.difficultyText}>
+                        {currentCard.difficulty === 'easy'
+                          ? 'Kolay'
+                          : currentCard.difficulty === 'medium'
+                            ? 'Orta'
+                            : 'Zor'}
+                      </Text>
+                    </View>
+                    <Text style={styles.cardNumber}>
+                      {currentCardIndex + 1} / {cards.length}
+                    </Text>
+                  </View>
+
+                  <View style={styles.answerContainer}>
+                    <Text style={styles.answerText}>{currentCard.answer}</Text>
+
+                    {currentCard.explanation && (
+                      <View style={styles.explanationContainer}>
+                        <Text style={styles.explanationTitle}>Açıklama:</Text>
+                        <Text style={styles.explanationText}>
+                          {currentCard.explanation}
+                        </Text>
+                      </View>
+                    )}
+
+                    {currentCard.tags && currentCard.tags.length > 0 && (
+                      <View style={styles.tagsContainer}>
+                        {currentCard.tags.map((tag, tagIndex) => (
+                          <View key={tagIndex} style={styles.tag}>
+                            <Text style={styles.tagText}>{tag}</Text>
+                          </View>
+                        ))}
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.cardFooter}>
+                    <View style={styles.flipHintContainer}>
+                      <Ionicons
+                        name='hand-left'
+                        size={16}
+                        color={colors.textTertiary}
+                      />
+                      <Text style={styles.flipHint}>
+                        Soruyu görmek için dokun
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </GestureDetector>
+
+        {/* Swipe İpuçları */}
+        <View style={styles.swipeHints}>
+          <View style={styles.swipeHint}>
+            <Ionicons
+              name='arrow-back'
+              size={16}
+              color={colors.textSecondary}
+            />
+            <Text style={styles.swipeHintText}>Önceki kart</Text>
+          </View>
+          <View style={styles.swipeHint}>
+            <Text style={styles.swipeHintText}>Sonraki kart</Text>
+            <Ionicons
+              name='arrow-forward'
+              size={16}
+              color={colors.textSecondary}
+            />
+          </View>
+        </View>
       </View>
     );
   };
 
-  const renderEmptyState = () => (
-    <View style={styles.emptyState}>
-      <MaterialCommunityIcons
-        name='cards-outline'
-        size={64}
-        color={colors.textTertiary}
-      />
-      <Text style={styles.emptyStateText}>
-        Bu kategoride henüz kart bulunmuyor
-      </Text>
-    </View>
-  );
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size='large' color={colors.primary} />
+        <Text style={styles.loadingText}>Kartlar yükleniyor...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -492,74 +473,76 @@ const CardsScreen: React.FC = () => {
           >
             <Ionicons name='arrow-back' size={24} color={colors.textWhite} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Bilgi Kartları</Text>
-          <View style={styles.searchButton} />
+          <Text style={styles.headerTitle}>📚 Bilgi Kartları</Text>
+          <View style={styles.headerRight} />
         </View>
       </LinearGradient>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scrollView}
-      >
-        {/* Categories */}
-        <View style={styles.categoriesContainer}>
-          <Text style={styles.sectionTitle}>Kategoriler</Text>
+      {/* Main Content */}
+      <View style={styles.mainContent}>
+        {/* Categories Section */}
+        <View style={styles.categoriesSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>📂 Kategoriler</Text>
+          </View>
           <FlatList
-            data={cardCategories}
+            data={[
+              {
+                name: 'Tümü',
+                count: cards.length,
+                easyCount: 0,
+                mediumCount: 0,
+                hardCount: 0,
+              },
+              ...categories,
+            ]}
             renderItem={renderCategoryCard}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.name}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoriesList}
+            style={styles.categoriesFlatList}
           />
         </View>
 
-        {/* Memory Cards */}
-        <View style={styles.cardsContainer}>
-          <Text style={styles.sectionTitle}>
-            {selectedCategory
-              ? cardCategories.find(cat => cat.id === selectedCategory)?.name +
-                ' Kartları'
-              : 'Tüm Kartlar'}
-          </Text>
-          <View style={styles.cardsWrapper}>
-            {filteredCards.length > 0 ? (
-              <FlatList
-                data={filteredCards}
-                renderItem={renderMemoryCard}
-                keyExtractor={item => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                pagingEnabled
-                snapToInterval={screenWidth - responsiveSize(40)}
-                decelerationRate={0.95}
-                contentContainerStyle={styles.cardsList}
-                onMomentumScrollEnd={event => {
-                  const newIndex = Math.round(
-                    event.nativeEvent.contentOffset.x /
-                      (screenWidth - responsiveSize(40))
-                  );
-                  setCurrentCardIndex(newIndex);
-                }}
-                getItemLayout={(data, index) => ({
-                  length: screenWidth - responsiveSize(40),
-                  offset: (screenWidth - responsiveSize(40)) * index,
-                  index,
-                })}
-                initialNumToRender={1}
-                maxToRenderPerBatch={3}
-                windowSize={5}
-                snapToAlignment='center'
-              />
+        {/* Cards Section */}
+        <View style={styles.cardsSection}>
+          <View style={styles.cardsHeader}>
+            <View style={styles.cardsTitleContainer}>
+              <Text style={styles.cardsTitle}>🎯 Kartlar</Text>
+            </View>
+          </View>
+
+          <View style={styles.cardsContainer}>
+            {cards.length > 0 ? (
+              renderMainCard()
             ) : (
-              renderEmptyState()
+              <View style={styles.emptyContainer}>
+                <LinearGradient
+                  colors={['#667eea', '#764ba2']}
+                  style={styles.emptyIconContainer}
+                >
+                  <MaterialCommunityIcons
+                    name='cards-outline'
+                    size={responsiveSize(48)}
+                    color='#fff'
+                  />
+                </LinearGradient>
+                <Text style={styles.emptyTitle}>
+                  {selectedCategory
+                    ? 'Bu kategoride kart yok'
+                    : 'Henüz kart yüklenmemiş'}
+                </Text>
+                <Text style={styles.emptySubtitle}>
+                  {selectedCategory
+                    ? 'Başka bir kategori seçin'
+                    : 'Kartlar yükleniyor, lütfen bekleyin...'}
+                </Text>
+              </View>
             )}
           </View>
         </View>
-
-        {/* Bottom Spacing */}
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
+      </View>
     </View>
   );
 };
@@ -569,15 +552,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundSecondary,
+  },
+  loadingText: {
+    marginTop: responsiveSize(16),
+    fontSize: responsiveFontSize(16),
+    color: colors.textSecondary,
+  },
+  // Header Styles
   header: {
     paddingTop: responsiveSize(50),
     paddingBottom: responsiveSize(20),
     paddingHorizontal: responsiveSize(20),
     zIndex: 1000,
     elevation: 5,
-  },
-  scrollView: {
-    flex: 1,
   },
   headerContent: {
     flexDirection: 'row',
@@ -592,150 +584,320 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.textWhite,
   },
-  searchButton: {
-    padding: responsiveSize(8),
+  headerRight: {
+    width: responsiveSize(40),
   },
-  categoriesContainer: {
+
+  // Main Content
+  mainContent: {
+    flex: 1,
+    paddingHorizontal: responsiveSize(16),
+  },
+
+  // Categories Section
+  categoriesSection: {
+    paddingVertical: responsiveSize(16),
+    backgroundColor: '#fff',
+    marginTop: responsiveSize(16),
+    borderRadius: responsiveSize(20),
+    ...shadows.medium,
+  },
+  sectionHeader: {
     paddingHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(20),
+    marginBottom: responsiveSize(8),
   },
   sectionTitle: {
     fontSize: responsiveFontSize(18),
     fontWeight: 'bold',
     color: colors.textPrimary,
-    marginBottom: responsiveSize(12),
+    marginBottom: responsiveSize(4),
   },
-  categoriesList: {
-    paddingHorizontal: responsiveSize(4),
-  },
-  categoryCard: {
-    width: responsiveSize(120),
-    height: responsiveSize(100),
-    marginHorizontal: responsiveSize(6),
-    borderRadius: responsiveSize(12),
-    overflow: 'hidden',
-    ...shadows.medium,
-  },
-  categoryCardSelected: {
-    borderWidth: 3,
-    borderColor: colors.primary,
-  },
-  categoryGradient: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: responsiveSize(12),
-  },
-  categoryName: {
-    fontSize: responsiveFontSize(16),
-    fontWeight: '800',
-    color: colors.textWhite,
-    marginTop: responsiveSize(8),
-    textAlign: 'center',
-    lineHeight: responsiveFontSize(26),
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-  categoryCount: {
-    fontSize: responsiveFontSize(10),
-    color: colors.textWhite,
-    opacity: 0.8,
-    marginTop: responsiveSize(2),
-    textShadowColor: 'rgba(0, 0, 0, 0.6)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
-  },
-  cardsContainer: {
-    paddingHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(20),
-    flex: 1,
-  },
-  cardsWrapper: {
-    height: responsiveSize(450),
-    justifyContent: 'center',
-  },
-  cardContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: screenWidth - responsiveSize(40),
-    paddingHorizontal: responsiveSize(10),
-    minHeight: responsiveSize(400),
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: responsiveSize(12),
-    paddingHorizontal: responsiveSize(10),
-  },
-  cardCounter: {
+  sectionSubtitle: {
     fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
     fontWeight: '500',
   },
-  memoryCard: {
-    width: '100%',
-    height: responsiveSize(320),
-    borderRadius: responsiveSize(16),
-    overflow: 'hidden',
-    ...shadows.large,
-    marginVertical: responsiveSize(5),
+  categoriesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  cardGradient: {
+  categoriesFlatList: {
+    maxHeight: responsiveSize(100),
+  },
+  categoriesList: {
+    paddingHorizontal: responsiveSize(20),
+  },
+  categoryCard: {
+    width: responsiveSize(120),
+    height: responsiveSize(80),
+    marginRight: responsiveSize(12),
+    borderRadius: responsiveSize(20),
+    overflow: 'hidden',
+    ...shadows.medium,
+  },
+  selectedCategoryCard: {
+    borderWidth: 3,
+    borderColor: '#ffffff',
+    transform: [{ scale: 1.05 }],
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+  },
+  categoryGradient: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: responsiveSize(8),
+  },
+  categoryTitle: {
+    fontSize: responsiveFontSize(12),
+    fontWeight: 'bold',
+    color: colors.textWhite,
+    marginTop: responsiveSize(2),
+    textAlign: 'center',
+  },
+  categoryCount: {
+    fontSize: responsiveFontSize(10),
+    color: colors.textWhite,
+    marginTop: responsiveSize(1),
+    opacity: 0.9,
+  },
+  // Cards Section
+  cardsSection: {
+    flex: 1,
+    marginTop: responsiveSize(12),
+    backgroundColor: '#fff',
+    borderRadius: responsiveSize(20),
+    padding: responsiveSize(16),
+    ...shadows.medium,
+  },
+  cardsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: responsiveSize(20),
+  },
+  cardsTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardsTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginRight: responsiveSize(12),
+  },
+  cardsCounter: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(6),
+    borderRadius: responsiveSize(15),
+  },
+  cardsCounterText: {
+    color: '#fff',
+    fontSize: responsiveFontSize(12),
+    fontWeight: '600',
+  },
+  clearFilterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f8fafc',
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(8),
+    borderRadius: responsiveSize(20),
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  clearFilterText: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textSecondary,
+    fontWeight: '500',
+    marginLeft: responsiveSize(4),
+  },
+  cardsContainer: {
+    flex: 1,
+    minHeight: responsiveSize(450),
+  },
+
+  // Main Card Styles
+  mainCardContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: responsiveSize(20),
+  },
+  cardWrapper: {
+    width: screenWidth - responsiveSize(80),
+    height: responsiveSize(400),
+  },
+  mainCard: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#fff',
+    borderRadius: responsiveSize(24),
+    padding: responsiveSize(24),
+    ...shadows.large,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
   },
   cardContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
     flex: 1,
-    paddingHorizontal: responsiveSize(20),
-    width: '100%',
   },
-  cardText: {
-    fontSize: responsiveFontSize(18),
-    fontWeight: '800',
+  questionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: responsiveSize(20),
+  },
+  answerContainer: {
+    flex: 1,
+    paddingVertical: responsiveSize(20),
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: responsiveSize(20),
+  },
+  difficultyBadge: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(6),
+    borderRadius: responsiveSize(12),
+  },
+  difficultyText: {
     color: colors.textWhite,
-    textAlign: 'center',
-    marginTop: responsiveSize(12),
-    lineHeight: responsiveFontSize(26),
-    width: '100%',
-    textShadowColor: 'rgba(0, 0, 0, 0.8)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    fontSize: responsiveFontSize(12),
+    fontWeight: '600',
   },
-  cardHint: {
+  cardNumber: {
     fontSize: responsiveFontSize(14),
-    color: colors.textWhite,
-    opacity: 1,
-    marginTop: responsiveSize(12),
+    color: colors.textSecondary,
+    fontWeight: '500',
+  },
+  questionText: {
+    fontSize: responsiveFontSize(20),
+    color: colors.textPrimary,
+    fontWeight: '600',
+    lineHeight: responsiveSize(28),
     textAlign: 'center',
-    width: '100%',
-    textShadowColor: 'rgba(0, 0, 0, 0.6)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
   },
-  cardsList: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  answerText: {
+    fontSize: responsiveFontSize(18),
+    color: colors.textPrimary,
+    fontWeight: '500',
+    lineHeight: responsiveSize(26),
+    marginBottom: responsiveSize(16),
   },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: responsiveSize(60),
+  explanationContainer: {
+    marginTop: responsiveSize(20),
+    padding: responsiveSize(16),
+    backgroundColor: '#f8fafc',
+    borderRadius: responsiveSize(16),
+    borderLeftWidth: 4,
+    borderLeftColor: '#667eea',
   },
-  emptyStateText: {
-    fontSize: responsiveFontSize(16),
-    color: colors.textTertiary,
+  explanationTitle: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginBottom: responsiveSize(8),
+  },
+  explanationText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    lineHeight: responsiveSize(22),
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: responsiveSize(16),
-    textAlign: 'center',
   },
-  bottomSpacing: {
-    height: responsiveSize(20),
+  tag: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: responsiveSize(10),
+    paddingVertical: responsiveSize(6),
+    borderRadius: responsiveSize(12),
+    marginRight: responsiveSize(8),
+    marginBottom: responsiveSize(6),
+  },
+  tagText: {
+    color: colors.textWhite,
+    fontSize: responsiveFontSize(11),
+    fontWeight: '500',
+  },
+  cardFooter: {
+    alignItems: 'center',
+    marginTop: responsiveSize(20),
+  },
+  flipHintContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(8),
+    borderRadius: responsiveSize(20),
+  },
+  flipHint: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textTertiary,
+    fontStyle: 'italic',
+    marginLeft: responsiveSize(4),
+  },
+
+  // Swipe Hints
+  swipeHints: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: responsiveSize(16),
+    width: screenWidth - responsiveSize(80),
+  },
+  swipeHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    paddingHorizontal: responsiveSize(12),
+    paddingVertical: responsiveSize(6),
+    borderRadius: responsiveSize(15),
+  },
+  swipeHintText: {
+    fontSize: responsiveFontSize(11),
+    color: colors.textSecondary,
+    fontWeight: '500',
+    marginHorizontal: responsiveSize(4),
+  },
+
+  // Empty State
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: responsiveSize(40),
+  },
+  emptyIconContainer: {
+    width: responsiveSize(80),
+    height: responsiveSize(80),
+    borderRadius: responsiveSize(40),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: responsiveSize(20),
+  },
+  emptyTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(8),
+  },
+  emptySubtitle: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: responsiveSize(20),
   },
 });
 
