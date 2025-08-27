@@ -208,6 +208,8 @@ const SearchModal = ({
         justifyContent: 'flex-start',
         alignItems: 'center',
       }}
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={onClose}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
