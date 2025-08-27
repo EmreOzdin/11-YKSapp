@@ -12,6 +12,7 @@ import {
   Animated,
   Dimensions,
   FlatList,
+  Image,
   PanResponder,
   StyleSheet,
   Text,
@@ -23,6 +24,7 @@ import {
   MemoryCard,
   asyncStorageService,
 } from '../services/asyncStorageService';
+import { loadCardsToStorage } from '../services/loadCardsToStorage';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -92,6 +94,17 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     loadCategoriesAndCards();
   }, []);
+
+  // Kartları yükle butonu için fonksiyon
+  const handleLoadCards = async () => {
+    try {
+      await loadCardsToStorage();
+      await loadCategoriesAndCards(); // Kartları yeniden yükle
+      Alert.alert('Başarılı', '600 kart başarıyla yüklendi!');
+    } catch (error) {
+      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
+    }
+  };
 
   // Tüm kartların sayısını al
   const [totalCardsCount, setTotalCardsCount] = useState(0);
@@ -472,6 +485,13 @@ const CardsScreen: React.FC = () => {
                   <Text style={styles.questionText}>
                     {currentCard.question}
                   </Text>
+                  {currentCard.image && (
+                    <Image
+                      source={{ uri: currentCard.image }}
+                      style={styles.cardImage}
+                      resizeMode='cover'
+                    />
+                  )}
                 </View>
 
                 <View style={styles.cardFooter}>
@@ -634,6 +654,13 @@ const CardsScreen: React.FC = () => {
             <View style={styles.cardsTitleContainer}>
               <Text style={styles.cardsTitle}>🎯 Kartlar</Text>
             </View>
+            <TouchableOpacity
+              style={styles.loadCardsButton}
+              onPress={handleLoadCards}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.loadCardsButtonText}>📚 Kartları Yükle</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.cardsContainer}>
@@ -851,6 +878,18 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: responsiveSize(4),
   },
+  loadCardsButton: {
+    backgroundColor: '#667eea',
+    paddingHorizontal: responsiveSize(16),
+    paddingVertical: responsiveSize(8),
+    borderRadius: responsiveSize(20),
+    marginLeft: responsiveSize(12),
+  },
+  loadCardsButtonText: {
+    color: '#fff',
+    fontSize: responsiveFontSize(12),
+    fontWeight: '600',
+  },
   cardsContainer: {
     flex: 1,
     minHeight: responsiveSize(450),
@@ -920,6 +959,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: responsiveSize(28),
     textAlign: 'center',
+  },
+  cardImage: {
+    width: '100%',
+    height: responsiveSize(150),
+    borderRadius: responsiveSize(12),
+    marginTop: responsiveSize(16),
   },
   answerText: {
     fontSize: responsiveFontSize(18),

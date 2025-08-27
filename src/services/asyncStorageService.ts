@@ -7,6 +7,7 @@ export interface MemoryCard {
   answer: string;
   difficulty: 'easy' | 'medium' | 'hard';
   explanation?: string;
+  image?: string; // Görsel URL'i
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
