@@ -317,6 +317,13 @@ const CardsScreen: React.FC = () => {
             />
             <Text style={styles.categoryTitle}>Tümü</Text>
             <Text style={styles.categoryCount}>{totalCardsCount} kart</Text>
+
+            {/* Seçili kategori göstergesi */}
+            {selectedCategory === null && (
+              <View style={styles.selectedIndicator}>
+                <Ionicons name='checkmark-circle' size={16} color='#ffffff' />
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       );
@@ -409,6 +416,13 @@ const CardsScreen: React.FC = () => {
           />
           <Text style={styles.categoryTitle}>{displayName}</Text>
           <Text style={styles.categoryCount}>{item.count} kart</Text>
+
+          {/* Seçili kategori göstergesi */}
+          {selectedCategory === item.name && (
+            <View style={styles.selectedIndicator}>
+              <Ionicons name='checkmark-circle' size={16} color='#ffffff' />
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     );
@@ -611,6 +625,9 @@ const CardsScreen: React.FC = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoriesList}
             style={styles.categoriesFlatList}
+            snapToInterval={responsiveSize(132)} // Kart genişliği + margin
+            decelerationRate='fast'
+            snapToAlignment='center'
           />
         </View>
 
@@ -735,6 +752,7 @@ const styles = StyleSheet.create({
   },
   categoriesList: {
     paddingHorizontal: responsiveSize(20),
+    paddingRight: responsiveSize(60), // Sağ tarafta daha az boşluk
   },
   categoryCard: {
     width: responsiveSize(120),
@@ -745,16 +763,17 @@ const styles = StyleSheet.create({
     ...shadows.medium,
   },
   selectedCategoryCard: {
-    borderWidth: 3,
+    borderWidth: 4,
     borderColor: '#ffffff',
-    elevation: 12,
+    elevation: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 8,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    transform: [{ scale: 1.05 }],
   },
   categoryGradient: {
     flex: 1,
@@ -774,6 +793,14 @@ const styles = StyleSheet.create({
     color: colors.textWhite,
     marginTop: responsiveSize(1),
     opacity: 0.9,
+  },
+  selectedIndicator: {
+    position: 'absolute',
+    top: responsiveSize(4),
+    right: responsiveSize(4),
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: responsiveSize(8),
+    padding: responsiveSize(2),
   },
   // Cards Section
   cardsSection: {
