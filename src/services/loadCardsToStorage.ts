@@ -42,3 +42,4 @@ export const checkCards = async () => {
     console.error('❌ Kartlar kontrol edilirken hata oluştu:', error);
   }
 };
+
