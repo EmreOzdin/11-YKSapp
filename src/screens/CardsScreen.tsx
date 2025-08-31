@@ -888,7 +888,7 @@ const styles = StyleSheet.create({
 
   // Main Card Styles
   mainCardContainer: {
-    flex: 1,
+    flex: 0.9,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -917,8 +917,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: responsiveSize(5),
+    paddingVertical: responsiveSize(0),
     paddingTop: responsiveSize(0),
+    marginTop: responsiveSize(5),
   },
   answerContainer: {
     flex: 1,
@@ -928,7 +929,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: responsiveSize(10),
+    marginBottom: responsiveSize(5),
   },
   difficultyBadge: {
     backgroundColor: '#667eea',
