@@ -8,7 +8,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -25,7 +24,7 @@ import {
 import Swiper from 'react-native-deck-swiper';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
-import { addSampleData } from '../services/sampleData';
+
 import DefaultAvatar, { getDefaultAvatarUrl } from '../utils/defaultAvatar';
 import {
   responsiveFontSize,
@@ -78,8 +77,6 @@ const notifications = [
     timestamp: Date.now() - 2 * 24 * 60 * 60 * 1000, // 2 gün önce
   },
 ];
-
-
 
 const NotificationModal = ({
   visible,
@@ -388,16 +385,6 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  // Örnek verileri yükleme fonksiyonu
-  const loadSampleData = async () => {
-    try {
-      await addSampleData();
-      Alert.alert('Başarılı', 'Örnek veriler yüklendi!');
-    } catch (error) {
-      Alert.alert('Hata', 'Veriler yüklenirken bir hata oluştu.');
-    }
-  };
-
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   // Initialize auth on component mount
@@ -560,11 +547,6 @@ const HomeScreen: React.FC = () => {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* Geliştirici Butonu - Sadece geliştirme için */}
-        <TouchableOpacity style={styles.devButton} onPress={loadSampleData}>
-          <Text style={styles.devButtonText}>Örnek Verileri Yükle</Text>
-        </TouchableOpacity>
 
         {/* Swiper Cards */}
         <View style={styles.swiperContainer}>
@@ -840,13 +822,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: responsiveSize(56),
+    paddingTop: responsiveSize(20),
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(24),
+    marginTop: responsiveSize(2),
     paddingHorizontal: responsiveSize(20),
   },
   headerTitleContainer: {
@@ -948,7 +930,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(125),
+    marginTop: responsiveSize(165),
     marginBottom: responsiveSize(6),
     marginHorizontal: responsiveSize(20),
   },
@@ -1057,7 +1039,7 @@ const styles = StyleSheet.create({
 
   swiperContainer: {
     position: 'absolute',
-    top: responsiveSize(-30),
+    top: responsiveSize(-45),
     left: -23,
     right: 0,
     height: responsiveSize(135),
@@ -1136,20 +1118,6 @@ const styles = StyleSheet.create({
     width: responsiveSize(60),
     height: responsiveSize(60),
     marginBottom: responsiveSize(2),
-  },
-  devButton: {
-    backgroundColor: colors.warning,
-    paddingHorizontal: responsiveSize(20),
-    paddingVertical: responsiveSize(10),
-    borderRadius: responsiveSize(8),
-    marginHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(10),
-    alignItems: 'center',
-  },
-  devButtonText: {
-    fontSize: responsiveFontSize(14),
-    fontWeight: 'bold',
-    color: colors.textWhite,
   },
 });
 

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-  Switch,
-} from 'react-native';
-import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
-  useRoute,
   RouteProp,
+  useNavigation,
+  useRoute,
 } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import React, { useEffect, useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   QuestionService,
   TopicCategory,
   UserSelections,
 } from '../services/questionService';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 type TopicSelectionScreenRouteProp = RouteProp<
   {
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: responsiveSize(20),
-    paddingTop: responsiveSize(40),
+    paddingTop: responsiveSize(20),
     paddingBottom: responsiveSize(20),
     backgroundColor: colors.backgroundSecondary,
     ...shadows.small,

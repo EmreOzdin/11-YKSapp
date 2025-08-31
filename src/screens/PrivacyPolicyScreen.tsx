@@ -1,19 +1,19 @@
-import React from 'react';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
-import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography } from '../utils/theme';
+import React from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors } from '../utils/theme';
 
 const PRIVACY_TEXT = `YKSapp Gizlilik Politikası
 
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: responsiveSize(48),
+    marginTop: responsiveSize(20),
     marginBottom: responsiveSize(16),
   },
   backButton: {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
-    marginTop: responsiveSize(32),
+    marginTop: responsiveSize(16),
   },
   text: {
     fontSize: responsiveFontSize(15),

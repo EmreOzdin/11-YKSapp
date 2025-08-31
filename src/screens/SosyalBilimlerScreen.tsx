@@ -1,12 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 const SosyalBilimlerScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: responsiveSize(40),
+    top: responsiveSize(20),
     left: responsiveSize(20),
     padding: responsiveSize(8),
     borderRadius: responsiveSize(8),

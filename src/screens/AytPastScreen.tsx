@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: responsiveSize(20),
-    paddingTop: responsiveSize(56),
+    paddingTop: responsiveSize(20),
     paddingBottom: responsiveSize(20),
     backgroundColor: colors.background,
     borderBottomWidth: 1,

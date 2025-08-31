@@ -92,19 +92,28 @@ const CardsScreen: React.FC = () => {
 
   // Kategorileri ve kartları yükle
   useEffect(() => {
-    loadCategoriesAndCards();
-  }, []);
+    const initializeCards = async () => {
+      try {
+        // Önce mevcut kartları kontrol et
+        const existingCards = await asyncStorageService.getAllCards();
 
-  // Kartları yükle butonu için fonksiyon
-  const handleLoadCards = async () => {
-    try {
-      await loadCardsToStorage();
-      await loadCategoriesAndCards(); // Kartları yeniden yükle
-      Alert.alert('Başarılı', '600 kart başarıyla yüklendi!');
-    } catch (error) {
-      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
-    }
-  };
+        // Eğer kart yoksa otomatik olarak yükle
+        if (existingCards.length === 0) {
+          await loadCardsToStorage();
+        }
+
+        // Kartları ve kategorileri yükle
+        await loadCategoriesAndCards();
+      } catch (error) {
+        console.error('Kartlar yüklenirken hata:', error);
+        // Hata durumunda varsayılan kategorileri kullan
+        setCategories(cardCategories);
+        setLoading(false);
+      }
+    };
+
+    initializeCards();
+  }, []);
 
   // Tüm kartların sayısını al
   const [totalCardsCount, setTotalCardsCount] = useState(0);
@@ -654,13 +663,6 @@ const CardsScreen: React.FC = () => {
             <View style={styles.cardsTitleContainer}>
               <Text style={styles.cardsTitle}>🎯 Kartlar</Text>
             </View>
-            <TouchableOpacity
-              style={styles.loadCardsButton}
-              onPress={handleLoadCards}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.loadCardsButtonText}>📚 Kartları Yükle</Text>
-            </TouchableOpacity>
           </View>
 
           <View style={styles.cardsContainer}>
@@ -681,12 +683,12 @@ const CardsScreen: React.FC = () => {
                 <Text style={styles.emptyTitle}>
                   {selectedCategory
                     ? 'Bu kategoride kart yok'
-                    : 'Henüz kart yüklenmemiş'}
+                    : 'Kartlar yükleniyor...'}
                 </Text>
                 <Text style={styles.emptySubtitle}>
                   {selectedCategory
                     ? 'Başka bir kategori seçin'
-                    : 'Kartlar yükleniyor, lütfen bekleyin...'}
+                    : 'Lütfen bekleyin...'}
                 </Text>
               </View>
             )}
@@ -715,7 +717,7 @@ const styles = StyleSheet.create({
   },
   // Header Styles
   header: {
-    paddingTop: responsiveSize(50),
+    paddingTop: responsiveSize(10),
     paddingBottom: responsiveSize(20),
     paddingHorizontal: responsiveSize(20),
     zIndex: 1000,
@@ -878,18 +880,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: responsiveSize(4),
   },
-  loadCardsButton: {
-    backgroundColor: '#667eea',
-    paddingHorizontal: responsiveSize(16),
-    paddingVertical: responsiveSize(8),
-    borderRadius: responsiveSize(20),
-    marginLeft: responsiveSize(12),
-  },
-  loadCardsButtonText: {
-    color: '#fff',
-    fontSize: responsiveFontSize(12),
-    fontWeight: '600',
-  },
+
   cardsContainer: {
     flex: 1,
     minHeight: responsiveSize(450),
@@ -920,12 +911,14 @@ const styles = StyleSheet.create({
 
   cardContent: {
     flex: 1,
+    justifyContent: 'flex-start',
   },
   questionContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: responsiveSize(20),
+    paddingVertical: responsiveSize(5),
+    paddingTop: responsiveSize(0),
   },
   answerContainer: {
     flex: 1,
@@ -935,7 +928,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: responsiveSize(20),
+    marginBottom: responsiveSize(10),
   },
   difficultyBadge: {
     backgroundColor: '#667eea',
@@ -1012,7 +1005,7 @@ const styles = StyleSheet.create({
   },
   cardFooter: {
     alignItems: 'center',
-    marginTop: responsiveSize(20),
+    marginTop: responsiveSize(10),
   },
   flipHintContainer: {
     flexDirection: 'row',

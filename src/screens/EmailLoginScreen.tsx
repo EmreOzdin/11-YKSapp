@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginTop: responsiveSize(66),
+    marginTop: responsiveSize(40),
   },
   logo: {
     width: responsiveSize(110),

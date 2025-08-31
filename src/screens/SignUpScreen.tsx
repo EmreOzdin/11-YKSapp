@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: Platform.OS === 'android' ? responsiveSize(36) : 0,
+    paddingTop: Platform.OS === 'android' ? responsiveSize(20) : 0,
     justifyContent: 'flex-start',
   },
   headerRow: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: responsiveSize(18),
-    paddingTop: responsiveSize(24),
+    paddingTop: responsiveSize(10),
     marginBottom: responsiveSize(18),
   },
   backButton: {

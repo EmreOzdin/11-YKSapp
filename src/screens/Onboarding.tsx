@@ -1,28 +1,25 @@
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
 import React, { useRef, useState } from 'react';
 import {
-  View,
-  Text,
+  FlatList,
   Image,
   StyleSheet,
-  Dimensions,
+  Text,
   TouchableOpacity,
-  FlatList,
+  View,
   ViewToken,
 } from 'react-native';
 import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
-import {
-  responsiveSize,
   responsiveFontSize,
-  responsiveWidth,
-  responsiveHeight,
-  screenWidth,
+  responsiveSize,
   screenHeight,
+  screenWidth,
 } from '../utils/responsive';
-import { colors, typography, shadows } from '../utils/theme';
+import { colors, shadows } from '../utils/theme';
 
 const ONBOARDING_DATA = [
   {
@@ -134,7 +131,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     alignItems: 'flex-start',
-    marginTop: responsiveSize(80),
+    marginTop: responsiveSize(40),
     marginBottom: responsiveSize(8),
     paddingHorizontal: responsiveSize(28),
   },
@@ -149,7 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingHorizontal: 0,
-    marginTop: responsiveSize(40),
+    marginTop: responsiveSize(20),
   },
   image: {
     width: IMAGE_WIDTH,

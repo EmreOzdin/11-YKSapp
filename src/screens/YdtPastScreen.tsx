@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
-  Alert,
-  ActivityIndicator
-} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import {
-  useNavigation,
   NavigationProp,
   ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
-import { responsiveSize, responsiveFontSize } from '../utils/responsive';
-import { colors, shadows } from '../utils/theme';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ApiService } from '../services/apiService';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 interface ExamYear {
   year: number;
@@ -50,17 +50,23 @@ const YdtPastScreen: React.FC = () => {
     setLoading(true);
     try {
       const apiService = new ApiService();
-      const questions = await apiService.getQuestionsByYearAndExamType(year, 'YDT');
-      
+      const questions = await apiService.getQuestionsByYearAndExamType(
+        year,
+        'YDT'
+      );
+
       if (questions && questions.length > 0) {
         navigation.navigate('QuestionScreen', {
           questions: questions,
           examTitle: `${year} YDT Sınavı`,
           isPastExam: true,
-          examYear: year
+          examYear: year,
         });
       } else {
-        Alert.alert('Bilgi', `${year} yılına ait YDT soruları henüz yüklenmemiş.`);
+        Alert.alert(
+          'Bilgi',
+          `${year} yılına ait YDT soruları henüz yüklenmemiş.`
+        );
       }
     } catch (error) {
       Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
@@ -72,42 +78,40 @@ const YdtPastScreen: React.FC = () => {
   const renderYearCard = (examYear: ExamYear) => (
     <TouchableOpacity
       key={examYear.year}
-      style={[
-        styles.yearCard,
-        !examYear.isAvailable && styles.disabledCard
-      ]}
+      style={[styles.yearCard, !examYear.isAvailable && styles.disabledCard]}
       onPress={() => handleYearPress(examYear.year)}
       disabled={!examYear.isAvailable || loading}
     >
       <View style={styles.yearCardHeader}>
         <Text style={styles.yearText}>{examYear.year}</Text>
-        <Ionicons 
-          name="calendar-outline" 
-          size={responsiveSize(24)} 
-          color={examYear.isAvailable ? colors.primary : colors.textSecondary} 
+        <Ionicons
+          name='calendar-outline'
+          size={responsiveSize(24)}
+          color={examYear.isAvailable ? colors.primary : colors.textSecondary}
         />
       </View>
-      
-      <Text style={[
-        styles.yearTitle,
-        !examYear.isAvailable && styles.disabledText
-      ]}>
+
+      <Text
+        style={[styles.yearTitle, !examYear.isAvailable && styles.disabledText]}
+      >
         {examYear.title}
       </Text>
-      
+
       <View style={styles.yearCardFooter}>
-        <Text style={[
-          styles.questionCount,
-          !examYear.isAvailable && styles.disabledText
-        ]}>
+        <Text
+          style={[
+            styles.questionCount,
+            !examYear.isAvailable && styles.disabledText,
+          ]}
+        >
           {examYear.questionCount} Soru
         </Text>
-        
+
         {examYear.isAvailable ? (
-          <Ionicons 
-            name="chevron-forward" 
-            size={responsiveSize(20)} 
-            color={colors.primary} 
+          <Ionicons
+            name='chevron-forward'
+            size={responsiveSize(20)}
+            color={colors.primary}
           />
         ) : (
           <Text style={styles.comingSoonText}>Yakında</Text>
@@ -124,14 +128,18 @@ const YdtPastScreen: React.FC = () => {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Ionicons name="arrow-back" size={responsiveSize(24)} color={colors.textPrimary} />
+          <Ionicons
+            name='arrow-back'
+            size={responsiveSize(24)}
+            color={colors.textPrimary}
+          />
         </TouchableOpacity>
         <Text style={styles.title}>YDT Çıkmış Sorular</Text>
         <View style={styles.placeholder} />
       </View>
 
       {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.contentContainer}
@@ -142,14 +150,12 @@ const YdtPastScreen: React.FC = () => {
 
         {loading && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={colors.primary} />
+            <ActivityIndicator size='large' color={colors.primary} />
             <Text style={styles.loadingText}>Sorular yükleniyor...</Text>
           </View>
         )}
 
-        <View style={styles.yearsGrid}>
-          {examYears.map(renderYearCard)}
-        </View>
+        <View style={styles.yearsGrid}>{examYears.map(renderYearCard)}</View>
       </ScrollView>
     </View>
   );
@@ -165,7 +171,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: responsiveSize(20),
-    paddingTop: responsiveSize(56),
+    paddingTop: responsiveSize(20),
     paddingBottom: responsiveSize(20),
     backgroundColor: colors.background,
     borderBottomWidth: 1,

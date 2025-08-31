@@ -769,7 +769,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundSecondary,
   },
   header: {
-    paddingTop: responsiveSize(50),
+    paddingTop: responsiveSize(10),
     paddingBottom: responsiveSize(20),
     paddingHorizontal: responsiveSize(20),
     zIndex: 1000,
