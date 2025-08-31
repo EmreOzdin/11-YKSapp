@@ -1,25 +1,42 @@
+import {
+  biyolojiEkKartlar2,
+  fizikEkKartlar2,
+  kimyaEkKartlar2,
+  matematikEkKartlar2,
+  tarihEkKartlar2,
+  turkceEkKartlar2,
+} from './additionalCardsData';
 import { MemoryCard } from './asyncStorageService';
+import {
+  biyolojiYksKartlari,
+  fizikYksKartlari,
+  kimyaYksKartlari,
+  matematikYksKartlari,
+  tarihYksKartlari,
+  turkceYksKartlari,
+} from './yksCardsData';
 
-// Matematik Kartları (100 adet)
+// Matematik Kartları (100 adet) - YKS Formatında
 const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'math_1',
     category: 'Matematik',
-    question: 'İkinci dereceden denklem ax² + bx + c = 0 formundaki bir denklemin diskriminantı nedir?',
-    answer: 'b² - 4ac',
-    difficulty: 'medium',
-    explanation: 'Diskriminant, ikinci dereceden denklemin köklerinin doğası hakkında bilgi verir. Δ = b² - 4ac formülü ile hesaplanır.',
-    image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=300&fit=crop',
-    tags: ['İkinci Dereceden Denklem', 'Diskriminant', 'Kökler']
+    question: 'x² - 5x + 6 = 0 denkleminin kökleri toplamı kaçtır?',
+    answer: '5',
+    difficulty: 'easy',
+    explanation:
+      'İkinci dereceden denklemde kökler toplamı -b/a formülü ile bulunur. Burada a=1, b=-5 olduğundan kökler toplamı -(-5)/1 = 5 olur.',
+    tags: ['İkinci Dereceden Denklem', 'Kökler Toplamı', 'Vieta Formülleri'],
   },
   {
     id: 'math_2',
     category: 'Matematik',
-    question: 'Bir üçgenin iç açıları toplamı kaç derecedir?',
-    answer: '180°',
+    question: '2x² - 8x + 6 = 0 denkleminin diskriminantı kaçtır?',
+    answer: '16',
     difficulty: 'easy',
-    explanation: 'Üçgenin iç açıları toplamı her zaman 180 derecedir. Bu, geometrinin temel kurallarından biridir.',
-    tags: ['Üçgen', 'Açı', 'Geometri']
+    explanation:
+      'Diskriminant Δ = b² - 4ac formülü ile hesaplanır. Burada a=2, b=-8, c=6 olduğundan Δ = (-8)² - 4×2×6 = 64 - 48 = 16 olur.',
+    tags: ['İkinci Dereceden Denklem', 'Diskriminant', 'Formül'],
   },
   {
     id: 'math_3',
@@ -27,8 +44,9 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Logaritma fonksiyonunun tanım kümesi nedir?',
     answer: 'Pozitif reel sayılar (0, ∞)',
     difficulty: 'medium',
-    explanation: 'Logaritma fonksiyonu sadece pozitif sayılar için tanımlıdır. Negatif sayıların veya sıfırın logaritması alınamaz.',
-    tags: ['Logaritma', 'Fonksiyon', 'Tanım Kümesi']
+    explanation:
+      'Logaritma fonksiyonu sadece pozitif sayılar için tanımlıdır. Negatif sayıların veya sıfırın logaritması alınamaz.',
+    tags: ['Logaritma', 'Fonksiyon', 'Tanım Kümesi'],
   },
   {
     id: 'math_4',
@@ -36,8 +54,9 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Bir dairenin çevresi nasıl hesaplanır?',
     answer: '2πr',
     difficulty: 'easy',
-    explanation: 'Dairenin çevresi, yarıçapın 2π katına eşittir. Bu formül tüm daireler için geçerlidir.',
-    tags: ['Daire', 'Çevre', 'Geometri']
+    explanation:
+      'Dairenin çevresi, yarıçapın 2π katına eşittir. Bu formül tüm daireler için geçerlidir.',
+    tags: ['Daire', 'Çevre', 'Geometri'],
   },
   {
     id: 'math_5',
@@ -45,8 +64,9 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Türev fonksiyonunun geometrik anlamı nedir?',
     answer: 'Eğrinin o noktadaki teğetinin eğimi',
     difficulty: 'hard',
-    explanation: 'Bir fonksiyonun türevi, o noktada fonksiyonun grafiğine çizilen teğetin eğimini verir.',
-    tags: ['Türev', 'Teğet', 'Eğim', 'Analiz']
+    explanation:
+      'Bir fonksiyonun türevi, o noktada fonksiyonun grafiğine çizilen teğetin eğimini verir.',
+    tags: ['Türev', 'Teğet', 'Eğim', 'Analiz'],
   },
   {
     id: 'math_6',
@@ -54,8 +74,9 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Bir sayının mutlak değeri nasıl hesaplanır?',
     answer: 'Sayının işaretine bakılmaksızın pozitif değeri',
     difficulty: 'easy',
-    explanation: 'Mutlak değer, bir sayının sıfıra olan uzaklığını verir. Negatif sayılar pozitif yapılır, pozitif sayılar aynı kalır.',
-    tags: ['Mutlak Değer', 'Sayılar']
+    explanation:
+      'Mutlak değer, bir sayının sıfıra olan uzaklığını verir. Negatif sayılar pozitif yapılır, pozitif sayılar aynı kalır.',
+    tags: ['Mutlak Değer', 'Sayılar'],
   },
   {
     id: 'math_7',
@@ -63,8 +84,9 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Bir matrisin determinantı ne zaman sıfır olur?',
     answer: 'Matris tekil (singular) olduğunda',
     difficulty: 'hard',
-    explanation: 'Bir matrisin determinantı sıfır ise o matris tekil matristir ve tersi alınamaz.',
-    tags: ['Matris', 'Determinant', 'Lineer Cebir']
+    explanation:
+      'Bir matrisin determinantı sıfır ise o matris tekil matristir ve tersi alınamaz.',
+    tags: ['Matris', 'Determinant', 'Lineer Cebir'],
   },
   {
     id: 'math_8',
@@ -73,16 +95,17 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'O sayıya kadar olan tüm pozitif tam sayıların çarpımı',
     difficulty: 'medium',
     explanation: 'n! = n × (n-1) × (n-2) × ... × 2 × 1 şeklinde hesaplanır.',
-    tags: ['Faktöriyel', 'Kombinatorik']
+    tags: ['Faktöriyel', 'Kombinatorik'],
   },
   {
     id: 'math_9',
     category: 'Matematik',
     question: 'Bir fonksiyonun sürekli olması için gerekli koşul nedir?',
-    answer: 'Fonksiyonun o noktada limiti olması ve bu limitin fonksiyon değerine eşit olması',
+    answer:
+      'Fonksiyonun o noktada limiti olması ve bu limitin fonksiyon değerine eşit olması',
     difficulty: 'hard',
     explanation: 'lim(x→a) f(x) = f(a) koşulu sağlanmalıdır.',
-    tags: ['Süreklilik', 'Limit', 'Analiz']
+    tags: ['Süreklilik', 'Limit', 'Analiz'],
   },
   {
     id: 'math_10',
@@ -91,8 +114,8 @@ const matematikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Kendisiyle çarpıldığında o sayıyı veren pozitif sayı',
     difficulty: 'easy',
     explanation: '√a = b ise b² = a olmalıdır.',
-    tags: ['Karekök', 'Sayılar']
-  }
+    tags: ['Karekök', 'Sayılar'],
+  },
 ];
 
 // Fizik Kartları (100 adet)
@@ -100,21 +123,26 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'physics_1',
     category: 'Fizik',
-    question: 'Newton\'un birinci yasası nedir?',
-    answer: 'Eylemsizlik yasası - Bir cisim üzerine net kuvvet etki etmiyorsa, duruyorsa durmaya, hareket ediyorsa sabit hızla hareket etmeye devam eder.',
+    question: "Newton'un birinci yasası nedir?",
+    answer:
+      'Eylemsizlik yasası - Bir cisim üzerine net kuvvet etki etmiyorsa, duruyorsa durmaya, hareket ediyorsa sabit hızla hareket etmeye devam eder.',
     difficulty: 'medium',
-    explanation: 'Bu yasa, cisimlerin doğal eğilimini açıklar ve sürtünme kuvvetlerinin olmadığı ideal durumlarda geçerlidir.',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
-    tags: ['Newton Yasaları', 'Eylemsizlik', 'Kuvvet']
+    explanation:
+      'Bu yasa, cisimlerin doğal eğilimini açıklar ve sürtünme kuvvetlerinin olmadığı ideal durumlarda geçerlidir.',
+    image:
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop',
+    tags: ['Newton Yasaları', 'Eylemsizlik', 'Kuvvet'],
   },
   {
     id: 'physics_2',
     category: 'Fizik',
     question: 'Enerji korunumu yasası nedir?',
-    answer: 'Enerji yoktan var edilemez, vardan yok edilemez, sadece bir formdan diğerine dönüşür.',
+    answer:
+      'Enerji yoktan var edilemez, vardan yok edilemez, sadece bir formdan diğerine dönüşür.',
     difficulty: 'medium',
-    explanation: 'Bu evrensel yasa, tüm fiziksel süreçlerde geçerlidir ve enerjinin toplam miktarının sabit kalmasını sağlar.',
-    tags: ['Enerji', 'Korunum', 'Termodinamik']
+    explanation:
+      'Bu evrensel yasa, tüm fiziksel süreçlerde geçerlidir ve enerjinin toplam miktarının sabit kalmasını sağlar.',
+    tags: ['Enerji', 'Korunum', 'Termodinamik'],
   },
   {
     id: 'physics_3',
@@ -123,7 +151,7 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Amper (A)',
     difficulty: 'easy',
     explanation: 'Amper, saniyede 1 coulomb yük geçişini ifade eder.',
-    tags: ['Elektrik', 'Akım', 'Birim']
+    tags: ['Elektrik', 'Akım', 'Birim'],
   },
   {
     id: 'physics_4',
@@ -131,8 +159,9 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Işık hangi ortamda daha hızlı hareket eder?',
     answer: 'Boşlukta (vakumda)',
     difficulty: 'easy',
-    explanation: 'Işık boşlukta yaklaşık 300.000 km/s hızla hareket eder. Diğer ortamlarda bu hız azalır.',
-    tags: ['Işık', 'Hız', 'Optik']
+    explanation:
+      'Işık boşlukta yaklaşık 300.000 km/s hızla hareket eder. Diğer ortamlarda bu hız azalır.',
+    tags: ['Işık', 'Hız', 'Optik'],
   },
   {
     id: 'physics_5',
@@ -141,7 +170,7 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Kütlelerin büyüklüğü ve aralarındaki mesafenin karesi',
     difficulty: 'medium',
     explanation: 'F = G(m₁m₂)/r² formülü ile hesaplanır.',
-    tags: ['Kütle Çekim', 'Newton', 'Kuvvet']
+    tags: ['Kütle Çekim', 'Newton', 'Kuvvet'],
   },
   {
     id: 'physics_6',
@@ -149,8 +178,9 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Ses dalgaları hangi ortamda yayılmaz?',
     answer: 'Boşlukta (vakumda)',
     difficulty: 'easy',
-    explanation: 'Ses dalgaları mekanik dalgalardır ve yayılmak için madde ortamına ihtiyaç duyar.',
-    tags: ['Ses', 'Dalga', 'Ortam']
+    explanation:
+      'Ses dalgaları mekanik dalgalardır ve yayılmak için madde ortamına ihtiyaç duyar.',
+    tags: ['Ses', 'Dalga', 'Ortam'],
   },
   {
     id: 'physics_7',
@@ -158,8 +188,9 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Manyetik alan çizgileri nasıl yönlendirilir?',
     answer: 'Kuzey kutbundan güney kutbuna doğru',
     difficulty: 'medium',
-    explanation: 'Manyetik alan çizgileri her zaman kuzey kutbundan çıkıp güney kutbuna girer.',
-    tags: ['Manyetizma', 'Alan Çizgileri']
+    explanation:
+      'Manyetik alan çizgileri her zaman kuzey kutbundan çıkıp güney kutbuna girer.',
+    tags: ['Manyetizma', 'Alan Çizgileri'],
   },
   {
     id: 'physics_8',
@@ -168,7 +199,7 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Joule (J)',
     difficulty: 'easy',
     explanation: '1 Joule = 1 Newton × 1 metre',
-    tags: ['İş', 'Enerji', 'Birim']
+    tags: ['İş', 'Enerji', 'Birim'],
   },
   {
     id: 'physics_9',
@@ -177,7 +208,7 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Ters orantılı - Dalga boyu arttıkça frekans azalır',
     difficulty: 'medium',
     explanation: 'λ × f = v (dalga boyu × frekans = hız)',
-    tags: ['Dalga', 'Frekans', 'Dalga Boyu']
+    tags: ['Dalga', 'Frekans', 'Dalga Boyu'],
   },
   {
     id: 'physics_10',
@@ -186,8 +217,8 @@ const fizikKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Proton ve nötron',
     difficulty: 'easy',
     explanation: 'Elektronlar çekirdeğin etrafında yörüngelerde bulunur.',
-    tags: ['Atom', 'Çekirdek', 'Parçacık']
-  }
+    tags: ['Atom', 'Çekirdek', 'Parçacık'],
+  },
 ];
 
 // Kimya Kartları (100 adet)
@@ -198,9 +229,11 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Periyodik tabloda elementler nasıl sıralanmıştır?',
     answer: 'Atom numarasına göre artan sırada',
     difficulty: 'easy',
-    explanation: 'Elementler atom numaralarına (proton sayılarına) göre sıralanmıştır.',
-    image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop',
-    tags: ['Periyodik Tablo', 'Atom Numarası', 'Element']
+    explanation:
+      'Elementler atom numaralarına (proton sayılarına) göre sıralanmıştır.',
+    image:
+      'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop',
+    tags: ['Periyodik Tablo', 'Atom Numarası', 'Element'],
   },
   {
     id: 'chemistry_2',
@@ -208,26 +241,30 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Kimyasal bağ türleri nelerdir?',
     answer: 'İyonik bağ, kovalent bağ, metalik bağ',
     difficulty: 'medium',
-    explanation: 'Bu üç temel bağ türü, atomların bir araya gelme şekillerini açıklar.',
-    tags: ['Kimyasal Bağ', 'İyonik', 'Kovalent']
+    explanation:
+      'Bu üç temel bağ türü, atomların bir araya gelme şekillerini açıklar.',
+    tags: ['Kimyasal Bağ', 'İyonik', 'Kovalent'],
   },
   {
     id: 'chemistry_3',
     category: 'Kimya',
-    question: 'pH değeri 7\'den küçük olan çözeltiler nasıl adlandırılır?',
+    question: "pH değeri 7'den küçük olan çözeltiler nasıl adlandırılır?",
     answer: 'Asidik',
     difficulty: 'easy',
-    explanation: 'pH < 7 asidik, pH = 7 nötr, pH > 7 bazik çözeltileri gösterir.',
-    tags: ['pH', 'Asit', 'Baz']
+    explanation:
+      'pH < 7 asidik, pH = 7 nötr, pH > 7 bazik çözeltileri gösterir.',
+    tags: ['pH', 'Asit', 'Baz'],
   },
   {
     id: 'chemistry_4',
     category: 'Kimya',
     question: 'Kimyasal reaksiyonlarda kütle korunumu yasası nedir?',
-    answer: 'Reaksiyona giren maddelerin toplam kütlesi, ürünlerin toplam kütlesine eşittir.',
+    answer:
+      'Reaksiyona giren maddelerin toplam kütlesi, ürünlerin toplam kütlesine eşittir.',
     difficulty: 'medium',
-    explanation: 'Bu yasa Lavoisier tarafından keşfedilmiştir ve tüm kimyasal reaksiyonlarda geçerlidir.',
-    tags: ['Kütle Korunumu', 'Lavoisier', 'Reaksiyon']
+    explanation:
+      'Bu yasa Lavoisier tarafından keşfedilmiştir ve tüm kimyasal reaksiyonlarda geçerlidir.',
+    tags: ['Kütle Korunumu', 'Lavoisier', 'Reaksiyon'],
   },
   {
     id: 'chemistry_5',
@@ -235,8 +272,9 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Elektron dağılımında en dış yörüngede kaç elektron bulunabilir?',
     answer: 'Maksimum 8 elektron',
     difficulty: 'medium',
-    explanation: 'Oktet kuralına göre atomlar en dış yörüngelerinde 8 elektron bulundurmaya çalışır.',
-    tags: ['Elektron', 'Yörünge', 'Oktet Kuralı']
+    explanation:
+      'Oktet kuralına göre atomlar en dış yörüngelerinde 8 elektron bulundurmaya çalışır.',
+    tags: ['Elektron', 'Yörünge', 'Oktet Kuralı'],
   },
   {
     id: 'chemistry_6',
@@ -245,16 +283,18 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Karbon',
     difficulty: 'easy',
     explanation: 'Organik kimya, karbon atomu içeren bileşiklerin kimyasıdır.',
-    tags: ['Organik Kimya', 'Karbon', 'Bileşik']
+    tags: ['Organik Kimya', 'Karbon', 'Bileşik'],
   },
   {
     id: 'chemistry_7',
     category: 'Kimya',
     question: 'Katalizör nedir?',
-    answer: 'Kimyasal reaksiyonun hızını artıran ama reaksiyona katılmayan madde',
+    answer:
+      'Kimyasal reaksiyonun hızını artıran ama reaksiyona katılmayan madde',
     difficulty: 'medium',
-    explanation: 'Katalizörler reaksiyon sonunda değişmeden kalır ve aktivasyon enerjisini düşürür.',
-    tags: ['Katalizör', 'Reaksiyon Hızı', 'Aktivasyon Enerjisi']
+    explanation:
+      'Katalizörler reaksiyon sonunda değişmeden kalır ve aktivasyon enerjisini düşürür.',
+    tags: ['Katalizör', 'Reaksiyon Hızı', 'Aktivasyon Enerjisi'],
   },
   {
     id: 'chemistry_8',
@@ -262,8 +302,9 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'İzotop nedir?',
     answer: 'Aynı elementin farklı nötron sayısına sahip atomları',
     difficulty: 'medium',
-    explanation: 'İzotoplar aynı proton sayısına sahiptir ama nötron sayıları farklıdır.',
-    tags: ['İzotop', 'Atom', 'Nötron']
+    explanation:
+      'İzotoplar aynı proton sayısına sahiptir ama nötron sayıları farklıdır.',
+    tags: ['İzotop', 'Atom', 'Nötron'],
   },
   {
     id: 'chemistry_9',
@@ -272,7 +313,7 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Dışarıdan ısı alan reaksiyon',
     difficulty: 'medium',
     explanation: 'Endotermik reaksiyonlarda sistem çevresinden ısı alır.',
-    tags: ['Endotermik', 'Isı', 'Reaksiyon']
+    tags: ['Endotermik', 'Isı', 'Reaksiyon'],
   },
   {
     id: 'chemistry_10',
@@ -280,9 +321,10 @@ const kimyaKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Molekül formülü nedir?',
     answer: 'Bir bileşiğin gerçek atom sayılarını gösteren formül',
     difficulty: 'easy',
-    explanation: 'Molekül formülü, bileşikteki her elementin gerçek atom sayısını verir.',
-    tags: ['Molekül', 'Formül', 'Bileşik']
-  }
+    explanation:
+      'Molekül formülü, bileşikteki her elementin gerçek atom sayısını verir.',
+    tags: ['Molekül', 'Formül', 'Bileşik'],
+  },
 ];
 
 // Biyoloji Kartları (100 adet)
@@ -294,17 +336,19 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Hücre zarı, sitoplazma ve çekirdek',
     difficulty: 'easy',
     explanation: 'Tüm hücreler bu üç temel yapıya sahiptir.',
-    image: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f7?w=400&h=300&fit=crop',
-    tags: ['Hücre', 'Hücre Zarı', 'Sitoplazma', 'Çekirdek']
+    image:
+      'https://images.unsplash.com/photo-1530026405186-ed1f139313f7?w=400&h=300&fit=crop',
+    tags: ['Hücre', 'Hücre Zarı', 'Sitoplazma', 'Çekirdek'],
   },
   {
     id: 'biology_2',
     category: 'Biyoloji',
-    question: 'DNA\'nın yapısı nasıldır?',
+    question: "DNA'nın yapısı nasıldır?",
     answer: 'Çift sarmal (heliks) yapısında',
     difficulty: 'medium',
-    explanation: 'DNA, Watson ve Crick tarafından keşfedilen çift sarmal yapıya sahiptir.',
-    tags: ['DNA', 'Çift Sarmal', 'Genetik']
+    explanation:
+      'DNA, Watson ve Crick tarafından keşfedilen çift sarmal yapıya sahiptir.',
+    tags: ['DNA', 'Çift Sarmal', 'Genetik'],
   },
   {
     id: 'biology_3',
@@ -312,8 +356,9 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Fotosentez nedir?',
     answer: 'Bitkilerin güneş ışığını kullanarak besin üretmesi',
     difficulty: 'medium',
-    explanation: 'Fotosentez, karbondioksit ve suyu kullanarak glikoz ve oksijen üretir.',
-    tags: ['Fotosentez', 'Bitki', 'Besin Üretimi']
+    explanation:
+      'Fotosentez, karbondioksit ve suyu kullanarak glikoz ve oksijen üretir.',
+    tags: ['Fotosentez', 'Bitki', 'Besin Üretimi'],
   },
   {
     id: 'biology_4',
@@ -322,7 +367,7 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Hücrenin enerji üretim merkezi',
     difficulty: 'medium',
     explanation: 'Mitokondri, oksijenli solunum ile ATP üretir.',
-    tags: ['Mitokondri', 'Enerji', 'ATP', 'Solunum']
+    tags: ['Mitokondri', 'Enerji', 'ATP', 'Solunum'],
   },
   {
     id: 'biology_5',
@@ -331,7 +376,7 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Kalıtsal özellikleri taşıyan DNA parçası',
     difficulty: 'easy',
     explanation: 'Genler, protein sentezi için gerekli bilgiyi taşır.',
-    tags: ['Gen', 'DNA', 'Kalıtım']
+    tags: ['Gen', 'DNA', 'Kalıtım'],
   },
   {
     id: 'biology_6',
@@ -339,17 +384,19 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Ekosistem nedir?',
     answer: 'Canlı ve cansız varlıkların bir arada yaşadığı ortam',
     difficulty: 'easy',
-    explanation: 'Ekosistem, biyotik ve abiyotik faktörlerin etkileşim halinde olduğu sistemdir.',
-    tags: ['Ekosistem', 'Çevre', 'Biyotik', 'Abiyotik']
+    explanation:
+      'Ekosistem, biyotik ve abiyotik faktörlerin etkileşim halinde olduğu sistemdir.',
+    tags: ['Ekosistem', 'Çevre', 'Biyotik', 'Abiyotik'],
   },
   {
     id: 'biology_7',
     category: 'Biyoloji',
     question: 'Enzim nedir?',
-    answer: 'Biyokimyasal reaksiyonları hızlandıran protein yapısında katalizör',
+    answer:
+      'Biyokimyasal reaksiyonları hızlandıran protein yapısında katalizör',
     difficulty: 'medium',
     explanation: 'Enzimler, reaksiyonların aktivasyon enerjisini düşürür.',
-    tags: ['Enzim', 'Protein', 'Katalizör']
+    tags: ['Enzim', 'Protein', 'Katalizör'],
   },
   {
     id: 'biology_8',
@@ -358,7 +405,7 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'DNA dizisinde meydana gelen kalıcı değişiklik',
     difficulty: 'medium',
     explanation: 'Mutasyonlar genetik çeşitliliğin kaynağıdır.',
-    tags: ['Mutasyon', 'DNA', 'Genetik Değişiklik']
+    tags: ['Mutasyon', 'DNA', 'Genetik Değişiklik'],
   },
   {
     id: 'biology_9',
@@ -367,7 +414,7 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Mitoz ve mayoz',
     difficulty: 'easy',
     explanation: 'Mitoz vücut hücrelerinde, mayoz üreme hücrelerinde görülür.',
-    tags: ['Hücre Bölünmesi', 'Mitoz', 'Mayoz']
+    tags: ['Hücre Bölünmesi', 'Mitoz', 'Mayoz'],
   },
   {
     id: 'biology_10',
@@ -376,8 +423,8 @@ const biyolojiKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Canlıların çevrelerine uyum sağlaması',
     difficulty: 'easy',
     explanation: 'Adaptasyon, canlıların yaşam şansını artırır.',
-    tags: ['Adaptasyon', 'Uyum', 'Evrim']
-  }
+    tags: ['Adaptasyon', 'Uyum', 'Evrim'],
+  },
 ];
 
 // Türkçe Kartları (100 adet)
@@ -388,36 +435,41 @@ const turkceKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Türkçede kaç ünlü harf vardır?',
     answer: '8 ünlü harf (a, e, ı, i, o, ö, u, ü)',
     difficulty: 'easy',
-    explanation: 'Türkçede 8 ünlü harf bulunur ve bunlar kalın-ince, düz-yuvarlak olarak gruplandırılır.',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
-    tags: ['Ünlü Harfler', 'Türkçe', 'Alfabe']
+    explanation:
+      'Türkçede 8 ünlü harf bulunur ve bunlar kalın-ince, düz-yuvarlak olarak gruplandırılır.',
+    image:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+    tags: ['Ünlü Harfler', 'Türkçe', 'Alfabe'],
   },
   {
     id: 'turkish_2',
     category: 'Türkçe',
     question: 'Büyük ünlü uyumu kuralı nedir?',
-    answer: 'Bir kelimede kalın ünlülerden sonra kalın, ince ünlülerden sonra ince ünlü gelir.',
+    answer:
+      'Bir kelimede kalın ünlülerden sonra kalın, ince ünlülerden sonra ince ünlü gelir.',
     difficulty: 'medium',
     explanation: 'Bu kural Türkçenin temel ses uyumu kurallarından biridir.',
-    tags: ['Büyük Ünlü Uyumu', 'Ses Uyumu', 'Türkçe']
+    tags: ['Büyük Ünlü Uyumu', 'Ses Uyumu', 'Türkçe'],
   },
   {
     id: 'turkish_3',
     category: 'Türkçe',
     question: 'Fiilimsi nedir?',
-    answer: 'Fiil kök veya gövdelerinden türeyen, cümlede isim, sıfat veya zarf görevinde kullanılan kelimeler',
+    answer:
+      'Fiil kök veya gövdelerinden türeyen, cümlede isim, sıfat veya zarf görevinde kullanılan kelimeler',
     difficulty: 'hard',
     explanation: 'Fiilimsiler üç türlüdür: isim-fiil, sıfat-fiil, zarf-fiil.',
-    tags: ['Fiilimsi', 'Fiil', 'Türkçe']
+    tags: ['Fiilimsi', 'Fiil', 'Türkçe'],
   },
   {
     id: 'turkish_4',
     category: 'Türkçe',
     question: 'Edilgen çatı nedir?',
-    answer: 'Öznenin işi yapmadığı, işin başkası tarafından yapıldığı fiil çatısı',
+    answer:
+      'Öznenin işi yapmadığı, işin başkası tarafından yapıldığı fiil çatısı',
     difficulty: 'medium',
     explanation: 'Edilgen çatıda özne işi yapmaz, iş ona yapılır.',
-    tags: ['Edilgen Çatı', 'Fiil Çatısı', 'Türkçe']
+    tags: ['Edilgen Çatı', 'Fiil Çatısı', 'Türkçe'],
   },
   {
     id: 'turkish_5',
@@ -426,7 +478,7 @@ const turkceKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: '5 grup (Durum, zaman, miktar, yer-yön, soru zarfları)',
     difficulty: 'medium',
     explanation: 'Zarflar görevlerine göre beş ana gruba ayrılır.',
-    tags: ['Zarf', 'Türkçe', 'Kelime Türleri']
+    tags: ['Zarf', 'Türkçe', 'Kelime Türleri'],
   },
   {
     id: 'turkish_6',
@@ -435,16 +487,18 @@ const turkceKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     answer: 'Birden fazla yargı içeren cümle',
     difficulty: 'medium',
     explanation: 'Birleşik cümleler ana cümle ve yan cümlelerden oluşur.',
-    tags: ['Birleşik Cümle', 'Cümle Türleri', 'Türkçe']
+    tags: ['Birleşik Cümle', 'Cümle Türleri', 'Türkçe'],
   },
   {
     id: 'turkish_7',
     category: 'Türkçe',
     question: 'Ses olayları nelerdir?',
-    answer: 'Ünsüz yumuşaması, ünsüz benzeşmesi, ünlü düşmesi, ünlü türemesi gibi ses değişiklikleri',
+    answer:
+      'Ünsüz yumuşaması, ünsüz benzeşmesi, ünlü düşmesi, ünlü türemesi gibi ses değişiklikleri',
     difficulty: 'hard',
-    explanation: 'Ses olayları kelimelerin söylenişini kolaylaştırmak için meydana gelir.',
-    tags: ['Ses Olayları', 'Türkçe', 'Ses Bilgisi']
+    explanation:
+      'Ses olayları kelimelerin söylenişini kolaylaştırmak için meydana gelir.',
+    tags: ['Ses Olayları', 'Türkçe', 'Ses Bilgisi'],
   },
   {
     id: 'turkish_8',
@@ -452,17 +506,19 @@ const turkceKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Yapım eki nedir?',
     answer: 'Kelimelerin anlamını değiştiren ekler',
     difficulty: 'medium',
-    explanation: 'Yapım ekleri kelimelerin kök anlamını değiştirir ve yeni kelimeler türetir.',
-    tags: ['Yapım Eki', 'Ek', 'Türkçe']
+    explanation:
+      'Yapım ekleri kelimelerin kök anlamını değiştirir ve yeni kelimeler türetir.',
+    tags: ['Yapım Eki', 'Ek', 'Türkçe'],
   },
   {
     id: 'turkish_9',
     category: 'Türkçe',
     question: 'Noktalama işaretleri nelerdir?',
-    answer: 'Nokta, virgül, ünlem, soru işareti, iki nokta, noktalı virgül, tırnak işareti, parantez, tire, kesme işareti',
+    answer:
+      'Nokta, virgül, ünlem, soru işareti, iki nokta, noktalı virgül, tırnak işareti, parantez, tire, kesme işareti',
     difficulty: 'easy',
     explanation: 'Noktalama işaretleri cümlelerin anlamını netleştirir.',
-    tags: ['Noktalama', 'Türkçe', 'Yazım']
+    tags: ['Noktalama', 'Türkçe', 'Yazım'],
   },
   {
     id: 'turkish_10',
@@ -470,9 +526,10 @@ const turkceKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Anlatım türleri nelerdir?',
     answer: 'Açıklama, tartışma, betimleme, öyküleme',
     difficulty: 'medium',
-    explanation: 'Bu dört anlatım türü, metinlerin yazılış amacına göre belirlenir.',
-    tags: ['Anlatım Türleri', 'Türkçe', 'Kompozisyon']
-  }
+    explanation:
+      'Bu dört anlatım türü, metinlerin yazılış amacına göre belirlenir.',
+    tags: ['Anlatım Türleri', 'Türkçe', 'Kompozisyon'],
+  },
 ];
 
 // Tarih Kartları (100 adet)
@@ -480,12 +537,14 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'history_1',
     category: 'Tarih',
-    question: 'İstanbul\'un fethi hangi yılda gerçekleşmiştir?',
+    question: "İstanbul'un fethi hangi yılda gerçekleşmiştir?",
     answer: '1453',
     difficulty: 'easy',
-    explanation: 'Fatih Sultan Mehmet tarafından 29 Mayıs 1453\'te fethedilmiştir.',
-    image: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop',
-    tags: ['İstanbul Fethi', 'Fatih Sultan Mehmet', 'Osmanlı']
+    explanation:
+      "Fatih Sultan Mehmet tarafından 29 Mayıs 1453'te fethedilmiştir.",
+    image:
+      'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop',
+    tags: ['İstanbul Fethi', 'Fatih Sultan Mehmet', 'Osmanlı'],
   },
   {
     id: 'history_2',
@@ -493,8 +552,9 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Malazgirt Savaşı hangi yılda yapılmıştır?',
     answer: '1071',
     difficulty: 'easy',
-    explanation: 'Alparslan komutasındaki Selçuklu ordusu ile Bizans ordusu arasında yapılmıştır.',
-    tags: ['Malazgirt Savaşı', 'Alparslan', 'Selçuklu']
+    explanation:
+      'Alparslan komutasındaki Selçuklu ordusu ile Bizans ordusu arasında yapılmıştır.',
+    tags: ['Malazgirt Savaşı', 'Alparslan', 'Selçuklu'],
   },
   {
     id: 'history_3',
@@ -502,17 +562,18 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Kurtuluş Savaşı hangi yıllar arasında gerçekleşmiştir?',
     answer: '1919-1923',
     difficulty: 'medium',
-    explanation: '19 Mayıs 1919\'da başlayıp 29 Ekim 1923\'te Cumhuriyet\'in ilanıyla sona ermiştir.',
-    tags: ['Kurtuluş Savaşı', 'Atatürk', 'Cumhuriyet']
+    explanation:
+      "19 Mayıs 1919'da başlayıp 29 Ekim 1923'te Cumhuriyet'in ilanıyla sona ermiştir.",
+    tags: ['Kurtuluş Savaşı', 'Atatürk', 'Cumhuriyet'],
   },
   {
     id: 'history_4',
     category: 'Tarih',
-    question: 'TBMM\'nin açılış tarihi nedir?',
+    question: "TBMM'nin açılış tarihi nedir?",
     answer: '23 Nisan 1920',
     difficulty: 'medium',
-    explanation: 'Mustafa Kemal Atatürk\'ün önderliğinde Ankara\'da açılmıştır.',
-    tags: ['TBMM', 'Atatürk', 'Ankara']
+    explanation: "Mustafa Kemal Atatürk'ün önderliğinde Ankara'da açılmıştır.",
+    tags: ['TBMM', 'Atatürk', 'Ankara'],
   },
   {
     id: 'history_5',
@@ -520,17 +581,18 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Cumhuriyet hangi tarihte ilan edilmiştir?',
     answer: '29 Ekim 1923',
     difficulty: 'easy',
-    explanation: 'Mustafa Kemal Atatürk Türkiye Cumhuriyeti\'nin ilk cumhurbaşkanı olmuştur.',
-    tags: ['Cumhuriyet', 'Atatürk', '29 Ekim']
+    explanation:
+      "Mustafa Kemal Atatürk Türkiye Cumhuriyeti'nin ilk cumhurbaşkanı olmuştur.",
+    tags: ['Cumhuriyet', 'Atatürk', '29 Ekim'],
   },
   {
     id: 'history_6',
     category: 'Tarih',
-    question: 'Osmanlı Devleti\'nin kurucusu kimdir?',
+    question: "Osmanlı Devleti'nin kurucusu kimdir?",
     answer: 'Osman Bey',
     difficulty: 'easy',
-    explanation: '1299 yılında Söğüt\'te kurulmuştur.',
-    tags: ['Osmanlı', 'Osman Bey', 'Söğüt']
+    explanation: "1299 yılında Söğüt'te kurulmuştur.",
+    tags: ['Osmanlı', 'Osman Bey', 'Söğüt'],
   },
   {
     id: 'history_7',
@@ -538,8 +600,9 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Çanakkale Savaşı hangi yıllar arasında gerçekleşmiştir?',
     answer: '1915-1916',
     difficulty: 'medium',
-    explanation: 'I. Dünya Savaşı sırasında gerçekleşen önemli bir cephe savaşıdır.',
-    tags: ['Çanakkale Savaşı', 'I. Dünya Savaşı', 'Mustafa Kemal']
+    explanation:
+      'I. Dünya Savaşı sırasında gerçekleşen önemli bir cephe savaşıdır.',
+    tags: ['Çanakkale Savaşı', 'I. Dünya Savaşı', 'Mustafa Kemal'],
   },
   {
     id: 'history_8',
@@ -547,8 +610,9 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Saltanat hangi tarihte kaldırılmıştır?',
     answer: '1 Kasım 1922',
     difficulty: 'medium',
-    explanation: 'TBMM tarafından saltanat kaldırılmış ve son padişah Vahdettin yurdu terk etmiştir.',
-    tags: ['Saltanat', 'TBMM', 'Vahdettin']
+    explanation:
+      'TBMM tarafından saltanat kaldırılmış ve son padişah Vahdettin yurdu terk etmiştir.',
+    tags: ['Saltanat', 'TBMM', 'Vahdettin'],
   },
   {
     id: 'history_9',
@@ -556,8 +620,9 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Harf İnkılabı hangi tarihte gerçekleşmiştir?',
     answer: '1 Kasım 1928',
     difficulty: 'medium',
-    explanation: 'Latin alfabesi kabul edilmiş ve Arap alfabesi terk edilmiştir.',
-    tags: ['Harf İnkılabı', 'Latin Alfabesi', 'Atatürk']
+    explanation:
+      'Latin alfabesi kabul edilmiş ve Arap alfabesi terk edilmiştir.',
+    tags: ['Harf İnkılabı', 'Latin Alfabesi', 'Atatürk'],
   },
   {
     id: 'history_10',
@@ -565,39 +630,636 @@ const tarihKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
     question: 'Lozan Antlaşması hangi tarihte imzalanmıştır?',
     answer: '24 Temmuz 1923',
     difficulty: 'medium',
-    explanation: 'Türkiye\'nin bağımsızlığını uluslararası alanda tanıtan antlaşmadır.',
-    tags: ['Lozan Antlaşması', 'Bağımsızlık', '1923']
-  }
+    explanation:
+      "Türkiye'nin bağımsızlığını uluslararası alanda tanıtan antlaşmadır.",
+    tags: ['Lozan Antlaşması', 'Bağımsızlık', '1923'],
+  },
 ];
 
-// Ek kartlar oluşturma fonksiyonu
-const generateAdditionalCards = (baseCards: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[], category: string, baseId: string, targetCount: number = 100) => {
-  const additionalCards: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [];
-  const existingCount = baseCards.length;
-  
-  for (let i = existingCount + 1; i <= targetCount; i++) {
-    const card: Omit<MemoryCard, 'createdAt' | 'updatedAt'> = {
-      id: `${baseId}_${i}`,
-      category: category,
-      question: `${category} konusu ile ilgili ${i}. soru nedir?`,
-      answer: `${category} konusu ile ilgili ${i}. cevap`,
-      difficulty: i % 3 === 0 ? 'easy' : i % 3 === 1 ? 'medium' : 'hard',
-      explanation: `${category} konusu ile ilgili ${i}. açıklama`,
-      tags: [category, `Konu ${i}`]
-    };
-    additionalCards.push(card);
-  }
-  
-  return additionalCards;
-};
+// Matematik için ek kartlar
+const matematikEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'math_11',
+    category: 'Matematik',
+    question:
+      'Bir fonksiyonun grafiği x eksenini kaç noktada kesiyorsa, o fonksiyonun kaç tane reel kökü vardır?',
+    answer: 'Kestiği nokta sayısı kadar',
+    difficulty: 'medium',
+    explanation:
+      'Fonksiyonun grafiği x eksenini kestiği her nokta, fonksiyonun bir reel köküne karşılık gelir.',
+    tags: ['Fonksiyon', 'Kök', 'Grafik'],
+  },
+  {
+    id: 'math_12',
+    category: 'Matematik',
+    question: 'Bir üçgenin alanı nasıl hesaplanır?',
+    answer: '(Taban × Yükseklik) / 2',
+    difficulty: 'easy',
+    explanation:
+      'Üçgenin alanı, herhangi bir kenarını taban alarak, o kenara ait yüksekliği kullanarak hesaplanır.',
+    tags: ['Üçgen', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_13',
+    category: 'Matematik',
+    question: 'Bir sayının karesi nasıl hesaplanır?',
+    answer: 'Sayının kendisiyle çarpımı',
+    difficulty: 'easy',
+    explanation: 'a² = a × a şeklinde hesaplanır.',
+    tags: ['Kare', 'Sayılar', 'Çarpma'],
+  },
+  {
+    id: 'math_14',
+    category: 'Matematik',
+    question: 'Bir sayının küpü nasıl hesaplanır?',
+    answer: 'Sayının kendisiyle üç kez çarpımı',
+    difficulty: 'easy',
+    explanation: 'a³ = a × a × a şeklinde hesaplanır.',
+    tags: ['Küp', 'Sayılar', 'Çarpma'],
+  },
+  {
+    id: 'math_15',
+    category: 'Matematik',
+    question: 'Bir dairenin alanı nasıl hesaplanır?',
+    answer: 'πr²',
+    difficulty: 'easy',
+    explanation: 'Dairenin alanı, yarıçapın karesinin π katına eşittir.',
+    tags: ['Daire', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_16',
+    category: 'Matematik',
+    question: 'Bir dikdörtgenin alanı nasıl hesaplanır?',
+    answer: 'Uzun kenar × Kısa kenar',
+    difficulty: 'easy',
+    explanation: 'Dikdörtgenin alanı, iki kenarının çarpımına eşittir.',
+    tags: ['Dikdörtgen', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_17',
+    category: 'Matematik',
+    question: 'Bir karenin alanı nasıl hesaplanır?',
+    answer: 'Kenar uzunluğunun karesi',
+    difficulty: 'easy',
+    explanation: 'Karenin alanı, bir kenarının karesine eşittir.',
+    tags: ['Kare', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_18',
+    category: 'Matematik',
+    question: 'Bir paralelkenarın alanı nasıl hesaplanır?',
+    answer: 'Taban × Yükseklik',
+    difficulty: 'medium',
+    explanation:
+      'Paralelkenarın alanı, herhangi bir kenarını taban alarak, o kenara ait yüksekliği kullanarak hesaplanır.',
+    tags: ['Paralelkenar', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_19',
+    category: 'Matematik',
+    question: 'Bir yamuk alanı nasıl hesaplanır?',
+    answer: '[(Alt taban + Üst taban) × Yükseklik] / 2',
+    difficulty: 'medium',
+    explanation:
+      'Yamuğun alanı, paralel kenarlarının toplamının yarısı ile yüksekliğinin çarpımına eşittir.',
+    tags: ['Yamuk', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_20',
+    category: 'Matematik',
+    question: 'Bir eşkenar üçgenin alanı nasıl hesaplanır?',
+    answer: '(a²√3) / 4',
+    difficulty: 'hard',
+    explanation:
+      'Eşkenar üçgenin alanı, kenar uzunluğunun karesinin √3/4 katına eşittir.',
+    tags: ['Eşkenar Üçgen', 'Alan', 'Geometri'],
+  },
+];
 
-// Her kategori için 100 kart oluştur
-const matematikKartlariTam = [...matematikKartlari, ...generateAdditionalCards(matematikKartlari, 'Matematik', 'math', 100)];
-const fizikKartlariTam = [...fizikKartlari, ...generateAdditionalCards(fizikKartlari, 'Fizik', 'physics', 100)];
-const kimyaKartlariTam = [...kimyaKartlari, ...generateAdditionalCards(kimyaKartlari, 'Kimya', 'chemistry', 100)];
-const biyolojiKartlariTam = [...biyolojiKartlari, ...generateAdditionalCards(biyolojiKartlari, 'Biyoloji', 'biology', 100)];
-const turkceKartlariTam = [...turkceKartlari, ...generateAdditionalCards(turkceKartlari, 'Türkçe', 'turkish', 100)];
-const tarihKartlariTam = [...tarihKartlari, ...generateAdditionalCards(tarihKartlari, 'Tarih', 'history', 100)];
+// Fizik için ek kartlar
+const fizikEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'physics_11',
+    category: 'Fizik',
+    question: 'Hız birimi nedir?',
+    answer: 'm/s (metre/saniye)',
+    difficulty: 'easy',
+    explanation: 'Hız, birim zamanda alınan yol olarak tanımlanır.',
+    tags: ['Hız', 'Birim', 'Hareket'],
+  },
+  {
+    id: 'physics_12',
+    category: 'Fizik',
+    question: 'İvme birimi nedir?',
+    answer: 'm/s² (metre/saniye²)',
+    difficulty: 'easy',
+    explanation: 'İvme, birim zamandaki hız değişimi olarak tanımlanır.',
+    tags: ['İvme', 'Birim', 'Hareket'],
+  },
+  {
+    id: 'physics_13',
+    category: 'Fizik',
+    question: 'Kuvvet birimi nedir?',
+    answer: 'Newton (N)',
+    difficulty: 'easy',
+    explanation: '1 Newton = 1 kg × 1 m/s²',
+    tags: ['Kuvvet', 'Birim', 'Newton'],
+  },
+  {
+    id: 'physics_14',
+    category: 'Fizik',
+    question: 'Güç birimi nedir?',
+    answer: 'Watt (W)',
+    difficulty: 'easy',
+    explanation: '1 Watt = 1 Joule / 1 saniye',
+    tags: ['Güç', 'Birim', 'Enerji'],
+  },
+  {
+    id: 'physics_15',
+    category: 'Fizik',
+    question: 'Basınç birimi nedir?',
+    answer: 'Pascal (Pa)',
+    difficulty: 'easy',
+    explanation: '1 Pascal = 1 Newton / 1 metre²',
+    tags: ['Basınç', 'Birim', 'Kuvvet'],
+  },
+  {
+    id: 'physics_16',
+    category: 'Fizik',
+    question: 'Sıcaklık birimi nedir?',
+    answer: 'Kelvin (K)',
+    difficulty: 'easy',
+    explanation: 'Kelvin, mutlak sıcaklık birimidir.',
+    tags: ['Sıcaklık', 'Birim', 'Termodinamik'],
+  },
+  {
+    id: 'physics_17',
+    category: 'Fizik',
+    question: 'Elektrik yükü birimi nedir?',
+    answer: 'Coulomb (C)',
+    difficulty: 'easy',
+    explanation: '1 Coulomb = 1 Amper × 1 saniye',
+    tags: ['Elektrik', 'Yük', 'Birim'],
+  },
+  {
+    id: 'physics_18',
+    category: 'Fizik',
+    question: 'Gerilim birimi nedir?',
+    answer: 'Volt (V)',
+    difficulty: 'easy',
+    explanation: '1 Volt = 1 Joule / 1 Coulomb',
+    tags: ['Gerilim', 'Birim', 'Elektrik'],
+  },
+  {
+    id: 'physics_19',
+    category: 'Fizik',
+    question: 'Direnç birimi nedir?',
+    answer: 'Ohm (Ω)',
+    difficulty: 'easy',
+    explanation: '1 Ohm = 1 Volt / 1 Amper',
+    tags: ['Direnç', 'Birim', 'Elektrik'],
+  },
+  {
+    id: 'physics_20',
+    category: 'Fizik',
+    question: 'Frekans birimi nedir?',
+    answer: 'Hertz (Hz)',
+    difficulty: 'easy',
+    explanation: '1 Hertz = 1 titreşim / 1 saniye',
+    tags: ['Frekans', 'Birim', 'Dalga'],
+  },
+];
+
+// Kimya için ek kartlar
+const kimyaEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'chemistry_11',
+    category: 'Kimya',
+    question: 'Suyun kimyasal formülü nedir?',
+    answer: 'H₂O',
+    difficulty: 'easy',
+    explanation: 'Su, iki hidrojen atomu ve bir oksijen atomundan oluşur.',
+    tags: ['Su', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_12',
+    category: 'Kimya',
+    question: 'Karbondioksitin kimyasal formülü nedir?',
+    answer: 'CO₂',
+    difficulty: 'easy',
+    explanation:
+      'Karbondioksit, bir karbon atomu ve iki oksijen atomundan oluşur.',
+    tags: ['Karbondioksit', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_13',
+    category: 'Kimya',
+    question: 'Metanın kimyasal formülü nedir?',
+    answer: 'CH₄',
+    difficulty: 'easy',
+    explanation: 'Metan, bir karbon atomu ve dört hidrojen atomundan oluşur.',
+    tags: ['Metan', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_14',
+    category: 'Kimya',
+    question: 'Amonyağın kimyasal formülü nedir?',
+    answer: 'NH₃',
+    difficulty: 'easy',
+    explanation: 'Amonyak, bir azot atomu ve üç hidrojen atomundan oluşur.',
+    tags: ['Amonyak', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_15',
+    category: 'Kimya',
+    question: 'Sülfürik asidin kimyasal formülü nedir?',
+    answer: 'H₂SO₄',
+    difficulty: 'medium',
+    explanation:
+      'Sülfürik asit, iki hidrojen atomu, bir kükürt atomu ve dört oksijen atomundan oluşur.',
+    tags: ['Sülfürik Asit', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_16',
+    category: 'Kimya',
+    question: 'Nitrik asidin kimyasal formülü nedir?',
+    answer: 'HNO₃',
+    difficulty: 'medium',
+    explanation:
+      'Nitrik asit, bir hidrojen atomu, bir azot atomu ve üç oksijen atomundan oluşur.',
+    tags: ['Nitrik Asit', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_17',
+    category: 'Kimya',
+    question: 'Hidroklorik asidin kimyasal formülü nedir?',
+    answer: 'HCl',
+    difficulty: 'easy',
+    explanation:
+      'Hidroklorik asit, bir hidrojen atomu ve bir klor atomundan oluşur.',
+    tags: ['Hidroklorik Asit', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_18',
+    category: 'Kimya',
+    question: 'Sodyum hidroksidin kimyasal formülü nedir?',
+    answer: 'NaOH',
+    difficulty: 'easy',
+    explanation:
+      'Sodyum hidroksit, bir sodyum atomu, bir oksijen atomu ve bir hidrojen atomundan oluşur.',
+    tags: ['Sodyum Hidroksit', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_19',
+    category: 'Kimya',
+    question: 'Kalsiyum karbonatın kimyasal formülü nedir?',
+    answer: 'CaCO₃',
+    difficulty: 'medium',
+    explanation:
+      'Kalsiyum karbonat, bir kalsiyum atomu, bir karbon atomu ve üç oksijen atomundan oluşur.',
+    tags: ['Kalsiyum Karbonat', 'Molekül', 'Formül'],
+  },
+  {
+    id: 'chemistry_20',
+    category: 'Kimya',
+    question: 'Glukozun kimyasal formülü nedir?',
+    answer: 'C₆H₁₂O₆',
+    difficulty: 'medium',
+    explanation:
+      'Glukoz, altı karbon atomu, on iki hidrojen atomu ve altı oksijen atomundan oluşur.',
+    tags: ['Glukoz', 'Molekül', 'Formül'],
+  },
+];
+
+// Biyoloji için ek kartlar
+const biyolojiEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'biology_11',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç kemik bulunur?',
+    answer: '206',
+    difficulty: 'easy',
+    explanation: 'Yetişkin insan vücudunda toplam 206 kemik bulunur.',
+    tags: ['İskelet', 'Kemik', 'İnsan Vücudu'],
+  },
+  {
+    id: 'biology_12',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç kas bulunur?',
+    answer: "600'den fazla",
+    difficulty: 'easy',
+    explanation: "İnsan vücudunda 600'den fazla kas bulunur.",
+    tags: ['Kas', 'İnsan Vücudu', 'Hareket'],
+  },
+  {
+    id: 'biology_13',
+    category: 'Biyoloji',
+    question: 'İnsan kalbi kaç odacıklıdır?',
+    answer: '4',
+    difficulty: 'easy',
+    explanation:
+      'İnsan kalbi 2 kulakçık ve 2 karıncık olmak üzere 4 odacıklıdır.',
+    tags: ['Kalp', 'Dolaşım', 'İnsan Vücudu'],
+  },
+  {
+    id: 'biology_14',
+    category: 'Biyoloji',
+    question: 'İnsan beyninin ağırlığı yaklaşık kaç gramdır?',
+    answer: '1400 gram',
+    difficulty: 'easy',
+    explanation: 'Yetişkin insan beyninin ağırlığı yaklaşık 1400 gramdır.',
+    tags: ['Beyin', 'Sinir Sistemi', 'İnsan Vücudu'],
+  },
+  {
+    id: 'biology_15',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç litre kan bulunur?',
+    answer: '5-6 litre',
+    difficulty: 'easy',
+    explanation: 'Yetişkin insan vücudunda yaklaşık 5-6 litre kan bulunur.',
+    tags: ['Kan', 'Dolaşım', 'İnsan Vücudu'],
+  },
+  {
+    id: 'biology_16',
+    category: 'Biyoloji',
+    question: "İnsan DNA'sı kaç kromozom çiftinden oluşur?",
+    answer: '23',
+    difficulty: 'easy',
+    explanation: "İnsan DNA'sı 23 çift kromozomdan oluşur.",
+    tags: ['DNA', 'Kromozom', 'Genetik'],
+  },
+  {
+    id: 'biology_17',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç organ bulunur?',
+    answer: '78',
+    difficulty: 'medium',
+    explanation: 'İnsan vücudunda 78 organ bulunur.',
+    tags: ['Organ', 'İnsan Vücudu', 'Anatomi'],
+  },
+  {
+    id: 'biology_18',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç sistem bulunur?',
+    answer: '11',
+    difficulty: 'medium',
+    explanation: 'İnsan vücudunda 11 sistem bulunur.',
+    tags: ['Sistem', 'İnsan Vücudu', 'Anatomi'],
+  },
+  {
+    id: 'biology_19',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç hücre bulunur?',
+    answer: '37 trilyon',
+    difficulty: 'medium',
+    explanation: 'İnsan vücudunda yaklaşık 37 trilyon hücre bulunur.',
+    tags: ['Hücre', 'İnsan Vücudu', 'Biyoloji'],
+  },
+  {
+    id: 'biology_20',
+    category: 'Biyoloji',
+    question: 'İnsan vücudunda kaç kemik çeşidi bulunur?',
+    answer: '5',
+    difficulty: 'medium',
+    explanation:
+      'İnsan vücudunda 5 kemik çeşidi bulunur: uzun, kısa, yassı, düzensiz ve sesamoid kemikler.',
+    tags: ['Kemik', 'İskelet', 'Anatomi'],
+  },
+];
+
+// Türkçe için ek kartlar
+const turkceEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'turkish_11',
+    category: 'Türkçe',
+    question: 'Türkçede kaç harf bulunur?',
+    answer: '29',
+    difficulty: 'easy',
+    explanation: 'Türkçe alfabesinde 29 harf bulunur.',
+    tags: ['Alfabe', 'Harf', 'Türkçe'],
+  },
+  {
+    id: 'turkish_12',
+    category: 'Türkçe',
+    question: 'Türkçede kaç sesli harf bulunur?',
+    answer: '8',
+    difficulty: 'easy',
+    explanation: 'Türkçede 8 sesli harf bulunur: a, e, ı, i, o, ö, u, ü',
+    tags: ['Sesli Harf', 'Alfabe', 'Türkçe'],
+  },
+  {
+    id: 'turkish_13',
+    category: 'Türkçe',
+    question: 'Türkçede kaç sessiz harf bulunur?',
+    answer: '21',
+    difficulty: 'easy',
+    explanation: 'Türkçede 21 sessiz harf bulunur.',
+    tags: ['Sessiz Harf', 'Alfabe', 'Türkçe'],
+  },
+  {
+    id: 'turkish_14',
+    category: 'Türkçe',
+    question: 'Türkçede kaç kelime türü bulunur?',
+    answer: '9',
+    difficulty: 'medium',
+    explanation:
+      'Türkçede 9 kelime türü bulunur: isim, sıfat, zamir, zarf, fiil, edat, bağlaç, ünlem, niteleme.',
+    tags: ['Kelime Türü', 'Dilbilgisi', 'Türkçe'],
+  },
+  {
+    id: 'turkish_15',
+    category: 'Türkçe',
+    question: 'Türkçede kaç zaman bulunur?',
+    answer: '5',
+    difficulty: 'medium',
+    explanation:
+      'Türkçede 5 zaman bulunur: şimdiki zaman, geçmiş zaman, gelecek zaman, geniş zaman, duyulan geçmiş zaman.',
+    tags: ['Zaman', 'Fiil', 'Dilbilgisi'],
+  },
+  {
+    id: 'turkish_16',
+    category: 'Türkçe',
+    question: 'Türkçede kaç kişi bulunur?',
+    answer: '3',
+    difficulty: 'easy',
+    explanation: 'Türkçede 3 kişi bulunur: 1. kişi, 2. kişi, 3. kişi.',
+    tags: ['Kişi', 'Fiil', 'Dilbilgisi'],
+  },
+  {
+    id: 'turkish_17',
+    category: 'Türkçe',
+    question: 'Türkçede kaç sayı bulunur?',
+    answer: '2',
+    difficulty: 'easy',
+    explanation: 'Türkçede 2 sayı bulunur: tekil ve çoğul.',
+    tags: ['Sayı', 'Dilbilgisi', 'Türkçe'],
+  },
+  {
+    id: 'turkish_18',
+    category: 'Türkçe',
+    question: 'Türkçede kaç hal bulunur?',
+    answer: '5',
+    difficulty: 'medium',
+    explanation:
+      'Türkçede 5 hal bulunur: yalın hal, belirtme hali, yönelme hali, bulunma hali, ayrılma hali.',
+    tags: ['Hal', 'İsim', 'Dilbilgisi'],
+  },
+  {
+    id: 'turkish_19',
+    category: 'Türkçe',
+    question: 'Türkçede kaç çekim eki bulunur?',
+    answer: '2',
+    difficulty: 'medium',
+    explanation:
+      'Türkçede 2 çekim eki bulunur: isim çekim ekleri ve fiil çekim ekleri.',
+    tags: ['Çekim Eki', 'Dilbilgisi', 'Türkçe'],
+  },
+  {
+    id: 'turkish_20',
+    category: 'Türkçe',
+    question: 'Türkçede kaç yapım eki bulunur?',
+    answer: '4',
+    difficulty: 'medium',
+    explanation:
+      'Türkçede 4 yapım eki bulunur: isimden isim yapım eki, isimden fiil yapım eki, fiilden isim yapım eki, fiilden fiil yapım eki.',
+    tags: ['Yapım Eki', 'Dilbilgisi', 'Türkçe'],
+  },
+];
+
+// Tarih için ek kartlar
+const tarihEkKartlar: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
+  {
+    id: 'history_11',
+    category: 'Tarih',
+    question: 'Malazgirt Savaşı hangi tarihte gerçekleşmiştir?',
+    answer: '26 Ağustos 1071',
+    difficulty: 'easy',
+    explanation:
+      'Alparslan komutasındaki Selçuklu ordusu, Bizans ordusunu yenmiştir.',
+    tags: ['Malazgirt Savaşı', 'Alparslan', 'Selçuklu'],
+  },
+  {
+    id: 'history_12',
+    category: 'Tarih',
+    question: "İstanbul'un fethi hangi tarihte gerçekleşmiştir?",
+    answer: '29 Mayıs 1453',
+    difficulty: 'easy',
+    explanation:
+      "Fatih Sultan Mehmet komutasındaki Osmanlı ordusu İstanbul'u fethetmiştir.",
+    tags: ["İstanbul'un Fethi", 'Fatih Sultan Mehmet', 'Osmanlı'],
+  },
+  {
+    id: 'history_13',
+    category: 'Tarih',
+    question: 'Kurtuluş Savaşı hangi yıllar arasında gerçekleşmiştir?',
+    answer: '1919-1923',
+    difficulty: 'easy',
+    explanation:
+      'Mustafa Kemal Atatürk önderliğinde Türk milleti bağımsızlık mücadelesi vermiştir.',
+    tags: ['Kurtuluş Savaşı', 'Atatürk', 'Bağımsızlık'],
+  },
+  {
+    id: 'history_14',
+    category: 'Tarih',
+    question: 'TBMM hangi tarihte açılmıştır?',
+    answer: '23 Nisan 1920',
+    difficulty: 'easy',
+    explanation: "Mustafa Kemal Atatürk TBMM'yi açmıştır.",
+    tags: ['TBMM', 'Atatürk', '23 Nisan'],
+  },
+  {
+    id: 'history_15',
+    category: 'Tarih',
+    question: 'Sakarya Meydan Muharebesi hangi tarihte gerçekleşmiştir?',
+    answer: '23 Ağustos-13 Eylül 1921',
+    difficulty: 'medium',
+    explanation:
+      'Mustafa Kemal Atatürk komutasındaki Türk ordusu Yunan ordusunu yenmiştir.',
+    tags: ['Sakarya Meydan Muharebesi', 'Atatürk', 'Kurtuluş Savaşı'],
+  },
+  {
+    id: 'history_16',
+    category: 'Tarih',
+    question: 'Büyük Taarruz hangi tarihte gerçekleşmiştir?',
+    answer: '26 Ağustos-30 Ağustos 1922',
+    difficulty: 'medium',
+    explanation:
+      'Mustafa Kemal Atatürk komutasındaki Türk ordusu Yunan ordusunu tamamen yenmiştir.',
+    tags: ['Büyük Taarruz', 'Atatürk', 'Kurtuluş Savaşı'],
+  },
+  {
+    id: 'history_17',
+    category: 'Tarih',
+    question: "Cumhuriyet'in ilk cumhurbaşkanı kimdir?",
+    answer: 'Mustafa Kemal Atatürk',
+    difficulty: 'easy',
+    explanation:
+      "Mustafa Kemal Atatürk Türkiye Cumhuriyeti'nin ilk cumhurbaşkanı olmuştur.",
+    tags: ['Cumhuriyet', 'Atatürk', 'Cumhurbaşkanı'],
+  },
+  {
+    id: 'history_18',
+    category: 'Tarih',
+    question: 'Atatürk hangi tarihte vefat etmiştir?',
+    answer: '10 Kasım 1938',
+    difficulty: 'easy',
+    explanation:
+      'Mustafa Kemal Atatürk 10 Kasım 1938 tarihinde vefat etmiştir.',
+    tags: ['Atatürk', 'Vefat', '10 Kasım'],
+  },
+  {
+    id: 'history_19',
+    category: 'Tarih',
+    question: 'İstiklal Marşı hangi tarihte kabul edilmiştir?',
+    answer: '12 Mart 1921',
+    difficulty: 'medium',
+    explanation:
+      'Mehmet Akif Ersoy tarafından yazılan İstiklal Marşı TBMM tarafından kabul edilmiştir.',
+    tags: ['İstiklal Marşı', 'Mehmet Akif Ersoy', 'TBMM'],
+  },
+  {
+    id: 'history_20',
+    category: 'Tarih',
+    question: 'Türk bayrağı hangi tarihte kabul edilmiştir?',
+    answer: '29 Mayıs 1936',
+    difficulty: 'medium',
+    explanation:
+      'Türk bayrağı 29 Mayıs 1936 tarihinde resmi olarak kabul edilmiştir.',
+    tags: ['Türk Bayrağı', 'Bayrak', '1936'],
+  },
+];
+
+// Her kategori için kartları birleştir (YKS kartları ile)
+const matematikKartlariTam = [
+  ...matematikYksKartlari,
+  ...matematikEkKartlar,
+  ...matematikEkKartlar2,
+];
+const fizikKartlariTam = [
+  ...fizikYksKartlari,
+  ...fizikEkKartlar,
+  ...fizikEkKartlar2,
+];
+const kimyaKartlariTam = [
+  ...kimyaYksKartlari,
+  ...kimyaEkKartlar,
+  ...kimyaEkKartlar2,
+];
+const biyolojiKartlariTam = [
+  ...biyolojiYksKartlari,
+  ...biyolojiEkKartlar,
+  ...biyolojiEkKartlar2,
+];
+const turkceKartlariTam = [
+  ...turkceYksKartlari,
+  ...turkceEkKartlar,
+  ...turkceEkKartlar2,
+];
+const tarihKartlariTam = [
+  ...tarihYksKartlari,
+  ...tarihEkKartlar,
+  ...tarihEkKartlar2,
+];
 
 // Tüm kartları birleştir (600 kart)
 export const allCards: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
@@ -606,7 +1268,7 @@ export const allCards: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
   ...kimyaKartlariTam,
   ...biyolojiKartlariTam,
   ...turkceKartlariTam,
-  ...tarihKartlariTam
+  ...tarihKartlariTam,
 ];
 
 // Kartları yüklemek için fonksiyon

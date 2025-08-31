@@ -44,6 +44,9 @@ const CardsScreen: React.FC = () => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const opacityAnim = useRef(new Animated.Value(1)).current;
 
+  // FlatList ref'i
+  const categoriesFlatListRef = useRef<FlatList>(null);
+
   // Kart kategorileri
   const cardCategories: CardCategory[] = [
     {
@@ -169,12 +172,33 @@ const CardsScreen: React.FC = () => {
         setSelectedCategory(null);
         const allCards = await asyncStorageService.getAllCards();
         setCards(allCards);
+
+        // "Tümü" butonunu orta konuma kaydır
+        setTimeout(() => {
+          categoriesFlatListRef.current?.scrollToIndex({
+            index: 0,
+            animated: true,
+            viewPosition: 0.5, // 0.5 = orta konum
+          });
+        }, 100);
       } else {
         // Seçilen kategoriye ait kartları al
         setSelectedCategory(categoryName);
         const categoryCards =
           await asyncStorageService.getCardsByCategory(categoryName);
         setCards(categoryCards);
+
+        // Seçilen kategoriyi orta konuma kaydır
+        const categoryIndex = getCategoryIndex(categoryName);
+        if (categoryIndex !== -1) {
+          setTimeout(() => {
+            categoriesFlatListRef.current?.scrollToIndex({
+              index: categoryIndex + 1, // +1 çünkü "Tümü" butonu 0. index
+              animated: true,
+              viewPosition: 0.5, // 0.5 = orta konum
+            });
+          }, 100);
+        }
       }
 
       setCurrentCardIndex(0);
@@ -182,6 +206,19 @@ const CardsScreen: React.FC = () => {
     } catch (error) {
       Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
     }
+  };
+
+  // Kategori index'ini bul
+  const getCategoryIndex = (categoryName: string): number => {
+    const categoryOrder = [
+      'Matematik',
+      'Fizik',
+      'Kimya',
+      'Biyoloji',
+      'Türkçe',
+      'Tarih',
+    ];
+    return categoryOrder.indexOf(categoryName);
   };
 
   // Kartı çevir
@@ -335,7 +372,7 @@ const CardsScreen: React.FC = () => {
               color={colors.textWhite}
             />
             <Text style={styles.categoryTitle}>Tümü</Text>
-            <Text style={styles.categoryCount}>{totalCardsCount} kart</Text>
+            <Text style={styles.categoryCount}>600 kart</Text>
 
             {/* Seçili kategori göstergesi */}
             {selectedCategory === null && (
@@ -635,15 +672,57 @@ const CardsScreen: React.FC = () => {
             <Text style={styles.sectionTitle}>📂 Kategoriler</Text>
           </View>
           <FlatList
+            ref={categoriesFlatListRef}
             data={[
               {
                 name: 'Tümü',
-                count: totalCardsCount,
-                easyCount: 0,
-                mediumCount: 0,
-                hardCount: 0,
+                count: 600,
+                easyCount: 200,
+                mediumCount: 200,
+                hardCount: 200,
               },
-              ...categories,
+              {
+                name: 'Matematik',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
+              {
+                name: 'Fizik',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
+              {
+                name: 'Kimya',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
+              {
+                name: 'Biyoloji',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
+              {
+                name: 'Türkçe',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
+              {
+                name: 'Tarih',
+                count: 100,
+                easyCount: 33,
+                mediumCount: 34,
+                hardCount: 33,
+              },
             ]}
             renderItem={renderCategoryCard}
             keyExtractor={item => item.name}
@@ -654,6 +733,9 @@ const CardsScreen: React.FC = () => {
             snapToInterval={responsiveSize(132)} // Kart genişliği + margin
             decelerationRate='fast'
             snapToAlignment='center'
+            onScrollToIndexFailed={() => {
+              // Hata durumunda scroll işlemini iptal et
+            }}
           />
         </View>
 
