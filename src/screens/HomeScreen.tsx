@@ -548,24 +548,6 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
 
-        {/* Test Butonu */}
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#007AFF',
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 8,
-            marginHorizontal: 20,
-            marginBottom: 20,
-            alignItems: 'center',
-          }}
-          onPress={() => navigation.navigate('YksCardsTest')}
-        >
-          <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>
-            YKS Kartları MongoDB Test
-          </Text>
-        </TouchableOpacity>
-
         {/* Swiper Cards */}
         <View style={styles.swiperContainer}>
           <View style={styles.swiperWrapper}>
@@ -948,8 +930,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(165),
-    marginBottom: responsiveSize(6),
+    marginTop: responsiveSize(180),
+    marginBottom: responsiveSize(-20),
     marginHorizontal: responsiveSize(20),
   },
   sectionRowExam: {
@@ -957,7 +939,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: responsiveSize(185),
-    marginBottom: responsiveSize(6),
+    marginBottom: responsiveSize(2),
     marginHorizontal: responsiveSize(20),
   },
   sectionRowPast: {
@@ -965,13 +947,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: responsiveSize(185),
-    marginBottom: responsiveSize(6),
+    marginBottom: responsiveSize(2),
     marginHorizontal: responsiveSize(20),
   },
   sectionTitle: {
     fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textPrimary,
+    marginTop: responsiveSize(-3),
   },
   seeAll: {
     color: colors.secondary,
@@ -1065,6 +1048,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 1,
     elevation: 0,
+    marginBottom: responsiveSize(-5),
   },
   swiperWrapper: {
     width: '90%',
@@ -1089,7 +1073,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(8),
+    marginTop: responsiveSize(30),
     marginBottom: responsiveSize(-170),
   },
   subjectGridItem: {
