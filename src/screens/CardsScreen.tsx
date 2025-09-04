@@ -36,6 +36,9 @@ const CardsScreen: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
+  const [showExplanation, setShowExplanation] = useState<Set<string>>(
+    new Set()
+  );
   const [loading, setLoading] = useState(true);
   const [cards, setCards] = useState<MemoryCard[]>([]);
   const [categories, setCategories] = useState<CardCategory[]>([]);
@@ -143,13 +146,13 @@ const CardsScreen: React.FC = () => {
     opacityAnim.setValue(1);
   }, [currentCardIndex]);
 
-    const loadCategoriesAndCards = async () => {
+  const loadCategoriesAndCards = async () => {
     try {
       setLoading(true);
 
       // AsyncStorage'dan tüm soruları al
       const allQuestions = await getAllQuestionsFromStorage();
-      
+
       // Kategori istatistiklerini hesapla
       const categoryStats = getCategoryStatsFromStorage(allQuestions);
       setCategories(categoryStats);
@@ -208,6 +211,7 @@ const CardsScreen: React.FC = () => {
 
       setCurrentCardIndex(0);
       setFlippedCards(new Set());
+      setShowExplanation(new Set());
     } catch (error) {
       Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
     }
@@ -237,6 +241,17 @@ const CardsScreen: React.FC = () => {
     setFlippedCards(newFlippedCards);
   };
 
+  // Açıklamayı göster/gizle
+  const toggleExplanation = (cardId: string) => {
+    const newShowExplanation = new Set(showExplanation);
+    if (newShowExplanation.has(cardId)) {
+      newShowExplanation.delete(cardId);
+    } else {
+      newShowExplanation.add(cardId);
+    }
+    setShowExplanation(newShowExplanation);
+  };
+
   // Sonraki kart
   const nextCard = () => {
     if (currentCardIndex < cards.length - 1) {
@@ -261,6 +276,7 @@ const CardsScreen: React.FC = () => {
         const newIndex = currentCardIndex + 1;
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
+        setShowExplanation(new Set());
       });
     }
   };
@@ -289,6 +305,7 @@ const CardsScreen: React.FC = () => {
         const newIndex = currentCardIndex - 1;
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
+        setShowExplanation(new Set());
       });
     }
   };
@@ -589,11 +606,44 @@ const CardsScreen: React.FC = () => {
                   <Text style={styles.answerText}>{currentCard.answer}</Text>
 
                   {currentCard.explanation && (
-                    <View style={styles.explanationContainer}>
-                      <Text style={styles.explanationTitle}>Açıklama:</Text>
-                      <Text style={styles.explanationText}>
-                        {currentCard.explanation}
-                      </Text>
+                    <View style={styles.explanationSection}>
+                      {!showExplanation.has(currentCard.id) ? (
+                        <TouchableOpacity
+                          style={styles.showExplanationButton}
+                          onPress={() => toggleExplanation(currentCard.id)}
+                          activeOpacity={0.7}
+                        >
+                          <Ionicons
+                            name='information-circle-outline'
+                            size={20}
+                            color={colors.primary}
+                          />
+                          <Text style={styles.showExplanationText}>
+                            Açıklamayı Göster
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <View style={styles.explanationContainer}>
+                          <View style={styles.explanationHeader}>
+                            <Text style={styles.explanationTitle}>
+                              Açıklama:
+                            </Text>
+                            <TouchableOpacity
+                              onPress={() => toggleExplanation(currentCard.id)}
+                              style={styles.hideExplanationButton}
+                            >
+                              <Ionicons
+                                name='close-circle-outline'
+                                size={20}
+                                color={colors.textSecondary}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <Text style={styles.explanationText}>
+                            {currentCard.explanation}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   )}
 
@@ -1064,19 +1114,47 @@ const styles = StyleSheet.create({
     lineHeight: responsiveSize(26),
     marginBottom: responsiveSize(16),
   },
-  explanationContainer: {
+  explanationSection: {
     marginTop: responsiveSize(20),
+  },
+  showExplanationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f0f4ff',
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(16),
+    borderRadius: responsiveSize(12),
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderStyle: 'dashed',
+  },
+  showExplanationText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.primary,
+    fontWeight: '600',
+    marginLeft: responsiveSize(8),
+  },
+  explanationContainer: {
     padding: responsiveSize(16),
     backgroundColor: '#f8fafc',
     borderRadius: responsiveSize(16),
     borderLeftWidth: 4,
     borderLeftColor: '#667eea',
   },
+  explanationHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: responsiveSize(8),
+  },
   explanationTitle: {
     fontSize: responsiveFontSize(14),
     fontWeight: 'bold',
     color: colors.textPrimary,
-    marginBottom: responsiveSize(8),
+  },
+  hideExplanationButton: {
+    padding: responsiveSize(4),
   },
   explanationText: {
     fontSize: responsiveFontSize(14),
