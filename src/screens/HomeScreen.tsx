@@ -548,6 +548,24 @@ const HomeScreen: React.FC = () => {
           </View>
         </View>
 
+        {/* Test Butonu */}
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#007AFF',
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderRadius: 8,
+            marginHorizontal: 20,
+            marginBottom: 20,
+            alignItems: 'center',
+          }}
+          onPress={() => navigation.navigate('YksCardsTest')}
+        >
+          <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>
+            YKS Kartları MongoDB Test
+          </Text>
+        </TouchableOpacity>
+
         {/* Swiper Cards */}
         <View style={styles.swiperContainer}>
           <View style={styles.swiperWrapper}>

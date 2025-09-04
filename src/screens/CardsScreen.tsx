@@ -19,12 +19,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { CardCategory, MemoryCard } from '../services/asyncStorageService';
 import {
-  CardCategory,
-  MemoryCard,
-  asyncStorageService,
-} from '../services/asyncStorageService';
-import { loadCardsToStorage } from '../services/loadCardsToStorage';
+  getAllQuestionsFromStorage,
+  getCategoryStatsFromStorage,
+  getQuestionsByCategoryFromStorage,
+  loadQuestionsToStorage,
+} from '../services/simpleCardsService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -97,18 +98,20 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     const initializeCards = async () => {
       try {
-        // Önce mevcut kartları kontrol et
-        const existingCards = await asyncStorageService.getAllCards();
+        // AsyncStorage'dan soruları kontrol et
+        const existingQuestions = await getAllQuestionsFromStorage();
 
-        // Eğer kart yoksa otomatik olarak yükle
-        if (existingCards.length === 0) {
-          await loadCardsToStorage();
+        // Eğer soru yoksa veya yeterli soru yoksa otomatik olarak yükle
+        if (existingQuestions.length === 0 || existingQuestions.length < 600) {
+          console.log("📚 Sorular AsyncStorage'a yükleniyor...");
+          await loadQuestionsToStorage();
+          console.log('✅ Sorular başarıyla yüklendi!');
         }
 
-        // Kartları ve kategorileri yükle
+        // Soruları ve kategorileri yükle
         await loadCategoriesAndCards();
       } catch (error) {
-        console.error('Kartlar yüklenirken hata:', error);
+        console.error('❌ Sorular yüklenirken hata:', error);
         // Hata durumunda varsayılan kategorileri kullan
         setCategories(cardCategories);
         setLoading(false);
@@ -124,8 +127,8 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     const getTotalCardsCount = async () => {
       try {
-        const allCards = await asyncStorageService.getAllCards();
-        setTotalCardsCount(allCards.length);
+        const allQuestions = await getAllQuestionsFromStorage();
+        setTotalCardsCount(allQuestions.length);
       } catch (error) {
         // Hata durumunda sessizce devam et
       }
@@ -140,21 +143,23 @@ const CardsScreen: React.FC = () => {
     opacityAnim.setValue(1);
   }, [currentCardIndex]);
 
-  const loadCategoriesAndCards = async () => {
+    const loadCategoriesAndCards = async () => {
     try {
       setLoading(true);
 
-      // Kategori istatistiklerini al
-      const categoryStats = await asyncStorageService.getCategoryStats();
+      // AsyncStorage'dan tüm soruları al
+      const allQuestions = await getAllQuestionsFromStorage();
+      
+      // Kategori istatistiklerini hesapla
+      const categoryStats = getCategoryStatsFromStorage(allQuestions);
       setCategories(categoryStats);
 
-      // Tüm kartları al
-      const allCards = await asyncStorageService.getAllCards();
-      setCards(allCards);
+      // Soruları ayarla
+      setCards(allQuestions);
     } catch (error) {
       Alert.alert(
         'Hata',
-        'Kartlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
+        'Sorular yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
       );
 
       // Hata durumunda varsayılan kategorileri kullan
@@ -170,8 +175,8 @@ const CardsScreen: React.FC = () => {
       if (categoryName === '') {
         // Tüm kartları göster
         setSelectedCategory(null);
-        const allCards = await asyncStorageService.getAllCards();
-        setCards(allCards);
+        const allQuestions = await getAllQuestionsFromStorage();
+        setCards(allQuestions);
 
         // "Tümü" butonunu orta konuma kaydır
         setTimeout(() => {
@@ -184,9 +189,9 @@ const CardsScreen: React.FC = () => {
       } else {
         // Seçilen kategoriye ait kartları al
         setSelectedCategory(categoryName);
-        const categoryCards =
-          await asyncStorageService.getCardsByCategory(categoryName);
-        setCards(categoryCards);
+        const categoryQuestions =
+          await getQuestionsByCategoryFromStorage(categoryName);
+        setCards(categoryQuestions);
 
         // Seçilen kategoriyi orta konuma kaydır
         const categoryIndex = getCategoryIndex(categoryName);
@@ -204,7 +209,7 @@ const CardsScreen: React.FC = () => {
       setCurrentCardIndex(0);
       setFlippedCards(new Set());
     } catch (error) {
-      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
+      Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
     }
   };
 
@@ -372,7 +377,9 @@ const CardsScreen: React.FC = () => {
               color={colors.textWhite}
             />
             <Text style={styles.categoryTitle}>Tümü</Text>
-            <Text style={styles.categoryCount}>600 kart</Text>
+            <Text style={styles.categoryCount}>
+              {totalCardsCount || 600} kart
+            </Text>
 
             {/* Seçili kategori göstergesi */}
             {selectedCategory === null && (
@@ -527,7 +534,12 @@ const CardsScreen: React.FC = () => {
                   </Text>
                 </View>
 
-                <View style={styles.questionContainer}>
+                <View
+                  style={[
+                    styles.questionContainer,
+                    !currentCard.image && styles.questionContainerCentered,
+                  ]}
+                >
                   <Text style={styles.questionText}>
                     {currentCard.question}
                   </Text>
@@ -1002,6 +1014,9 @@ const styles = StyleSheet.create({
     paddingVertical: responsiveSize(0),
     paddingTop: responsiveSize(0),
     marginTop: responsiveSize(5),
+  },
+  questionContainerCentered: {
+    justifyContent: 'center',
   },
   answerContainer: {
     flex: 1,

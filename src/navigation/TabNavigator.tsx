@@ -19,6 +19,7 @@ import TytPastScreen from '../screens/TytPastScreen';
 import TytScreen from '../screens/TytScreen';
 import YdtPastScreen from '../screens/YdtPastScreen';
 import YdtScreen from '../screens/YdtScreen';
+import YksCardsTestScreen from '../screens/YksCardsTestScreen';
 import { responsiveSize } from '../utils/responsive';
 import { colors } from '../utils/theme';
 
@@ -46,6 +47,7 @@ const HomeStack = () => {
       />
       <Stack.Screen name='QuestionScreen' component={QuestionScreen} />
       <Stack.Screen name='ProfilScreen' component={ProfilScreen} />
+      <Stack.Screen name='YksCardsTest' component={YksCardsTestScreen} />
     </Stack.Navigator>
   );
 };

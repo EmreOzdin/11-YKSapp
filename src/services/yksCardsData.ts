@@ -8,7 +8,8 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: 'x² - 5x + 6 = 0 denkleminin kökleri toplamı kaçtır?',
     answer: '5',
     difficulty: 'easy',
-    explanation: 'İkinci dereceden denklemde kökler toplamı -b/a formülü ile bulunur. Burada a=1, b=-5 olduğundan kökler toplamı -(-5)/1 = 5 olur.',
+    explanation:
+      'İkinci dereceden denklemde kökler toplamı -b/a formülü ile bulunur. Burada a=1, b=-5 olduğundan kökler toplamı -(-5)/1 = 5 olur.',
     tags: ['İkinci Dereceden Denklem', 'Kökler Toplamı', 'Vieta Formülleri'],
   },
   {
@@ -17,7 +18,8 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: '2x² - 8x + 6 = 0 denkleminin diskriminantı kaçtır?',
     answer: '16',
     difficulty: 'easy',
-    explanation: 'Diskriminant Δ = b² - 4ac formülü ile hesaplanır. Burada a=2, b=-8, c=6 olduğundan Δ = (-8)² - 4×2×6 = 64 - 48 = 16 olur.',
+    explanation:
+      'Diskriminant Δ = b² - 4ac formülü ile hesaplanır. Burada a=2, b=-8, c=6 olduğundan Δ = (-8)² - 4×2×6 = 64 - 48 = 16 olur.',
     tags: ['İkinci Dereceden Denklem', 'Diskriminant', 'Formül'],
   },
   {
@@ -26,25 +28,28 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: 'log₂(8) + log₂(4) işleminin sonucu kaçtır?',
     answer: '5',
     difficulty: 'medium',
-    explanation: 'log₂(8) = 3 ve log₂(4) = 2 olduğundan, log₂(8) + log₂(4) = 3 + 2 = 5 olur.',
+    explanation:
+      'log₂(8) = 3 ve log₂(4) = 2 olduğundan, log₂(8) + log₂(4) = 3 + 2 = 5 olur.',
     tags: ['Logaritma', 'Logaritma Kuralları', 'Hesaplama'],
   },
   {
     id: 'math_yks_4',
     category: 'Matematik',
-    question: 'Bir dairenin yarıçapı 5 cm ise çevresi kaç cm\'dir? (π = 3)',
+    question: "Bir dairenin yarıçapı 5 cm ise çevresi kaç cm'dir? (π = 3)",
     answer: '30',
     difficulty: 'easy',
-    explanation: 'Dairenin çevresi 2πr formülü ile hesaplanır. 2 × 3 × 5 = 30 cm olur.',
+    explanation:
+      'Dairenin çevresi 2πr formülü ile hesaplanır. 2 × 3 × 5 = 30 cm olur.',
     tags: ['Daire', 'Çevre', 'Geometri'],
   },
   {
     id: 'math_yks_5',
     category: 'Matematik',
-    question: 'f(x) = x² + 3x + 2 fonksiyonunun x = 1 noktasındaki türevi kaçtır?',
+    question:
+      'f(x) = x² + 3x + 2 fonksiyonunun x = 1 noktasındaki türevi kaçtır?',
     answer: '5',
     difficulty: 'medium',
-    explanation: 'f\'(x) = 2x + 3 olduğundan, f\'(1) = 2×1 + 3 = 5 olur.',
+    explanation: "f'(x) = 2x + 3 olduğundan, f'(1) = 2×1 + 3 = 5 olur.",
     tags: ['Türev', 'Fonksiyon', 'Analiz'],
   },
   {
@@ -53,7 +58,8 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: '|x - 3| = 5 denkleminin çözüm kümesi nedir?',
     answer: '{-2, 8}',
     difficulty: 'medium',
-    explanation: '|x - 3| = 5 ise x - 3 = 5 veya x - 3 = -5 olur. Buradan x = 8 veya x = -2 bulunur.',
+    explanation:
+      '|x - 3| = 5 ise x - 3 = 5 veya x - 3 = -5 olur. Buradan x = 8 veya x = -2 bulunur.',
     tags: ['Mutlak Değer', 'Denklem Çözümü'],
   },
   {
@@ -71,7 +77,8 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: 'Bir üçgenin kenarları 3, 4, 5 ise bu üçgenin türü nedir?',
     answer: 'Dik üçgen',
     difficulty: 'easy',
-    explanation: '3² + 4² = 9 + 16 = 25 = 5² olduğundan Pisagor teoremi sağlanır. Bu da üçgenin dik üçgen olduğunu gösterir.',
+    explanation:
+      '3² + 4² = 9 + 16 = 25 = 5² olduğundan Pisagor teoremi sağlanır. Bu da üçgenin dik üçgen olduğunu gösterir.',
     tags: ['Üçgen', 'Pisagor Teoremi', 'Geometri'],
   },
   {
@@ -80,17 +87,113 @@ export const matematikYksKartlari: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[]
     question: '2x + 3y = 8 ve x - y = 1 denklem sisteminin çözümü nedir?',
     answer: 'x = 2, y = 1',
     difficulty: 'medium',
-    explanation: 'İkinci denklemden x = y + 1 bulunur. Bu birinci denklemde yerine konulursa 2(y+1) + 3y = 8 → 5y + 2 = 8 → y = 1, x = 2 olur.',
+    explanation:
+      'İkinci denklemden x = y + 1 bulunur. Bu birinci denklemde yerine konulursa 2(y+1) + 3y = 8 → 5y + 2 = 8 → y = 1, x = 2 olur.',
     tags: ['Denklem Sistemi', 'Çözüm', 'Cebir'],
   },
   {
     id: 'math_yks_10',
     category: 'Matematik',
-    question: 'Bir sayının %20\'si 40 ise bu sayı kaçtır?',
+    question: "Bir sayının %20'si 40 ise bu sayı kaçtır?",
     answer: '200',
     difficulty: 'easy',
-    explanation: 'Sayının %20\'si 40 ise, sayının tamamı 40 ÷ 0.20 = 200 olur.',
+    explanation: "Sayının %20'si 40 ise, sayının tamamı 40 ÷ 0.20 = 200 olur.",
     tags: ['Yüzde', 'Hesaplama', 'Oran'],
+  },
+  {
+    id: 'math_yks_11',
+    category: 'Matematik',
+    question:
+      "Bir üçgenin alanı 24 cm², tabanı 8 cm ise yüksekliği kaç cm'dir?",
+    answer: '6',
+    difficulty: 'easy',
+    explanation:
+      'Üçgen alanı = (taban × yükseklik) / 2. 24 = (8 × h) / 2 → h = 6 cm olur.',
+    tags: ['Üçgen', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_yks_12',
+    category: 'Matematik',
+    question: 'Bir sayının karesi 81 ise bu sayı kaçtır?',
+    answer: '9 veya -9',
+    difficulty: 'easy',
+    explanation: 'x² = 81 ise x = √81 = 9 veya x = -9 olur.',
+    tags: ['Kare', 'Kök', 'Sayılar'],
+  },
+  {
+    id: 'math_yks_13',
+    category: 'Matematik',
+    question:
+      "Bir dikdörtgenin çevresi 20 cm, uzun kenarı 7 cm ise kısa kenarı kaç cm'dir?",
+    answer: '3',
+    difficulty: 'easy',
+    explanation:
+      'Çevre = 2(a + b). 20 = 2(7 + b) → 10 = 7 + b → b = 3 cm olur.',
+    tags: ['Dikdörtgen', 'Çevre', 'Geometri'],
+  },
+  {
+    id: 'math_yks_14',
+    category: 'Matematik',
+    question: 'Bir sayının 3 katının 5 fazlası 20 ise bu sayı kaçtır?',
+    answer: '5',
+    difficulty: 'easy',
+    explanation: '3x + 5 = 20 → 3x = 15 → x = 5 olur.',
+    tags: ['Denklem', 'Cebir'],
+  },
+  {
+    id: 'math_yks_15',
+    category: 'Matematik',
+    question: "Bir dairenin alanı 36π cm² ise yarıçapı kaç cm'dir?",
+    answer: '6',
+    difficulty: 'medium',
+    explanation: 'Daire alanı = πr². 36π = πr² → r² = 36 → r = 6 cm olur.',
+    tags: ['Daire', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_yks_16',
+    category: 'Matematik',
+    question: "Bir sayının %15'i 30 ise bu sayı kaçtır?",
+    answer: '200',
+    difficulty: 'easy',
+    explanation: "Sayının %15'i 30 ise, sayının tamamı 30 ÷ 0.15 = 200 olur.",
+    tags: ['Yüzde', 'Hesaplama'],
+  },
+  {
+    id: 'math_yks_17',
+    category: 'Matematik',
+    question: 'Bir üçgenin açıları 30°, 60°, 90° ise bu üçgenin türü nedir?',
+    answer: 'Dik üçgen',
+    difficulty: 'easy',
+    explanation: '90° açı olduğu için bu üçgen dik üçgendir.',
+    tags: ['Üçgen', 'Açı', 'Geometri'],
+  },
+  {
+    id: 'math_yks_18',
+    category: 'Matematik',
+    question: 'Bir sayının 2 katının 3 eksiği 11 ise bu sayı kaçtır?',
+    answer: '7',
+    difficulty: 'easy',
+    explanation: '2x - 3 = 11 → 2x = 14 → x = 7 olur.',
+    tags: ['Denklem', 'Cebir'],
+  },
+  {
+    id: 'math_yks_19',
+    category: 'Matematik',
+    question: "Bir karenin çevresi 24 cm ise alanı kaç cm²'dir?",
+    answer: '36',
+    difficulty: 'easy',
+    explanation:
+      'Karenin çevresi = 4a. 24 = 4a → a = 6 cm. Alan = a² = 6² = 36 cm².',
+    tags: ['Kare', 'Çevre', 'Alan', 'Geometri'],
+  },
+  {
+    id: 'math_yks_20',
+    category: 'Matematik',
+    question: 'Bir sayının karesinin 2 katı 50 ise bu sayı kaçtır?',
+    answer: '5',
+    difficulty: 'medium',
+    explanation: '2x² = 50 → x² = 25 → x = 5 olur.',
+    tags: ['Kare', 'Denklem', 'Cebir'],
   },
 ];
 
