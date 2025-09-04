@@ -15,7 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import PastQuestionBadge from '../components/PastQuestionBadge';
 import { QuestionService, QuestionType } from '../services/questionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -276,7 +275,10 @@ const QuestionScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -314,16 +316,6 @@ const QuestionScreen: React.FC = () => {
             </Text>
           </View>
         </View>
-
-        {/* Önceden çıkmış soru badge'i */}
-        {currentQuestion.isPastQuestion && currentQuestion.year && (
-          <View style={styles.pastQuestionContainer}>
-            <PastQuestionBadge year={currentQuestion.year} size='medium' />
-            <Text style={styles.pastQuestionText}>
-              Bu soru {currentQuestion.year} YKS'de çıkmıştır
-            </Text>
-          </View>
-        )}
 
         <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
         <Text style={styles.topicText}>Konu: {currentQuestion.topic}</Text>
@@ -465,6 +457,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
   },
+  scrollContent: {
+    paddingTop: responsiveSize(-8),
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -491,7 +486,7 @@ const styles = StyleSheet.create({
   emptyButton: {
     backgroundColor: colors.primary,
     paddingHorizontal: responsiveSize(30),
-    paddingVertical: responsiveSize(15),
+    paddingVertical: responsiveSize(6),
     borderRadius: responsiveSize(12),
   },
   emptyButtonText: {
@@ -530,8 +525,9 @@ const styles = StyleSheet.create({
   },
   questionCard: {
     backgroundColor: colors.backgroundSecondary,
-    margin: responsiveSize(20),
-    marginTop: responsiveSize(15),
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(-8),
+    marginBottom: responsiveSize(5),
     padding: responsiveSize(20),
     borderRadius: responsiveSize(12),
     ...shadows.medium,
@@ -677,9 +673,11 @@ const styles = StyleSheet.create({
   nextButton: {
     flex: 1,
     backgroundColor: colors.primary,
-    padding: responsiveSize(16),
+    padding: responsiveSize(12),
     borderRadius: responsiveSize(12),
     alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: responsiveSize(0),
     ...shadows.medium,
   },
   nextButtonFullWidth: {
@@ -695,7 +693,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: responsiveSize(20),
-    paddingVertical: responsiveSize(20),
+    paddingVertical: responsiveSize(15),
   },
   progressBar: {
     flex: 1,
@@ -725,6 +723,7 @@ const styles = StyleSheet.create({
     padding: responsiveSize(12),
     borderRadius: responsiveSize(8),
     alignItems: 'center',
+    justifyContent: 'center',
   },
   explanationButtonText: {
     fontSize: responsiveFontSize(16),
@@ -859,24 +858,6 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
     color: colors.textWhite,
-  },
-  pastQuestionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: responsiveSize(15),
-    paddingVertical: responsiveSize(8),
-    paddingHorizontal: responsiveSize(12),
-    backgroundColor: colors.primary + '10',
-    borderRadius: responsiveSize(8),
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-  },
-  pastQuestionText: {
-    fontSize: responsiveFontSize(14),
-    color: colors.primary,
-    fontWeight: '600',
-    marginLeft: responsiveSize(8),
-    flex: 1,
   },
   examTitle: {
     fontSize: responsiveFontSize(16),

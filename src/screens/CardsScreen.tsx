@@ -1063,7 +1063,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: responsiveSize(0),
     paddingTop: responsiveSize(0),
-    marginTop: responsiveSize(5),
+    marginTop: responsiveSize(-20),
   },
   questionContainerCentered: {
     justifyContent: 'center',

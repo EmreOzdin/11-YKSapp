@@ -946,7 +946,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(185),
+    marginTop: responsiveSize(150),
     marginBottom: responsiveSize(2),
     marginHorizontal: responsiveSize(20),
   },
