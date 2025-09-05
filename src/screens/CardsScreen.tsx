@@ -11,6 +11,7 @@ import {
   Alert,
   Animated,
   Dimensions,
+  Easing,
   FlatList,
   Image,
   PanResponder,
@@ -67,6 +68,19 @@ const CardsScreen: React.FC = () => {
 
   // FlatList ref'i
   const categoriesFlatListRef = useRef<FlatList>(null);
+
+  // Animasyon değerlerini sıfırla
+  useEffect(() => {
+    // Animasyonları durdur
+    slideAnim.stopAnimation();
+    scaleAnim.stopAnimation();
+    opacityAnim.stopAnimation();
+
+    // Değerleri sıfırla
+    slideAnim.setValue(0);
+    scaleAnim.setValue(1);
+    opacityAnim.setValue(1);
+  }, [currentCardIndex]);
 
   // Kart kategorileri
   const cardCategories: CardCategory[] = [
@@ -387,21 +401,29 @@ const CardsScreen: React.FC = () => {
         );
       }
 
-      // Sola kaydırma animasyonu - hızlı geçiş
+      // Animasyonları durdur ve sıfırla
+      slideAnim.stopAnimation();
+      scaleAnim.stopAnimation();
+      opacityAnim.stopAnimation();
+
+      // Sola kaydırma animasyonu - çok hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: -screenWidth * 0.8,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
           toValue: 0.9,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
           toValue: 0.3,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
       ]).start(() => {
@@ -409,6 +431,11 @@ const CardsScreen: React.FC = () => {
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
         setShowExplanation(new Set());
+
+        // Animasyonları sıfırla
+        slideAnim.setValue(0);
+        scaleAnim.setValue(1);
+        opacityAnim.setValue(1);
       });
     }
   };
@@ -429,21 +456,29 @@ const CardsScreen: React.FC = () => {
         );
       }
 
-      // Sağa kaydırma animasyonu - hızlı geçiş
+      // Animasyonları durdur ve sıfırla
+      slideAnim.stopAnimation();
+      scaleAnim.stopAnimation();
+      opacityAnim.stopAnimation();
+
+      // Sağa kaydırma animasyonu - çok hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: screenWidth * 0.8,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(scaleAnim, {
           toValue: 0.9,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(opacityAnim, {
           toValue: 0.3,
-          duration: 150,
+          duration: 120,
+          easing: Easing.out(Easing.quad),
           useNativeDriver: true,
         }),
       ]).start(() => {
@@ -451,6 +486,11 @@ const CardsScreen: React.FC = () => {
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
         setShowExplanation(new Set());
+
+        // Animasyonları sıfırla
+        slideAnim.setValue(0);
+        scaleAnim.setValue(1);
+        opacityAnim.setValue(1);
       });
     }
   };
@@ -460,43 +500,46 @@ const CardsScreen: React.FC = () => {
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: (evt, gestureState) => {
       const { dx, dy } = gestureState;
-      return Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10;
+      return Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15;
     },
     onPanResponderMove: (evt, gestureState) => {
       const { dx } = gestureState;
       // Kartı hareket ettir
       slideAnim.setValue(dx);
-      // Kartı küçült
-      const scale = Math.max(0.8, 1 - (Math.abs(dx) / screenWidth) * 0.2);
+      // Kartı küçült - daha az küçülme
+      const scale = Math.max(0.9, 1 - (Math.abs(dx) / screenWidth) * 0.1);
       scaleAnim.setValue(scale);
-      // Opaklığı azalt
-      const opacity = Math.max(0.5, 1 - (Math.abs(dx) / screenWidth) * 0.5);
+      // Opaklığı azalt - daha az soluklaşma
+      const opacity = Math.max(0.7, 1 - (Math.abs(dx) / screenWidth) * 0.3);
       opacityAnim.setValue(opacity);
     },
     onPanResponderRelease: (evt, gestureState) => {
       const { dx, vx } = gestureState;
 
-      // Swipe detection - daha hassas
-      if (dx > 20 || vx > 0.3) {
+      // Swipe detection - daha az hassas, daha güvenilir
+      if (dx > 50 || vx > 0.5) {
         previousCard();
-      } else if (dx < -20 || vx < -0.3) {
+      } else if (dx < -50 || vx < -0.5) {
         nextCard();
       } else {
-        // Geri dön animasyonu - hızlı
+        // Geri dön animasyonu - çok hızlı
         Animated.parallel([
           Animated.timing(slideAnim, {
             toValue: 0,
-            duration: 120,
+            duration: 100,
+            easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
           Animated.timing(scaleAnim, {
             toValue: 1,
-            duration: 120,
+            duration: 100,
+            easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
           Animated.timing(opacityAnim, {
             toValue: 1,
-            duration: 120,
+            duration: 100,
+            easing: Easing.out(Easing.quad),
             useNativeDriver: true,
           }),
         ]).start();

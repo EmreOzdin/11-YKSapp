@@ -78,13 +78,30 @@ export const getAllCardsFromAPI = async (): Promise<MemoryCard[]> => {
   }
 };
 
+// Türkçe kategori isimlerini İngilizce'ye çevir
+const translateCategoryToEnglish = (turkishCategory: string): string => {
+  const categoryMap: { [key: string]: string } = {
+    'Matematik': 'math',
+    'Fizik': 'physics', 
+    'Kimya': 'chemistry',
+    'Biyoloji': 'biology',
+    'Türkçe': 'turkish',
+    'Tarih': 'history'
+  };
+  
+  return categoryMap[turkishCategory] || turkishCategory.toLowerCase();
+};
+
 // Kategoriye göre kartları API'den getir
 export const getCardsByCategoryFromAPI = async (
   category: string
 ): Promise<MemoryCard[]> => {
   try {
+    // Türkçe kategori ismini İngilizce'ye çevir
+    const englishCategory = translateCategoryToEnglish(category);
+
     const response = await apiRequest<CardsResponse>(
-      `/cards/category/${encodeURIComponent(category)}`
+      `/cards/category/${encodeURIComponent(englishCategory)}`
     );
 
     if (!response.success || !response.data) {
@@ -98,6 +115,20 @@ export const getCardsByCategoryFromAPI = async (
   }
 };
 
+// İngilizce kategori isimlerini Türkçe'ye çevir
+const translateCategoryToTurkish = (englishCategory: string): string => {
+  const categoryMap: { [key: string]: string } = {
+    math: 'Matematik',
+    physics: 'Fizik',
+    chemistry: 'Kimya',
+    biology: 'Biyoloji',
+    turkish: 'Türkçe',
+    history: 'Tarih',
+  };
+
+  return categoryMap[englishCategory] || englishCategory;
+};
+
 // Kategori istatistiklerini API'den getir
 export const getCategoryStatsFromAPI = async (): Promise<CardCategory[]> => {
   try {
@@ -107,7 +138,13 @@ export const getCategoryStatsFromAPI = async (): Promise<CardCategory[]> => {
       throw new Error(response.error || 'Failed to fetch category stats');
     }
 
-    return response.data;
+    // İngilizce kategori isimlerini Türkçe'ye çevir
+    const translatedStats = response.data.map(stat => ({
+      ...stat,
+      name: translateCategoryToTurkish(stat.name),
+    }));
+
+    return translatedStats;
   } catch (error) {
     console.error('Error fetching category stats from API:', error);
     throw error;
