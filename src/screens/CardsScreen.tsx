@@ -21,11 +21,26 @@ import {
 } from 'react-native';
 import { CardCategory, MemoryCard } from '../services/asyncStorageService';
 import {
+  checkAPIHealth,
+  getAllCardsHybrid,
+  getCardsByCategoryHybrid,
+  getCategoryStatsHybrid,
+} from '../services/mongoCardsService';
+import {
   getAllQuestionsFromStorage,
-  getCategoryStatsFromStorage,
-  getQuestionsByCategoryFromStorage,
   loadQuestionsToStorage,
 } from '../services/simpleCardsService';
+import {
+  createSessionId,
+  syncLocalInteractionsToAPI,
+  trackCardFlip,
+  trackCardSwipe,
+  trackCardView,
+  trackCategorySelection,
+  trackExplanationView,
+  trackSessionEnd,
+  trackSessionStart,
+} from '../services/userInteractionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -42,6 +57,8 @@ const CardsScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cards, setCards] = useState<MemoryCard[]>([]);
   const [categories, setCategories] = useState<CardCategory[]>([]);
+  const [sessionId, setSessionId] = useState<string>('');
+  const [cardViewStartTime, setCardViewStartTime] = useState<number>(0);
 
   // Animasyon değerleri
   const slideAnim = useRef(new Animated.Value(0)).current;
@@ -101,6 +118,17 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     const initializeCards = async () => {
       try {
+        // Session başlat
+        const newSessionId = createSessionId();
+        setSessionId(newSessionId);
+
+        // Session başlatma etkileşimini takip et (hata olursa devam et)
+        try {
+          await trackSessionStart(newSessionId);
+        } catch (error) {
+          console.warn('⚠️ Session başlatma etkileşimi kaydedilemedi:', error);
+        }
+
         // AsyncStorage'dan soruları kontrol et
         const existingQuestions = await getAllQuestionsFromStorage();
 
@@ -113,6 +141,13 @@ const CardsScreen: React.FC = () => {
 
         // Soruları ve kategorileri yükle
         await loadCategoriesAndCards();
+
+        // Local etkileşimleri senkronize et (hata olursa devam et)
+        try {
+          await syncLocalInteractionsToAPI();
+        } catch (error) {
+          console.warn('⚠️ Local etkileşimler senkronize edilemedi:', error);
+        }
       } catch (error) {
         console.error('❌ Sorular yüklenirken hata:', error);
         // Hata durumunda varsayılan kategorileri kullan
@@ -122,6 +157,17 @@ const CardsScreen: React.FC = () => {
     };
 
     initializeCards();
+
+    // Component unmount olduğunda session'ı bitir
+    return () => {
+      if (sessionId) {
+        try {
+          trackSessionEnd(sessionId);
+        } catch (error) {
+          console.warn('⚠️ Session bitirme etkileşimi kaydedilemedi:', error);
+        }
+      }
+    };
   }, []);
 
   // Tüm kartların sayısını al
@@ -130,39 +176,75 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     const getTotalCardsCount = async () => {
       try {
-        const allQuestions = await getAllQuestionsFromStorage();
+        // Hibrit servis kullanarak toplam kart sayısını al
+        const allQuestions = await getAllCardsHybrid();
         setTotalCardsCount(allQuestions.length);
       } catch (error) {
+        console.error('❌ Toplam kart sayısı alınırken hata:', error);
         // Hata durumunda sessizce devam et
       }
     };
     getTotalCardsCount();
   }, []);
 
-  // Kart değiştiğinde animasyon değerlerini sıfırla
+  // Kart değiştiğinde animasyon değerlerini sıfırla ve kart görüntüleme etkileşimini takip et
   useEffect(() => {
     slideAnim.setValue(0);
     scaleAnim.setValue(1);
     opacityAnim.setValue(1);
-  }, [currentCardIndex]);
+
+    // Kart görüntüleme etkileşimini takip et
+    if (cards.length > 0 && sessionId && currentCardIndex < cards.length) {
+      const currentCard = cards[currentCardIndex];
+      const timeSpent =
+        cardViewStartTime > 0 ? Date.now() - cardViewStartTime : undefined;
+
+      try {
+        trackCardView(
+          sessionId,
+          currentCard.id,
+          currentCardIndex,
+          cards.length,
+          currentCard.difficulty,
+          timeSpent
+        );
+      } catch (error) {
+        console.warn('⚠️ Kart görüntüleme etkileşimi kaydedilemedi:', error);
+      }
+
+      // Yeni kart için görüntüleme zamanını başlat
+      setCardViewStartTime(Date.now());
+    }
+  }, [currentCardIndex, cards, sessionId]);
 
   const loadCategoriesAndCards = async () => {
     try {
       setLoading(true);
 
-      // AsyncStorage'dan tüm soruları al
-      const allQuestions = await getAllQuestionsFromStorage();
+      // API health check
+      const isAPIHealthy = await checkAPIHealth();
+      console.log(
+        '🔍 API Health Check:',
+        isAPIHealthy ? '✅ Healthy' : '❌ Unhealthy'
+      );
 
-      // Kategori istatistiklerini hesapla
-      const categoryStats = getCategoryStatsFromStorage(allQuestions);
+      // Hibrit servis kullanarak tüm kartları al (API öncelikli, fallback AsyncStorage)
+      const allQuestions = await getAllCardsHybrid();
+
+      // Hibrit servis kullanarak kategori istatistiklerini al
+      const categoryStats = await getCategoryStatsHybrid();
       setCategories(categoryStats);
 
       // Soruları ayarla
       setCards(allQuestions);
+
+      console.log(`📊 Toplam ${allQuestions.length} kart yüklendi`);
+      console.log(`📂 ${categoryStats.length} kategori istatistiği alındı`);
     } catch (error) {
+      console.error('❌ Kartlar yüklenirken hata:', error);
       Alert.alert(
         'Hata',
-        'Sorular yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
+        'Kartlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
       );
 
       // Hata durumunda varsayılan kategorileri kullan
@@ -175,10 +257,19 @@ const CardsScreen: React.FC = () => {
   // Kategori seçildiğinde kartları filtrele
   const handleCategorySelect = async (categoryName: string) => {
     try {
+      // Kategori seçimi etkileşimini takip et
+      if (sessionId) {
+        try {
+          await trackCategorySelection(sessionId, categoryName || 'Tümü');
+        } catch (error) {
+          console.warn('⚠️ Kategori seçimi etkileşimi kaydedilemedi:', error);
+        }
+      }
+
       if (categoryName === '') {
-        // Tüm kartları göster
+        // Tüm kartları göster - hibrit servis kullan
         setSelectedCategory(null);
-        const allQuestions = await getAllQuestionsFromStorage();
+        const allQuestions = await getAllCardsHybrid();
         setCards(allQuestions);
 
         // "Tümü" butonunu orta konuma kaydır
@@ -190,10 +281,9 @@ const CardsScreen: React.FC = () => {
           });
         }, 100);
       } else {
-        // Seçilen kategoriye ait kartları al
+        // Seçilen kategoriye ait kartları al - hibrit servis kullan
         setSelectedCategory(categoryName);
-        const categoryQuestions =
-          await getQuestionsByCategoryFromStorage(categoryName);
+        const categoryQuestions = await getCardsByCategoryHybrid(categoryName);
         setCards(categoryQuestions);
 
         // Seçilen kategoriyi orta konuma kaydır
@@ -213,7 +303,8 @@ const CardsScreen: React.FC = () => {
       setFlippedCards(new Set());
       setShowExplanation(new Set());
     } catch (error) {
-      Alert.alert('Hata', 'Sorular yüklenirken bir hata oluştu.');
+      console.error('❌ Kategori seçimi sırasında hata:', error);
+      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu.');
     }
   };
 
@@ -231,30 +322,71 @@ const CardsScreen: React.FC = () => {
   };
 
   // Kartı çevir
-  const flipCard = (cardId: string) => {
+  const flipCard = async (cardId: string) => {
     const newFlippedCards = new Set(flippedCards);
-    if (newFlippedCards.has(cardId)) {
+    const isCurrentlyFlipped = newFlippedCards.has(cardId);
+
+    if (isCurrentlyFlipped) {
       newFlippedCards.delete(cardId);
     } else {
       newFlippedCards.add(cardId);
+
+      // Kart çevirme etkileşimini takip et
+      if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
+        const currentCard = cards[currentCardIndex];
+        await trackCardFlip(
+          sessionId,
+          currentCard.id,
+          currentCardIndex,
+          cards.length,
+          currentCard.difficulty
+        );
+      }
     }
     setFlippedCards(newFlippedCards);
   };
 
   // Açıklamayı göster/gizle
-  const toggleExplanation = (cardId: string) => {
+  const toggleExplanation = async (cardId: string) => {
     const newShowExplanation = new Set(showExplanation);
-    if (newShowExplanation.has(cardId)) {
+    const isCurrentlyShowing = newShowExplanation.has(cardId);
+
+    if (isCurrentlyShowing) {
       newShowExplanation.delete(cardId);
     } else {
       newShowExplanation.add(cardId);
+
+      // Açıklama görüntüleme etkileşimini takip et
+      if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
+        const currentCard = cards[currentCardIndex];
+        await trackExplanationView(
+          sessionId,
+          currentCard.id,
+          currentCardIndex,
+          cards.length,
+          currentCard.difficulty
+        );
+      }
     }
     setShowExplanation(newShowExplanation);
   };
 
   // Sonraki kart
-  const nextCard = () => {
+  const nextCard = async () => {
     if (currentCardIndex < cards.length - 1) {
+      // Kart kaydırma etkileşimini takip et
+      if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
+        const currentCard = cards[currentCardIndex];
+        await trackCardSwipe(
+          sessionId,
+          currentCard.id,
+          currentCardIndex,
+          cards.length,
+          currentCard.difficulty,
+          'right'
+        );
+      }
+
       // Sola kaydırma animasyonu - hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {
@@ -282,8 +414,21 @@ const CardsScreen: React.FC = () => {
   };
 
   // Önceki kart
-  const previousCard = () => {
+  const previousCard = async () => {
     if (currentCardIndex > 0) {
+      // Kart kaydırma etkileşimini takip et
+      if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
+        const currentCard = cards[currentCardIndex];
+        await trackCardSwipe(
+          sessionId,
+          currentCard.id,
+          currentCardIndex,
+          cards.length,
+          currentCard.difficulty,
+          'left'
+        );
+      }
+
       // Sağa kaydırma animasyonu - hızlı geçiş
       Animated.parallel([
         Animated.timing(slideAnim, {

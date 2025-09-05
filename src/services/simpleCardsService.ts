@@ -1,29 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MemoryCard } from './asyncStorageService';
-import { generateAllCards } from './generateCards';
 
 const CARDS_STORAGE_KEY = 'yks_cards_data';
 
-// Soruları AsyncStorage'a yükle
+// Soruları AsyncStorage'a yükle (MongoDB kullanıldığı için artık gerekli değil)
 export const loadQuestionsToStorage = async () => {
   try {
-    console.log('Sorular AsyncStorage\'a yükleniyor...');
-    
-    // Yeni soruları oluştur
-    const allQuestions = generateAllCards();
-    
-    // Soruları AsyncStorage'a kaydet
-    await AsyncStorage.setItem(CARDS_STORAGE_KEY, JSON.stringify(allQuestions));
-    
-    console.log(`✅ ${allQuestions.length} soru başarıyla AsyncStorage'a yüklendi!`);
-    
-    // Kategori istatistiklerini göster
-    const stats = getCategoryStatsFromStorage(allQuestions);
-    console.log('📊 Kategori dağılımı:');
-    stats.forEach(category => {
-      console.log(`   ${category.name}: ${category.count} soru`);
-    });
-    
+    console.log(
+      '⚠️ AsyncStorage yükleme artık kullanılmıyor - MongoDB kullanılıyor'
+    );
     return true;
   } catch (error) {
     console.error('❌ Sorular yüklenirken hata oluştu:', error);
