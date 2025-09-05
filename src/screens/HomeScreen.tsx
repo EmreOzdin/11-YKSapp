@@ -697,12 +697,71 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.subjectGridLabel}>Sosyal Bilimler</Text>
           </TouchableOpacity>
         </View>
-        {/* Video kurs */}
+        {/* Çıkmış Sorular */}
+        <View style={styles.sectionRowPast}>
+          <Text style={styles.sectionTitle}>Çıkmış Sorular</Text>
+        </View>
+        {/* Çıkmış Sorular Grid */}
+        <View
+          style={[styles.sınavDenemesiGrid, { marginTop: responsiveSize(5) }]}
+        >
+          {/* TYT Past */}
+          <TouchableOpacity
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#e0f7fa' },
+            ]}
+            onPress={() => navigation.navigate('TYT Past')}
+          >
+            <Image
+              source={{
+                uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp',
+              }}
+              style={styles.examIcon}
+            />
+            <Text style={styles.subjectGridLabel}>TYT</Text>
+          </TouchableOpacity>
+          {/* AYT Past */}
+          <TouchableOpacity
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#f3e5f5' },
+            ]}
+            onPress={() => navigation.navigate('AYT Past')}
+          >
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png',
+              }}
+              style={styles.examIcon}
+            />
+            <Text style={styles.subjectGridLabel}>AYT</Text>
+          </TouchableOpacity>
+          {/* YDT Past */}
+          <TouchableOpacity
+            style={[
+              styles.sınavDenemesiGridItem,
+              { backgroundColor: '#fffde7' },
+            ]}
+            onPress={() => navigation.navigate('YDT Past')}
+          >
+            <Image
+              source={{
+                uri: 'https://img.icons8.com/3d-fluency/94/language.png',
+              }}
+              style={styles.examIcon}
+            />
+            <Text style={styles.subjectGridLabel}>YDT</Text>
+          </TouchableOpacity>
+        </View>
+        {/* Sınav Denemesi */}
         <View style={styles.sectionRowExam}>
           <Text style={styles.sectionTitle}>Sınav Denemesi</Text>
         </View>
         {/* Sınav Denemesi Grid */}
-        <View style={styles.sınavDenemesiGrid}>
+        <View
+          style={[styles.sınavDenemesiGrid, { marginTop: responsiveSize(5) }]}
+        >
           {/* TYT */}
           <TouchableOpacity
             style={[
@@ -741,61 +800,6 @@ const HomeScreen: React.FC = () => {
           >
             <Image
               source={require('../../assets/ydt.png')}
-              style={styles.examIcon}
-            />
-            <Text style={styles.subjectGridLabel}>YDT</Text>
-          </TouchableOpacity>
-        </View>
-        {/* Video kurs */}
-        <View style={styles.sectionRowPast}>
-          <Text style={styles.sectionTitle}>Çıkmış Sorular</Text>
-        </View>
-        {/* Sınav Denemesi Grid */}
-        <View style={styles.sınavDenemesiGrid}>
-          {/* TYT */}
-          <TouchableOpacity
-            style={[
-              styles.sınavDenemesiGridItem,
-              { backgroundColor: '#e0f7fa' },
-            ]}
-            onPress={() => navigation.navigate('TYT Past')}
-          >
-            <Image
-              source={{
-                uri: 'https://threedio-prod-var-cdn.icons8.com/tr/preview_sets/previews/a4Ynggh7Gc4mgfHp.webp',
-              }}
-              style={styles.examIcon}
-            />
-            <Text style={styles.subjectGridLabel}>TYT</Text>
-          </TouchableOpacity>
-          {/* AYT */}
-          <TouchableOpacity
-            style={[
-              styles.sınavDenemesiGridItem,
-              { backgroundColor: '#f3e5f5' },
-            ]}
-            onPress={() => navigation.navigate('AYT Past')}
-          >
-            <Image
-              source={{
-                uri: 'https://img.icons8.com/3d-fluency/94/graduation-cap.png',
-              }}
-              style={styles.examIcon}
-            />
-            <Text style={styles.subjectGridLabel}>AYT</Text>
-          </TouchableOpacity>
-          {/* YDT */}
-          <TouchableOpacity
-            style={[
-              styles.sınavDenemesiGridItem,
-              { backgroundColor: '#fffde7' },
-            ]}
-            onPress={() => navigation.navigate('YDT Past')}
-          >
-            <Image
-              source={{
-                uri: 'https://img.icons8.com/3d-fluency/94/language.png',
-              }}
               style={styles.examIcon}
             />
             <Text style={styles.subjectGridLabel}>YDT</Text>
@@ -930,7 +934,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(180),
+    marginTop: responsiveSize(160),
     marginBottom: responsiveSize(-20),
     marginHorizontal: responsiveSize(20),
   },
@@ -938,7 +942,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(185),
+    marginTop: responsiveSize(10),
     marginBottom: responsiveSize(2),
     marginHorizontal: responsiveSize(20),
   },
@@ -946,7 +950,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: responsiveSize(150),
+    marginTop: responsiveSize(10),
     marginBottom: responsiveSize(2),
     marginHorizontal: responsiveSize(20),
   },
@@ -1073,8 +1077,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: responsiveSize(20),
-    marginTop: responsiveSize(30),
-    marginBottom: responsiveSize(-170),
+    marginTop: responsiveSize(25),
+    marginBottom: responsiveSize(20),
   },
   subjectGridItem: {
     flex: 1,
@@ -1093,7 +1097,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginHorizontal: responsiveSize(20),
     marginTop: responsiveSize(8),
-    marginBottom: responsiveSize(-170),
+    marginBottom: responsiveSize(20),
   },
   sınavDenemesiGridItem: {
     width: responsiveSize(100),
