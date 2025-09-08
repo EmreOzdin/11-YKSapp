@@ -2,8 +2,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp, ParamListBase, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  FlatList,
   Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -388,58 +388,93 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     );
   }
 
-  // Sınav ekranı
+  // Sınav ekranı - QuestionScreen ile birebir aynı
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.examHeader}>
-        <View style={styles.headerLeft}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Header */}
+        <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <MaterialCommunityIcons
-              name='arrow-left'
-              size={24}
-              color={colors.textPrimary}
-            />
+            <Text style={styles.backText}>{'<'} Geri</Text>
           </TouchableOpacity>
-          <Text style={styles.examHeaderTitle}>{subject}</Text>
-        </View>
 
-        <View
-          style={[
-            styles.timerContainer,
-            timeLeft < 300 && styles.timerWarning, // 5 dakikadan az kaldığında kırmızı
-          ]}
-        >
-          <MaterialCommunityIcons
-            name='clock-outline'
-            size={24}
-            color={timeLeft < 300 ? colors.error : colors.primary}
-          />
-          <Text
+          <Text style={styles.examTitle}>{subject} Sınavı</Text>
+
+          <View
             style={[
-              styles.timerText,
-              timeLeft < 300 && { color: colors.error },
+              styles.timerContainer,
+              timeLeft < 300 && styles.timerWarning,
             ]}
           >
-            {formatTime(timeLeft)}
+            <MaterialCommunityIcons
+              name='clock-outline'
+              size={20}
+              color={timeLeft < 300 ? colors.error : colors.primary}
+            />
+            <Text
+              style={[
+                styles.timerText,
+                timeLeft < 300 && { color: colors.error },
+              ]}
+            >
+              {formatTime(timeLeft)}
+            </Text>
+          </View>
+        </View>
+
+        {/* Question Card */}
+        <View style={styles.questionCard}>
+          <View style={styles.questionHeader}>
+            <Text style={styles.questionTitle}>
+              Soru #{currentQuestionIndex + 1}
+            </Text>
+            <View style={styles.questionMeta}></View>
+          </View>
+
+          <Text style={styles.questionText}>
+            {questions[currentQuestionIndex]?.questionText}
           </Text>
         </View>
-      </View>
 
-      {/* Soru Listesi */}
-      <FlatList
-        data={questions}
-        renderItem={renderQuestion}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
-        style={styles.questionsList}
-      />
+        {/* Options */}
+        <View style={styles.optionsContainer}>
+          {questions[currentQuestionIndex]?.options.map((option, index) => {
+            const optionLetter = String.fromCharCode(65 + index);
+            const userAnswer = userAnswers[currentQuestionIndex];
+
+            // Eğer seçenekte A), B), C), D) harfleri yoksa ekle
+            const formattedOption = option.startsWith(optionLetter + ')')
+              ? option
+              : `${optionLetter}) ${option}`;
+
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.optionButton,
+                  userAnswer === option && styles.selectedOption,
+                ]}
+                onPress={() => selectAnswer(option)}
+              >
+                <Text
+                  style={[
+                    styles.optionText,
+                    userAnswer === option && styles.selectedOptionText,
+                  ]}
+                >
+                  {formattedOption}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
 
       {/* Navigation Buttons */}
       <View style={styles.navigationContainer}>
@@ -601,10 +636,64 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingTop: responsiveSize(-8),
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: responsiveSize(20),
+    paddingTop: responsiveSize(20),
+    paddingBottom: responsiveSize(20),
+  },
+  examTitle: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.gradients.blue[0],
+    textAlign: 'center',
+    flex: 1,
+  },
+  questionCounter: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.gradients.blue[0],
+    marginBottom: responsiveSize(5),
+  },
+  difficultyText: {
+    fontSize: responsiveFontSize(12),
+    fontWeight: 'bold',
+    color: colors.textSecondary,
+  },
+  topicText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+  },
+  progressContainer: {
+    paddingHorizontal: responsiveSize(20),
+    paddingVertical: responsiveSize(20),
+  },
+  progressBar: {
+    height: responsiveSize(8),
+    backgroundColor: colors.borderLight,
+    borderRadius: responsiveSize(4),
+    marginBottom: responsiveSize(10),
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: responsiveSize(4),
+  },
+  progressText: {
+    fontSize: responsiveFontSize(14),
+    color: colors.textSecondary,
+    textAlign: 'center',
+  },
   backButton: {
-    position: 'absolute',
-    top: responsiveSize(20),
-    left: responsiveSize(20),
     padding: responsiveSize(8),
     borderRadius: responsiveSize(8),
     ...shadows.small,
@@ -723,18 +812,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primary + '20',
-    paddingHorizontal: responsiveSize(15),
-    paddingVertical: responsiveSize(8),
-    borderRadius: responsiveSize(20),
-    borderWidth: 2,
+    paddingHorizontal: responsiveSize(10),
+    paddingVertical: responsiveSize(6),
+    borderRadius: responsiveSize(15),
+    borderWidth: 1,
     borderColor: colors.primary,
     ...shadows.small,
   },
   timerText: {
-    fontSize: responsiveFontSize(18),
+    fontSize: responsiveFontSize(14),
     fontWeight: 'bold',
     color: colors.primary,
-    marginLeft: responsiveSize(8),
+    marginLeft: responsiveSize(6),
   },
   timerWarning: {
     color: colors.error,
