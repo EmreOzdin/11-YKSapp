@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ApiService } from '../services/apiService';
+import ApiService from '../services/apiService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -51,8 +51,7 @@ const TytPastScreen: React.FC = () => {
     setLoading(true);
     try {
       // MongoDB'den o yıla ait TYT sorularını getir
-      const apiService = new ApiService();
-      const questions = await apiService.getQuestionsByYearAndExamType(
+      const questions = await ApiService.getQuestionsByYearAndExamType(
         year,
         'TYT'
       );
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
   },
   yearCard: {
     width: '48%',
-    backgroundColor: colors.white,
+    backgroundColor: colors.cardBackground,
     borderRadius: responsiveSize(16),
     padding: responsiveSize(16),
     marginBottom: responsiveSize(16),

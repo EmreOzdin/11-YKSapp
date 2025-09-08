@@ -2,18 +2,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationProp, ParamListBase, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-    FlatList,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { QuestionService, QuestionType } from '../services/questionService';
-import {
-    responsiveFontSize,
-    responsiveSize
-} from '../utils/responsive';
+import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
 interface ExamResult {
@@ -38,7 +35,10 @@ interface ExamScreenProps {
 const ExamScreen: React.FC<ExamScreenProps> = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const route = useRoute();
-  const { subject, examType } = route.params as { subject: string; examType?: 'TYT' | 'AYT' | 'YDT' };
+  const { subject, examType } = route.params as {
+    subject: string;
+    examType?: 'TYT' | 'AYT' | 'YDT';
+  };
 
   const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -55,18 +55,24 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
   // Sınav başlatma - Garantili çalışan versiyon
   const startExam = useCallback(async () => {
     setLoading(true);
-    
+
     // Direkt örnek sorularla başla - API'yi arka planda dene
-    const sampleQuestions = QuestionService.generateSampleQuestions(subject, examType);
+    const sampleQuestions = QuestionService.generateSampleQuestions(
+      subject,
+      examType
+    );
     setQuestions(sampleQuestions.slice(0, 45));
     setIsExamStarted(true);
     setTimeLeft(45 * 60);
     setLoading(false);
-    
+
     // Arka planda API'den gerçek soruları dene
     setTimeout(async () => {
       try {
-        const realQuestions = await QuestionService.getExamQuestionsBySubject(subject, examType);
+        const realQuestions = await QuestionService.getExamQuestionsBySubject(
+          subject,
+          examType
+        );
         if (realQuestions.length > 0) {
           setQuestions(realQuestions);
         }
@@ -74,7 +80,6 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
         console.log('API soruları yüklenemedi, örnek sorularla devam ediliyor');
       }
     }, 100);
-    
   }, [subject, examType, navigation]);
 
   // Timer efekti
@@ -94,25 +99,6 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
       }
     };
   }, [isExamStarted, timeLeft, isExamFinished]);
-
-  // Sınavı bitirme
-  const finishExam = useCallback(() => {
-    console.log('Sınav bitiriliyor...');
-    
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    // Sonuçları hesapla ve modal'ı aç
-    const result = calculateExamResult();
-    console.log('Sınav sonuçları:', result);
-    setExamResult(result);
-    setShowResultModal(true);
-    console.log('Modal açılıyor...');
-    
-    // Sınav durumunu güncelle
-    setIsExamFinished(true);
-  }, [questions, userAnswers, timeLeft, calculateExamResult]);
 
   // Sınav sonuçlarını hesaplama
   const calculateExamResult = useCallback((): ExamResult => {
@@ -134,7 +120,7 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
 
     const score = correctAnswers * 4 - wrongAnswers; // YKS puanlama sistemi
     const percentage = (correctAnswers / totalQuestions) * 100;
-    const timeSpent = 45 - (timeLeft / 60); // Dakika cinsinden
+    const timeSpent = 45 - timeLeft / 60; // Dakika cinsinden
 
     return {
       totalQuestions,
@@ -147,13 +133,35 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     };
   }, [questions, userAnswers, timeLeft]);
 
+  // Sınavı bitirme
+  const finishExam = useCallback(() => {
+    console.log('Sınav bitiriliyor...');
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    // Sonuçları hesapla ve modal'ı aç
+    const result = calculateExamResult();
+    console.log('Sınav sonuçları:', result);
+    setExamResult(result);
+    setShowResultModal(true);
+    console.log('Modal açılıyor...');
+
+    // Sınav durumunu güncelle
+    setIsExamFinished(true);
+  }, [calculateExamResult]);
+
   // Cevap seçme
-  const selectAnswer = useCallback((answer: string) => {
-    setUserAnswers(prev => ({
-      ...prev,
-      [currentQuestionIndex]: answer,
-    }));
-  }, [currentQuestionIndex]);
+  const selectAnswer = useCallback(
+    (answer: string) => {
+      setUserAnswers(prev => ({
+        ...prev,
+        [currentQuestionIndex]: answer,
+      }));
+    },
+    [currentQuestionIndex]
+  );
 
   // Sonraki soru
   const nextQuestion = useCallback(() => {
@@ -182,99 +190,183 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     navigation.goBack();
   }, [navigation]);
 
-
   // Soru kartı render
-  const renderQuestion = useCallback(({ item, index }: { item: QuestionType; index: number }) => {
-    const isCurrentQuestion = index === currentQuestionIndex;
-    const userAnswer = userAnswers[index];
+  const renderQuestion = useCallback(
+    ({ item, index }: { item: QuestionType; index: number }) => {
+      const isCurrentQuestion = index === currentQuestionIndex;
+      const userAnswer = userAnswers[index];
 
-    if (!isCurrentQuestion) return null;
+      if (!isCurrentQuestion) return null;
 
-    return (
-      <View style={styles.questionContainer}>
-        <View style={styles.questionHeader}>
-          <Text style={styles.questionNumber}>
-            Soru {index + 1} / {questions.length}
-          </Text>
-          <Text style={styles.subjectLabel}>{subject}</Text>
+      return (
+        <View style={styles.questionCard}>
+          <View style={styles.questionHeader}>
+            <Text style={styles.questionTitle}>
+              Soru {index + 1} / {questions.length}
+            </Text>
+            <View style={styles.questionMeta}>
+              <Text style={styles.subjectText}>{subject}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.questionText}>{item.questionText}</Text>
+
+          <View style={styles.optionsContainer}>
+            {item.options.map((option, optionIndex) => {
+              const optionLetter = String.fromCharCode(65 + optionIndex); // A, B, C, D
+              return (
+                <TouchableOpacity
+                  key={optionIndex}
+                  style={[
+                    styles.optionButton,
+                    userAnswer === option && styles.selectedOption,
+                  ]}
+                  onPress={() => selectAnswer(option)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.optionLetter}>{optionLetter})</Text>
+                  <Text
+                    style={[
+                      styles.optionText,
+                      userAnswer === option && styles.selectedOptionText,
+                    ]}
+                  >
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
-
-        <Text style={styles.questionText}>{item.questionText}</Text>
-
-        <View style={styles.optionsContainer}>
-          {item.options.map((option, optionIndex) => (
-            <TouchableOpacity
-              key={optionIndex}
-              style={[
-                styles.optionButton,
-                userAnswer === option && styles.selectedOption,
-              ]}
-              onPress={() => selectAnswer(option)}
-              activeOpacity={0.7}
-            >
-              <Text style={[
-                styles.optionText,
-                userAnswer === option && styles.selectedOptionText,
-              ]}>
-                {option}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    );
-  }, [currentQuestionIndex, questions.length, subject, userAnswers, selectAnswer]);
+      );
+    },
+    [currentQuestionIndex, questions.length, subject, userAnswers, selectAnswer]
+  );
 
   // Sınav başlatma ekranı
   if (!isExamStarted && !loading) {
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>{subject} Sınavı</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Text style={styles.backText}>{'<'} Geri</Text>
+        </TouchableOpacity>
 
-        <View style={styles.startExamContainer}>
-          <View style={styles.examInfoCard}>
-            <MaterialCommunityIcons
-              name="school"
-              size={responsiveSize(60)}
-              color={colors.primary}
-              style={styles.examIcon}
-            />
-            <Text style={styles.examTitle}>{subject} Sınavı</Text>
-            <Text style={styles.examDescription}>
-              Bu sınavda {questions.length} soru bulunmaktadır.
-            </Text>
-            
-            <View style={styles.examDetails}>
-              <View style={styles.detailItem}>
-                <MaterialCommunityIcons name="clock-outline" size={20} color={colors.textSecondary} />
-                <Text style={styles.detailText}>45 dakika</Text>
-              </View>
-              <View style={styles.detailItem}>
-                <MaterialCommunityIcons name="help-circle-outline" size={20} color={colors.textSecondary} />
-                <Text style={styles.detailText}>{questions.length} soru</Text>
-              </View>
-              <View style={styles.detailItem}>
-                <MaterialCommunityIcons name="calculator" size={20} color={colors.textSecondary} />
-                <Text style={styles.detailText}>4 puan / doğru</Text>
-              </View>
-            </View>
+        <View style={styles.content}>
+          <Text style={styles.title}>{subject}</Text>
+          <Text style={styles.subtitle}>
+            {subject === 'Fen Bilimleri'
+              ? 'Fizik, Kimya, Biyoloji'
+              : subject === 'Sosyal Bilimler'
+                ? 'Tarih, Coğrafya, Felsefe, Din Kültürü'
+                : subject === 'Türkçe'
+                  ? 'Dil Bilgisi, Anlam Bilgisi'
+                  : subject === 'Matematik'
+                    ? 'Temel Matematik, Problem Çözme'
+                    : subject}
+          </Text>
 
-            <TouchableOpacity
-              style={styles.startButton}
-              onPress={startExam}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.startButtonText}>Sınavı Başlat</Text>
-            </TouchableOpacity>
+          <View style={styles.infoCard}>
+            {subject === 'Fen Bilimleri' ? (
+              <>
+                <Text style={styles.infoTitle}>
+                  📚 YKS Fen Bilimleri Hakkında
+                </Text>
+                <Text style={styles.infoText}>
+                  YKS sınavında Fen Bilimleri bölümü 40 sorudan oluşur ve 45
+                  dakika süre verilir.
+                </Text>
+                <Text style={styles.infoText}>
+                  • Fizik: 14 soru (Mekanik, Elektrik, Manyetizma, Optik, Modern
+                  Fizik)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Kimya: 13 soru (Genel Kimya, Organik Kimya, İnorganik Kimya)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Biyoloji: 13 soru (Hücre, Genetik, Ekoloji, İnsan
+                  Fizyolojisi)
+                </Text>
+                <Text style={styles.infoText}>
+                  Her doğru cevap 4 puan, her yanlış cevap -1 puan değerindedir.
+                </Text>
+              </>
+            ) : subject === 'Sosyal Bilimler' ? (
+              <>
+                <Text style={styles.infoTitle}>
+                  📚 YKS Sosyal Bilimler Hakkında
+                </Text>
+                <Text style={styles.infoText}>
+                  YKS sınavında Sosyal Bilimler bölümü 40 sorudan oluşur ve 45
+                  dakika süre verilir.
+                </Text>
+                <Text style={styles.infoText}>
+                  • Tarih: 15 soru (Türk Tarihi, Dünya Tarihi, İnkılap Tarihi)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Coğrafya: 12 soru (Fiziki Coğrafya, Beşeri Coğrafya, Türkiye
+                  Coğrafyası)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Felsefe: 8 soru (Felsefe, Psikoloji, Sosyoloji, Mantık)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Din Kültürü: 5 soru (İslam Dini, Ahlak, Kültür)
+                </Text>
+                <Text style={styles.infoText}>
+                  Her doğru cevap 4 puan, her yanlış cevap -1 puan değerindedir.
+                </Text>
+              </>
+            ) : subject === 'Türkçe' ? (
+              <>
+                <Text style={styles.infoTitle}>📚 YKS Türkçe Hakkında</Text>
+                <Text style={styles.infoText}>
+                  YKS sınavında Türkçe bölümü 40 sorudan oluşur ve 45 dakika
+                  süre verilir.
+                </Text>
+                <Text style={styles.infoText}>
+                  • Dil Bilgisi: 8 soru (Ses Bilgisi, Kelime Bilgisi, Cümle
+                  Bilgisi)
+                </Text>
+                <Text style={styles.infoText}>
+                  • Anlam Bilgisi: 32 soru (Sözcükte Anlam, Cümlede Anlam,
+                  Paragraf)
+                </Text>
+                <Text style={styles.infoText}>
+                  Her doğru cevap 4 puan, her yanlış cevap -1 puan değerindedir.
+                </Text>
+              </>
+            ) : subject === 'Matematik' ? (
+              <>
+                <Text style={styles.infoTitle}>📚 YKS Matematik Hakkında</Text>
+                <Text style={styles.infoText}>
+                  YKS sınavında Matematik bölümü 40 sorudan oluşur ve 45 dakika
+                  süre verilir.
+                </Text>
+                <Text style={styles.infoText}>
+                  • Temel Matematik: Sayılar, Cebir, Geometri, Veri Analizi
+                </Text>
+                <Text style={styles.infoText}>
+                  • Problem Çözme: Günlük hayat problemleri, mantık soruları
+                </Text>
+                <Text style={styles.infoText}>
+                  Her doğru cevap 4 puan, her yanlış cevap -1 puan değerindedir.
+                </Text>
+              </>
+            ) : null}
           </View>
+
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={startExam}
+            disabled={loading}
+          >
+            <Text style={styles.startButtonText}>
+              {loading ? 'Yükleniyor...' : 'Sınavı Başlat'}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -285,7 +377,11 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <MaterialCommunityIcons name="loading" size={40} color={colors.primary} />
+          <MaterialCommunityIcons
+            name='loading'
+            size={40}
+            color={colors.primary}
+          />
           <Text style={styles.loadingText}>Sorular yükleniyor...</Text>
         </View>
       </View>
@@ -302,17 +398,32 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
             style={styles.backButton}
             onPress={() => navigation.goBack()}
           >
-            <MaterialCommunityIcons name="arrow-left" size={24} color={colors.textPrimary} />
+            <MaterialCommunityIcons
+              name='arrow-left'
+              size={24}
+              color={colors.textPrimary}
+            />
           </TouchableOpacity>
           <Text style={styles.examHeaderTitle}>{subject}</Text>
         </View>
-        
-        <View style={styles.timerContainer}>
-          <MaterialCommunityIcons name="clock-outline" size={20} color={colors.error} />
-          <Text style={[
-            styles.timerText,
-            timeLeft < 300 && styles.timerWarning // 5 dakikadan az kaldığında kırmızı
-          ]}>
+
+        <View
+          style={[
+            styles.timerContainer,
+            timeLeft < 300 && styles.timerWarning, // 5 dakikadan az kaldığında kırmızı
+          ]}
+        >
+          <MaterialCommunityIcons
+            name='clock-outline'
+            size={24}
+            color={timeLeft < 300 ? colors.error : colors.primary}
+          />
+          <Text
+            style={[
+              styles.timerText,
+              timeLeft < 300 && { color: colors.error },
+            ]}
+          >
             {formatTime(timeLeft)}
           </Text>
         </View>
@@ -340,7 +451,11 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
           onPress={prevQuestion}
           disabled={currentQuestionIndex === 0}
         >
-          <MaterialCommunityIcons name="chevron-left" size={24} color={colors.textPrimary} />
+          <MaterialCommunityIcons
+            name='chevron-left'
+            size={24}
+            color={colors.textPrimary}
+          />
           <Text style={styles.navButtonText}>Önceki</Text>
         </TouchableOpacity>
 
@@ -356,30 +471,31 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
             onPress={finishExam}
           >
             <Text style={styles.finishButtonText}>Bitir</Text>
-            <MaterialCommunityIcons name="check" size={24} color={colors.textWhite} />
+            <MaterialCommunityIcons
+              name='check'
+              size={24}
+              color={colors.textWhite}
+            />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={nextQuestion}
-          >
+          <TouchableOpacity style={styles.navButton} onPress={nextQuestion}>
             <Text style={styles.navButtonText}>Sonraki</Text>
-            <MaterialCommunityIcons name="chevron-right" size={24} color={colors.textPrimary} />
+            <MaterialCommunityIcons
+              name='chevron-right'
+              size={24}
+              color={colors.textPrimary}
+            />
           </TouchableOpacity>
         )}
       </View>
 
       {/* Sonuç Modalı */}
-      <Modal
-        visible={showResultModal}
-        animationType="slide"
-        transparent
-      >
+      <Modal visible={showResultModal} animationType='slide' transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.resultModal}>
             <View style={styles.resultHeader}>
               <MaterialCommunityIcons
-                name="chart-line"
+                name='chart-line'
                 size={responsiveSize(50)}
                 color={colors.primary}
               />
@@ -391,15 +507,21 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
               <View style={styles.resultContent}>
                 <View style={styles.resultStats}>
                   <View style={styles.statItem}>
-                    <Text style={styles.statValue}>{examResult.correctAnswers}</Text>
+                    <Text style={styles.statValue}>
+                      {examResult.correctAnswers}
+                    </Text>
                     <Text style={styles.statLabel}>Doğru</Text>
                   </View>
                   <View style={styles.statItem}>
-                    <Text style={styles.statValue}>{examResult.wrongAnswers}</Text>
+                    <Text style={styles.statValue}>
+                      {examResult.wrongAnswers}
+                    </Text>
                     <Text style={styles.statLabel}>Yanlış</Text>
                   </View>
                   <View style={styles.statItem}>
-                    <Text style={styles.statValue}>{examResult.emptyAnswers}</Text>
+                    <Text style={styles.statValue}>
+                      {examResult.emptyAnswers}
+                    </Text>
                     <Text style={styles.statLabel}>Boş</Text>
                   </View>
                 </View>
@@ -414,27 +536,45 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
 
                 <View style={styles.detailedStats}>
                   <View style={styles.detailRow}>
-                    <MaterialCommunityIcons name="check-circle" size={20} color={colors.success} />
-                    <Text style={styles.detailText}>
-                      {examResult.correctAnswers} doğru cevap ({examResult.correctAnswers * 4} puan)
+                    <MaterialCommunityIcons
+                      name='check-circle'
+                      size={20}
+                      color={colors.success}
+                    />
+                    <Text style={styles.modalDetailText}>
+                      {examResult.correctAnswers} doğru cevap (
+                      {examResult.correctAnswers * 4} puan)
                     </Text>
                   </View>
                   <View style={styles.detailRow}>
-                    <MaterialCommunityIcons name="close-circle" size={20} color={colors.error} />
-                    <Text style={styles.detailText}>
-                      {examResult.wrongAnswers} yanlış cevap (-{examResult.wrongAnswers} puan)
+                    <MaterialCommunityIcons
+                      name='close-circle'
+                      size={20}
+                      color={colors.error}
+                    />
+                    <Text style={styles.modalDetailText}>
+                      {examResult.wrongAnswers} yanlış cevap (-
+                      {examResult.wrongAnswers} puan)
                     </Text>
                   </View>
                   <View style={styles.detailRow}>
-                    <MaterialCommunityIcons name="help-circle" size={20} color={colors.textSecondary} />
-                    <Text style={styles.detailText}>
+                    <MaterialCommunityIcons
+                      name='help-circle'
+                      size={20}
+                      color={colors.textSecondary}
+                    />
+                    <Text style={styles.modalDetailText}>
                       {examResult.emptyAnswers} boş bırakılan soru
                     </Text>
                   </View>
                 </View>
 
                 <View style={styles.timeInfo}>
-                  <MaterialCommunityIcons name="clock-outline" size={20} color={colors.textSecondary} />
+                  <MaterialCommunityIcons
+                    name='clock-outline'
+                    size={20}
+                    color={colors.textSecondary}
+                  />
                   <Text style={styles.timeText}>
                     Kullanılan süre: {examResult.timeSpent.toFixed(1)} dakika
                   </Text>
@@ -459,54 +599,71 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: responsiveSize(20),
-    paddingTop: responsiveSize(20),
-    paddingBottom: responsiveSize(10),
+    backgroundColor: colors.backgroundTertiary,
   },
   backButton: {
+    position: 'absolute',
+    top: responsiveSize(20),
+    left: responsiveSize(20),
     padding: responsiveSize(8),
-    marginRight: responsiveSize(12),
+    borderRadius: responsiveSize(8),
+    ...shadows.small,
   },
-  headerTitle: {
-    fontSize: responsiveFontSize(20),
+  backText: {
+    fontSize: responsiveFontSize(16),
+    color: colors.gradients.blue[0],
     fontWeight: 'bold',
-    color: colors.textPrimary,
   },
-  startExamContainer: {
+  content: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: responsiveSize(20),
   },
-  examInfoCard: {
-    backgroundColor: colors.textWhite,
-    borderRadius: responsiveSize(20),
-    padding: responsiveSize(30),
-    alignItems: 'center',
-    ...shadows.medium,
-    width: '100%',
-    maxWidth: responsiveSize(400),
-  },
-  examIcon: {
-    marginBottom: responsiveSize(20),
-  },
-  examTitle: {
-    fontSize: responsiveFontSize(24),
+  title: {
+    fontSize: responsiveFontSize(28),
     fontWeight: 'bold',
-    color: colors.textPrimary,
+    color: colors.gradients.blue[0],
     marginBottom: responsiveSize(10),
+  },
+  subtitle: {
+    fontSize: responsiveFontSize(18),
+    color: colors.textSecondary,
+    marginBottom: responsiveSize(40),
+  },
+  startButton: {
+    backgroundColor: colors.gradients.blue[0],
+    paddingHorizontal: responsiveSize(30),
+    paddingVertical: responsiveSize(15),
+    borderRadius: responsiveSize(12),
+    ...shadows.medium,
+  },
+  startButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: 'bold',
+    color: colors.textWhite,
+  },
+  infoCard: {
+    backgroundColor: colors.cardBackground,
+    borderRadius: responsiveSize(12),
+    padding: responsiveSize(20),
+    marginBottom: responsiveSize(30),
+    ...shadows.medium,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  infoTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginBottom: responsiveSize(15),
     textAlign: 'center',
   },
-  examDescription: {
-    fontSize: responsiveFontSize(16),
+  infoText: {
+    fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: responsiveSize(30),
+    lineHeight: responsiveFontSize(20),
+    marginBottom: responsiveSize(8),
   },
   examDetails: {
     width: '100%',
@@ -522,7 +679,7 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginLeft: responsiveSize(10),
   },
-  startButton: {
+  oldStartButton: {
     backgroundColor: colors.primary,
     paddingHorizontal: responsiveSize(40),
     paddingVertical: responsiveSize(15),
@@ -530,7 +687,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
-  startButtonText: {
+  oldStartButtonText: {
     color: colors.textWhite,
     fontSize: responsiveFontSize(18),
     fontWeight: 'bold',
@@ -565,87 +722,116 @@ const styles = StyleSheet.create({
   timerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.error + '20',
-    paddingHorizontal: responsiveSize(12),
-    paddingVertical: responsiveSize(6),
-    borderRadius: responsiveSize(15),
+    backgroundColor: colors.primary + '20',
+    paddingHorizontal: responsiveSize(15),
+    paddingVertical: responsiveSize(8),
+    borderRadius: responsiveSize(20),
+    borderWidth: 2,
+    borderColor: colors.primary,
+    ...shadows.small,
   },
   timerText: {
-    fontSize: responsiveFontSize(16),
+    fontSize: responsiveFontSize(18),
     fontWeight: 'bold',
-    color: colors.error,
-    marginLeft: responsiveSize(5),
+    color: colors.primary,
+    marginLeft: responsiveSize(8),
   },
   timerWarning: {
     color: colors.error,
+    backgroundColor: colors.error + '20',
+    borderColor: colors.error,
   },
   questionsList: {
     flex: 1,
+    marginHorizontal: responsiveSize(2),
+    marginTop: responsiveSize(2),
+    marginBottom: responsiveSize(2),
   },
-  questionContainer: {
-    flex: 1,
-    paddingHorizontal: responsiveSize(20),
-    paddingVertical: responsiveSize(15),
-    justifyContent: 'space-between',
+  questionCard: {
+    backgroundColor: colors.backgroundSecondary,
+    marginHorizontal: responsiveSize(20),
+    marginTop: responsiveSize(-8),
+    marginBottom: responsiveSize(5),
+    padding: responsiveSize(20),
+    borderRadius: responsiveSize(12),
+    ...shadows.medium,
   },
   questionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: responsiveSize(20),
+    marginBottom: responsiveSize(10),
   },
-  questionNumber: {
+  questionTitle: {
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
-    color: colors.primary,
-  },
-  subjectLabel: {
-    fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
-    backgroundColor: colors.primary + '20',
-    paddingHorizontal: responsiveSize(10),
-    paddingVertical: responsiveSize(4),
-    borderRadius: responsiveSize(10),
   },
-  questionText: {
-    fontSize: responsiveFontSize(17),
-    color: colors.textPrimary,
-    lineHeight: responsiveSize(24),
-    marginBottom: responsiveSize(25),
-    flexWrap: 'wrap',
-    flexShrink: 1,
+  questionMeta: {
+    alignItems: 'flex-end',
+  },
+  subjectText: {
+    fontSize: responsiveFontSize(12),
+    color: colors.textSecondary,
     fontWeight: '500',
   },
+  questionText: {
+    fontSize: responsiveFontSize(16),
+    color: colors.textPrimary,
+    lineHeight: responsiveFontSize(22),
+    marginBottom: responsiveSize(10),
+    flexWrap: 'wrap',
+    flexShrink: 1,
+  },
   optionsContainer: {
-    flex: 1,
+    width: '90%',
+    alignSelf: 'stretch',
+    marginTop: responsiveSize(20),
+    marginHorizontal: responsiveSize(20),
+    flex: 0,
+    flexShrink: 0,
   },
   optionButton: {
-    backgroundColor: colors.textWhite,
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: responsiveSize(12),
-    padding: responsiveSize(15),
-    marginBottom: responsiveSize(12),
-    minHeight: responsiveSize(60),
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.backgroundSecondary,
+    padding: responsiveSize(8),
+    marginVertical: responsiveSize(4),
+    borderRadius: responsiveSize(10),
+    borderWidth: 1.5,
+    borderColor: colors.borderLight,
+    minHeight: responsiveSize(40),
     width: '100%',
-    justifyContent: 'center',
+    flex: 1,
+    marginHorizontal: responsiveSize(0),
     ...shadows.small,
+  },
+  optionContent: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  optionLetter: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    marginRight: responsiveSize(10),
+    minWidth: responsiveSize(22),
   },
   selectedOption: {
     borderColor: colors.primary,
-    backgroundColor: colors.primary + '10',
+    backgroundColor: colors.primary + '20',
   },
   optionText: {
-    fontSize: responsiveFontSize(15),
+    flex: 1,
+    fontSize: responsiveFontSize(16),
     color: colors.textPrimary,
-    lineHeight: responsiveSize(22),
+    lineHeight: responsiveFontSize(22),
     flexWrap: 'wrap',
     flexShrink: 1,
-    textAlign: 'center',
   },
   selectedOptionText: {
-    color: colors.primary,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -774,7 +960,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveSize(8),
   },
-  detailText: {
+  modalDetailText: {
     fontSize: responsiveFontSize(14),
     color: colors.textPrimary,
     marginLeft: responsiveSize(8),
