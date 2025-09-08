@@ -1,8 +1,8 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-    NavigationProp,
-    ParamListBase,
-    useNavigation,
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
 } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -353,10 +353,7 @@ const ProfilScreen: React.FC = () => {
         </View>
       </LinearGradient>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.scrollView}
-      >
+      <View style={styles.contentContainer}>
         {/* User Info Card */}
         <View style={styles.userCard}>
           {userInfo.avatar && userInfo.avatar !== getDefaultAvatarUrl() ? (
@@ -381,10 +378,7 @@ const ProfilScreen: React.FC = () => {
           <Text style={styles.sectionTitle}>Ayarlar</Text>
           {profileOptions.map(renderProfileOption)}
         </View>
-
-        {/* Bottom Spacing */}
-        <View style={styles.bottomSpacing} />
-      </ScrollView>
+      </View>
 
       {/* Edit Profile Modal */}
       <Modal
@@ -775,8 +769,9 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     elevation: 5,
   },
-  scrollView: {
+  contentContainer: {
     flex: 1,
+    paddingBottom: responsiveSize(20),
   },
   headerContent: {
     flexDirection: 'row',
@@ -796,9 +791,9 @@ const styles = StyleSheet.create({
   },
   userCard: {
     backgroundColor: colors.background,
-    margin: responsiveSize(20),
+    margin: responsiveSize(12),
     borderRadius: responsiveSize(16),
-    padding: responsiveSize(16),
+    padding: responsiveSize(12),
     alignItems: 'center',
     ...shadows.medium,
   },
@@ -806,18 +801,18 @@ const styles = StyleSheet.create({
     width: responsiveSize(80),
     height: responsiveSize(80),
     borderRadius: responsiveSize(40),
-    marginBottom: responsiveSize(8),
+    marginBottom: responsiveSize(4),
   },
   userName: {
     fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textPrimary,
-    marginBottom: responsiveSize(4),
+    marginBottom: responsiveSize(2),
   },
   userEmail: {
     fontSize: responsiveFontSize(14),
     color: colors.textSecondary,
-    marginBottom: responsiveSize(8),
+    marginBottom: responsiveSize(4),
   },
   joinDate: {
     fontSize: responsiveFontSize(12),
@@ -868,9 +863,6 @@ const styles = StyleSheet.create({
   optionSubtitle: {
     fontSize: responsiveFontSize(12),
     color: colors.textTertiary,
-  },
-  bottomSpacing: {
-    height: responsiveSize(20),
   },
   modalOverlay: {
     flex: 1,
