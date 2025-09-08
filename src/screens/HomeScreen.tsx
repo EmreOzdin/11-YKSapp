@@ -438,16 +438,16 @@ const HomeScreen: React.FC = () => {
 
     switch (item.title) {
       case 'Fen Bilimleri Sınavı':
-        navigation.navigate('Fen Bilimleri');
+        navigation.navigate('ExamScreen', { subject: 'Fen Bilimleri' });
         break;
       case 'Türkçe Sınavı':
-        navigation.navigate('Türkçe');
+        navigation.navigate('ExamScreen', { subject: 'Türkçe' });
         break;
       case 'Matematik Sınavı':
-        navigation.navigate('Matematik');
+        navigation.navigate('ExamScreen', { subject: 'Matematik' });
         break;
       case 'Sosyal Bilimler Sınavı':
-        navigation.navigate('Sosyal Bilimler');
+        navigation.navigate('ExamScreen', { subject: 'Sosyal Bilimler' });
         break;
     }
   };
@@ -572,16 +572,28 @@ const HomeScreen: React.FC = () => {
 
                       switch (item.title) {
                         case 'Fen Bilimleri Sınavı':
-                          navigation.navigate('Fen Bilimleri');
+                          navigation.navigate('ExamScreen', {
+                            subject: 'Fen Bilimleri',
+                            examType: 'TYT',
+                          });
                           break;
                         case 'Türkçe Sınavı':
-                          navigation.navigate('Türkçe');
+                          navigation.navigate('ExamScreen', {
+                            subject: 'Türkçe',
+                            examType: 'TYT',
+                          });
                           break;
                         case 'Matematik Sınavı':
-                          navigation.navigate('Matematik');
+                          navigation.navigate('ExamScreen', {
+                            subject: 'Matematik',
+                            examType: 'TYT',
+                          });
                           break;
                         case 'Sosyal Bilimler Sınavı':
-                          navigation.navigate('Sosyal Bilimler');
+                          navigation.navigate('ExamScreen', {
+                            subject: 'Sosyal Bilimler',
+                            examType: 'TYT',
+                          });
                           break;
                       }
                     }}

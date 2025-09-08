@@ -556,10 +556,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   questionText: {
-    fontSize: responsiveFontSize(18),
+    fontSize: responsiveFontSize(16),
     color: colors.textPrimary,
-    lineHeight: responsiveFontSize(24),
+    lineHeight: responsiveFontSize(22),
     marginBottom: responsiveSize(10),
+    flexWrap: 'wrap',
+    flexShrink: 1,
   },
   topicText: {
     fontSize: responsiveFontSize(14),
@@ -571,13 +573,14 @@ const styles = StyleSheet.create({
   },
   optionButton: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: colors.backgroundSecondary,
-    padding: responsiveSize(16),
-    marginVertical: responsiveSize(8),
+    padding: responsiveSize(12),
+    marginVertical: responsiveSize(6),
     borderRadius: responsiveSize(12),
     borderWidth: 2,
     borderColor: colors.borderLight,
+    minHeight: responsiveSize(50),
     ...shadows.small,
   },
   selectedOption: {
@@ -604,8 +607,11 @@ const styles = StyleSheet.create({
   },
   optionText: {
     flex: 1,
-    fontSize: responsiveFontSize(16),
+    fontSize: responsiveFontSize(14),
     color: colors.textPrimary,
+    lineHeight: responsiveFontSize(20),
+    flexWrap: 'wrap',
+    flexShrink: 1,
   },
   selectedOptionText: {
     color: colors.primary,

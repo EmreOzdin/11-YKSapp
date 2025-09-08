@@ -481,8 +481,20 @@ export class QuestionService {
     examType: 'TYT' | 'AYT' | 'YDT'
   ): Promise<QuestionType[]> {
     try {
-      // Önce MongoDB'den sınav tipine göre soruları al
-      const mongoQuestions = await apiService.getQuestionsByExamType(examType);
+      // Timeout ile API çağrısını sınırla (3 saniye)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('API timeout')), 1000);
+      });
+
+      const apiPromise = apiService.getQuestionsByExamType(examType);
+
+      let mongoQuestions: QuestionType[] = [];
+      try {
+        mongoQuestions = await Promise.race([apiPromise, timeoutPromise]);
+      } catch (timeoutError) {
+        console.warn('API çağrısı timeout oldu, local storage kullanılıyor:', timeoutError);
+        mongoQuestions = [];
+      }
 
       // Eğer MongoDB'den soru gelirse onları kullan
       if (mongoQuestions && mongoQuestions.length > 0) {
@@ -509,8 +521,23 @@ export class QuestionService {
   // Derse göre soruları getirme
   static async getQuestionsBySubject(subject: string): Promise<QuestionType[]> {
     try {
-      // Önce MongoDB'den derse göre soruları al
-      const mongoQuestions = await apiService.getQuestionsBySubject(subject);
+      // Timeout ile API çağrısını sınırla (3 saniye)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('API timeout')), 1000);
+      });
+
+      const apiPromise = apiService.getQuestionsBySubject(subject);
+
+      let mongoQuestions: QuestionType[] = [];
+      try {
+        mongoQuestions = await Promise.race([apiPromise, timeoutPromise]);
+      } catch (timeoutError) {
+        console.warn(
+          'API çağrısı timeout oldu, local storage kullanılıyor:',
+          timeoutError
+        );
+        mongoQuestions = [];
+      }
 
       // Eğer MongoDB'den soru gelirse onları kullan
       if (mongoQuestions && mongoQuestions.length > 0) {
@@ -532,6 +559,262 @@ export class QuestionService {
         return [];
       }
     }
+  }
+
+  // Sınav için ders bazlı soruları getirme (45 soru)
+  static async getExamQuestionsBySubject(
+    subject: string,
+    examType?: 'TYT' | 'AYT' | 'YDT'
+  ): Promise<QuestionType[]> {
+    try {
+      let questions: QuestionType[] = [];
+
+      // Timeout ile API çağrısını sınırla (5 saniye)
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => reject(new Error('API timeout')), 2000);
+      });
+
+      const questionsPromise = (async () => {
+        if (examType) {
+          // Sınav tipine göre soruları al
+          questions = await this.getQuestionsByExamType(examType);
+          // Derse göre filtrele
+          questions = questions.filter(q => q.subject === subject);
+        } else {
+          // Sadece derse göre soruları al
+          questions = await this.getQuestionsBySubject(subject);
+        }
+        return questions;
+      })();
+
+      // Timeout veya API çağrısından hangisi önce tamamlanırsa onu kullan
+      try {
+        questions = await Promise.race([questionsPromise, timeoutPromise]);
+      } catch (timeoutError) {
+        console.warn(
+          'API çağrısı timeout oldu, örnek sorular kullanılıyor:',
+          timeoutError
+        );
+        questions = [];
+      }
+
+      // Eğer yeterli soru yoksa, örnek sorular oluştur
+      if (questions.length < 45) {
+        const sampleQuestions = this.generateSampleQuestions(subject, examType);
+        questions = [...questions, ...sampleQuestions];
+      }
+
+      // 45 soru al ve karıştır
+      const shuffled = questions.sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, 45);
+    } catch (error) {
+      console.error('Sınav soruları getirilirken hata:', error);
+
+      // Hata durumunda örnek sorular döndür
+      return this.generateSampleQuestions(subject, examType).slice(0, 45);
+    }
+  }
+
+  // Örnek sorular oluşturma (sınav için)
+  static generateSampleQuestions(
+    subject: string,
+    examType?: 'TYT' | 'AYT' | 'YDT'
+  ): QuestionType[] {
+    const sampleQuestions: QuestionType[] = [];
+
+    // Her ders için örnek sorular
+    const subjectQuestions = this.getSubjectSampleQuestions(subject, examType);
+    sampleQuestions.push(...subjectQuestions);
+
+    return sampleQuestions;
+  }
+
+  // Ders bazlı örnek sorular
+  private static getSubjectSampleQuestions(
+    subject: string,
+    examType?: 'TYT' | 'AYT' | 'YDT'
+  ): QuestionType[] {
+    const questions: QuestionType[] = [];
+
+    switch (subject) {
+      case 'Fen Bilimleri':
+        questions.push(
+          {
+            questionText: 'Aşağıdakilerden hangisi fiziksel bir değişimdir?',
+            options: [
+              'A) Kağıdın yanması',
+              'B) Suyun donması',
+              'C) Sütün ekşimesi',
+              'D) Demirin paslanması',
+            ],
+            correctAnswer: 'B) Suyun donması',
+            explanation:
+              'Suyun donması sadece fiziksel hal değişimidir, kimyasal yapı değişmez.',
+            subject: 'Fen Bilimleri',
+            topic: 'Fiziksel ve Kimyasal Değişimler',
+            topicId: 'tyt-fizik-mekanik',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText:
+              'Hangi element periyodik tabloda 1A grubunda yer alır?',
+            options: ['A) Karbon', 'B) Azot', 'C) Sodyum', 'D) Klor'],
+            correctAnswer: 'C) Sodyum',
+            explanation:
+              'Sodyum (Na) alkali metaller grubunda yer alır ve 1A grubundadır.',
+            subject: 'Fen Bilimleri',
+            topic: 'Periyodik Tablo',
+            topicId: 'tyt-kimya-madde',
+            difficulty: 2,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          }
+        );
+        break;
+
+      case 'Türkçe':
+        questions.push(
+          {
+            questionText:
+              'Aşağıdaki cümlelerden hangisinde yazım hatası vardır?',
+            options: [
+              'A) Yarın okula gideceğim',
+              'B) Bu kitabı okudum',
+              'C) Çok güzel bir gün',
+              'D) Hiç bir şey yapmadım',
+            ],
+            correctAnswer: 'D) Hiç bir şey yapmadım',
+            explanation: '"Hiçbir" kelimesi bitişik yazılır.',
+            subject: 'Türkçe',
+            topic: 'Yazım Kuralları',
+            topicId: 'tyt-turkce-yazim',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText:
+              'Aşağıdaki cümlelerden hangisinde "de" eki yanlış yazılmıştır? Bu soru çok uzun bir soru metni içeriyor ve ekran dışına taşmaması gerekiyor.',
+            options: [
+              'A) Okulda ders çalışıyorum',
+              'B) Evde kitap okuyorum',
+              'C) Parkda oyun oynuyorum',
+              'D) Bahçede çiçek yetiştiriyorum',
+            ],
+            correctAnswer: 'C) Parkda oyun oynuyorum',
+            explanation: '"Parkda" yerine "parkta" yazılmalıdır.',
+            subject: 'Türkçe',
+            topic: 'Yazım Kuralları',
+            topicId: 'tyt-turkce-yazim',
+            difficulty: 2,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText: 'Aşağıdaki cümlelerden hangisi devrik cümledir?',
+            options: [
+              'A) Kitap okuyorum',
+              'B) Güzel bir gün',
+              'C) Geldi misafirler',
+              'D) Çalışıyor öğrenci',
+            ],
+            correctAnswer: 'C) Geldi misafirler',
+            explanation: 'Devrik cümle, yüklemi sonda olmayan cümledir.',
+            subject: 'Türkçe',
+            topic: 'Cümle Türleri',
+            topicId: 'tyt-turkce-dilbilgisi',
+            difficulty: 2,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          }
+        );
+        break;
+
+      case 'Matematik':
+        questions.push(
+          {
+            questionText: '2x + 5 = 13 denkleminin çözümü nedir?',
+            options: ['A) x = 3', 'B) x = 4', 'C) x = 5', 'D) x = 6'],
+            correctAnswer: 'B) x = 4',
+            explanation: '2x + 5 = 13 → 2x = 8 → x = 4',
+            subject: 'Matematik',
+            topic: 'Birinci Dereceden Denklemler',
+            topicId: 'tyt-matematik-temel',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText: 'Bir üçgenin iç açıları toplamı kaç derecedir?',
+            options: ['A) 90°', 'B) 180°', 'C) 270°', 'D) 360°'],
+            correctAnswer: 'B) 180°',
+            explanation: 'Üçgenin iç açıları toplamı her zaman 180 derecedir.',
+            subject: 'Matematik',
+            topic: 'Geometri',
+            topicId: 'tyt-matematik-geometri',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText: 'Bir dikdörtgenin uzun kenarı 12 cm, kısa kenarı 8 cm ise, bu dikdörtgenin çevresi kaç cm\'dir? Bu soru matematik problemlerini test etmek için tasarlanmıştır.',
+            options: [
+              'A) 20 cm',
+              'B) 40 cm', 
+              'C) 60 cm',
+              'D) 80 cm'
+            ],
+            correctAnswer: 'B) 40 cm',
+            explanation: 'Çevre = 2 × (uzun kenar + kısa kenar) = 2 × (12 + 8) = 2 × 20 = 40 cm',
+            subject: 'Matematik',
+            topic: 'Geometri',
+            topicId: 'tyt-matematik-geometri',
+            difficulty: 2,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          }
+        );
+        break;
+
+      case 'Sosyal Bilimler':
+        questions.push(
+          {
+            questionText: 'Osmanlı Devleti hangi yılda kurulmuştur?',
+            options: ['A) 1299', 'B) 1300', 'C) 1301', 'D) 1302'],
+            correctAnswer: 'A) 1299',
+            explanation:
+              'Osmanlı Devleti 1299 yılında Osman Bey tarafından kurulmuştur.',
+            subject: 'Sosyal Bilimler',
+            topic: 'Osmanlı Tarihi',
+            topicId: 'tyt-tarih-osmanli',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          },
+          {
+            questionText: "Türkiye'nin en büyük gölü hangisidir?",
+            options: [
+              'A) Tuz Gölü',
+              'B) Van Gölü',
+              'C) Eğirdir Gölü',
+              'D) Sapanca Gölü',
+            ],
+            correctAnswer: 'B) Van Gölü',
+            explanation: "Van Gölü, Türkiye'nin en büyük gölüdür.",
+            subject: 'Sosyal Bilimler',
+            topic: 'Coğrafya',
+            topicId: 'tyt-cografya-fiziki',
+            difficulty: 1,
+            examType: examType || 'TYT',
+            isPastQuestion: false,
+          }
+        );
+        break;
+    }
+
+    return questions;
   }
 
   // Zorluk seviyesine göre soruları getirme

@@ -1283,11 +1283,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   questionText: {
-    fontSize: responsiveFontSize(20),
+    fontSize: responsiveFontSize(16),
     color: colors.textPrimary,
     fontWeight: '600',
-    lineHeight: responsiveSize(28),
+    lineHeight: responsiveSize(22),
     textAlign: 'center',
+    flexWrap: 'wrap',
+    flexShrink: 1,
   },
   cardImage: {
     width: '100%',

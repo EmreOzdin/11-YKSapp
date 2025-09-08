@@ -5,6 +5,7 @@ import React from 'react';
 import AytPastScreen from '../screens/AytPastScreen';
 import AytScreen from '../screens/AytScreen';
 import CardsScreen from '../screens/CardsScreen';
+import ExamScreen from '../screens/ExamScreen';
 import FenBilimleriScreen from '../screens/FenBilimleriScreen';
 import HedeflerScreen from '../screens/HedeflerScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -45,6 +46,7 @@ const HomeStack = () => {
         component={TopicSelectionScreen}
       />
       <Stack.Screen name='QuestionScreen' component={QuestionScreen} />
+      <Stack.Screen name='ExamScreen' component={ExamScreen} />
       <Stack.Screen name='ProfilScreen' component={ProfilScreen} />
     </Stack.Navigator>
   );
