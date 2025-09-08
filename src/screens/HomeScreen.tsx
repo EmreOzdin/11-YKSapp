@@ -14,7 +14,6 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -454,15 +453,7 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingBottom: responsiveSize(20) }}
-        scrollEnabled={true}
-        bounces={true}
-        style={{ flex: 1 }}
-        nestedScrollEnabled={false}
-        keyboardShouldPersistTaps='handled'
-      >
+      <View style={styles.contentContainer}>
         {/* Header */}
         <View style={styles.headerRow}>
           <TouchableOpacity
@@ -817,7 +808,7 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.subjectGridLabel}>YDT</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
       <NotificationModal
         visible={notifModalVisible}
         onClose={() => setNotifModalVisible(false)}
@@ -839,6 +830,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop: responsiveSize(20),
+  },
+  contentContainer: {
+    flex: 1,
+    paddingBottom: responsiveSize(20),
   },
   headerRow: {
     flexDirection: 'row',
@@ -970,7 +965,7 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textPrimary,
-    marginTop: responsiveSize(-3),
+    marginTop: responsiveSize(-4),
   },
   seeAll: {
     color: colors.secondary,
