@@ -249,8 +249,9 @@ const CardsScreen: React.FC = () => {
       const categoryStats = await getCategoryStatsHybrid();
       setCategories(categoryStats);
 
-      // Soruları ayarla
-      setCards(allQuestions);
+      // Soruları karıştır ve ayarla
+      const shuffledCards = shuffleCards(allQuestions);
+      setCards(shuffledCards);
 
       console.log(`📊 Toplam ${allQuestions.length} kart yüklendi`);
       console.log(`📂 ${categoryStats.length} kategori istatistiği alındı`);
@@ -281,10 +282,11 @@ const CardsScreen: React.FC = () => {
       }
 
       if (categoryName === '') {
-        // Tüm kartları göster - hibrit servis kullan
+        // Tüm kartları göster - hibrit servis kullan ve karıştır
         setSelectedCategory(null);
         const allQuestions = await getAllCardsHybrid();
-        setCards(allQuestions);
+        const shuffledCards = shuffleCards(allQuestions);
+        setCards(shuffledCards);
 
         // "Tümü" butonunu orta konuma kaydır
         setTimeout(() => {
@@ -295,10 +297,11 @@ const CardsScreen: React.FC = () => {
           });
         }, 100);
       } else {
-        // Seçilen kategoriye ait kartları al - hibrit servis kullan
+        // Seçilen kategoriye ait kartları al - hibrit servis kullan ve karıştır
         setSelectedCategory(categoryName);
         const categoryQuestions = await getCardsByCategoryHybrid(categoryName);
-        setCards(categoryQuestions);
+        const shuffledCards = shuffleCards(categoryQuestions);
+        setCards(shuffledCards);
 
         // Seçilen kategoriyi orta konuma kaydır
         const categoryIndex = getCategoryIndex(categoryName);
@@ -333,6 +336,19 @@ const CardsScreen: React.FC = () => {
       'Tarih',
     ];
     return categoryOrder.indexOf(categoryName);
+  };
+
+  // Kartları karıştırma fonksiyonu (Fisher-Yates shuffle algoritması)
+  const shuffleCards = (cards: MemoryCard[]): MemoryCard[] => {
+    const shuffledCards = [...cards];
+    for (let i = shuffledCards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledCards[i], shuffledCards[j]] = [
+        shuffledCards[j],
+        shuffledCards[i],
+      ];
+    }
+    return shuffledCards;
   };
 
   // Kartı çevir - Optimize edilmiş
