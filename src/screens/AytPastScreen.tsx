@@ -29,6 +29,7 @@ const AytPastScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [loading, setLoading] = useState(false);
   const [examYears, setExamYears] = useState<ExamYear[]>([
+    { year: 2025, title: '2025 AYT', questionCount: 160, isAvailable: true },
     { year: 2024, title: '2024 AYT', questionCount: 160, isAvailable: true },
     { year: 2023, title: '2023 AYT', questionCount: 160, isAvailable: true },
     { year: 2022, title: '2022 AYT', questionCount: 160, isAvailable: true },
@@ -36,9 +37,6 @@ const AytPastScreen: React.FC = () => {
     { year: 2020, title: '2020 AYT', questionCount: 160, isAvailable: true },
     { year: 2019, title: '2019 AYT', questionCount: 160, isAvailable: true },
     { year: 2018, title: '2018 AYT', questionCount: 160, isAvailable: true },
-    { year: 2017, title: '2017 AYT', questionCount: 160, isAvailable: true },
-    { year: 2016, title: '2016 AYT', questionCount: 160, isAvailable: true },
-    { year: 2015, title: '2015 AYT', questionCount: 160, isAvailable: true },
   ]);
 
   const handleYearPress = async (year: number) => {
@@ -194,13 +192,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: responsiveSize(20),
+    paddingTop: responsiveSize(8),
+    paddingHorizontal: responsiveSize(20),
+    paddingBottom: responsiveSize(20),
   },
   description: {
     fontSize: responsiveFontSize(16),
     color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: responsiveSize(30),
+    marginTop: responsiveSize(2),
+    marginBottom: responsiveSize(5),
     lineHeight: responsiveSize(24),
   },
   loadingContainer: {
@@ -222,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: responsiveSize(16),
     padding: responsiveSize(16),
-    marginBottom: responsiveSize(16),
+    marginBottom: responsiveSize(12),
     ...shadows.medium,
     borderWidth: 1,
     borderColor: colors.border,
