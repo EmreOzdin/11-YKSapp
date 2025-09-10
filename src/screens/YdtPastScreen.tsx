@@ -8,6 +8,8 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -28,7 +30,13 @@ interface ExamYear {
 const YdtPastScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState<{
+    url: string;
+    year: number;
+  } | null>(null);
   const [examYears, setExamYears] = useState<ExamYear[]>([
+    { year: 2025, title: '2025 YDT', questionCount: 80, isAvailable: true },
     { year: 2024, title: '2024 YDT', questionCount: 80, isAvailable: true },
     { year: 2023, title: '2023 YDT', questionCount: 80, isAvailable: true },
     { year: 2022, title: '2022 YDT', questionCount: 80, isAvailable: true },
@@ -36,14 +44,91 @@ const YdtPastScreen: React.FC = () => {
     { year: 2020, title: '2020 YDT', questionCount: 80, isAvailable: true },
     { year: 2019, title: '2019 YDT', questionCount: 80, isAvailable: true },
     { year: 2018, title: '2018 YDT', questionCount: 80, isAvailable: true },
-    { year: 2017, title: '2017 YDT', questionCount: 80, isAvailable: true },
-    { year: 2016, title: '2016 YDT', questionCount: 80, isAvailable: true },
-    { year: 2015, title: '2015 YDT', questionCount: 80, isAvailable: true },
   ]);
 
   const handleYearPress = async (year: number) => {
     if (!examYears.find(ey => ey.year === year)?.isAvailable) {
       Alert.alert('Bilgi', 'Bu yıla ait sınav henüz yüklenmemiş.');
+      return;
+    }
+
+    // 2025 yılı için OSYM PDF linki
+    if (year === 2025) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2025/YKS/TSK/yks_ydt_ing_2025_kitapcik_Si42.pdf',
+        year: 2025,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2024 yılı için OSYM PDF linki
+    if (year === 2024) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2024/YKS/TSK/yks_ydt_ing_2024_kitapcik_Sp865a.pdf',
+        year: 2024,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2023 yılı için OSYM PDF linki
+    if (year === 2023) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2023/YKS/TSK/yks_ydt_ing_2023_kitapcik_Sp72a.pdf',
+        year: 2023,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2022 yılı için OSYM PDF linki
+    if (year === 2022) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2022/YKS/TSK/yks_2022_ydt_ingilizce.pdf',
+        year: 2022,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2021 yılı için OSYM PDF linki
+    if (year === 2021) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2021/YKS/TSK/ydt_ingilizce_yks_2021.pdf',
+        year: 2021,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2020 yılı için OSYM PDF linki
+    if (year === 2020) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2020/YKS/TSK/ydt_ingilizce_yks_2020.pdf',
+        year: 2020,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2019 yılı için OSYM PDF linki
+    if (year === 2019) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2019/YKS/TSK/ydt_ingilizce_yks_2019_web.pdf',
+        year: 2019,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2018 yılı için OSYM PDF linki
+    if (year === 2018) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2018/YKS/YDTING01072018.pdf',
+        year: 2018,
+      });
+      setShowModal(true);
       return;
     }
 
@@ -73,6 +158,23 @@ const YdtPastScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenPDF = async () => {
+    if (modalData) {
+      try {
+        await Linking.openURL(modalData.url);
+      } catch (error) {
+        Alert.alert('Hata', 'PDF açılırken bir hata oluştu.');
+      }
+    }
+    setShowModal(false);
+    setModalData(null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalData(null);
   };
 
   const renderYearCard = (examYear: ExamYear) => (
@@ -157,6 +259,38 @@ const YdtPastScreen: React.FC = () => {
 
         <View style={styles.yearsGrid}>{examYears.map(renderYearCard)}</View>
       </ScrollView>
+
+      {/* Modal */}
+      <Modal
+        visible={showModal}
+        transparent={true}
+        animationType='fade'
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>PDF Aç</Text>
+            <Text style={styles.modalMessage}>
+              {modalData?.year} YDT çıkmış sorular PDF'ini açmak istediğinizden
+              emin misiniz?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleOpenPDF}
+              >
+                <Text style={styles.modalButtonText}>Aç</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalCancelButton}
+                onPress={handleCloseModal}
+              >
+                <Text style={styles.modalCancelButtonText}>İptal</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -194,13 +328,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    padding: responsiveSize(20),
+    paddingTop: responsiveSize(8),
+    paddingHorizontal: responsiveSize(20),
+    paddingBottom: responsiveSize(20),
   },
   description: {
     fontSize: responsiveFontSize(16),
     color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: responsiveSize(30),
+    marginTop: responsiveSize(2),
+    marginBottom: responsiveSize(4),
     lineHeight: responsiveSize(24),
   },
   loadingContainer: {
@@ -222,7 +359,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: responsiveSize(16),
     padding: responsiveSize(16),
-    marginBottom: responsiveSize(16),
+    marginBottom: responsiveSize(12),
     ...shadows.medium,
     borderWidth: 1,
     borderColor: colors.border,
@@ -266,6 +403,63 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(10),
     color: colors.textSecondary,
     fontStyle: 'italic',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: colors.background,
+    borderRadius: responsiveSize(16),
+    padding: responsiveSize(24),
+    margin: responsiveSize(20),
+    ...shadows.large,
+  },
+  modalTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(16),
+  },
+  modalMessage: {
+    fontSize: responsiveFontSize(16),
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(24),
+    lineHeight: responsiveSize(24),
+  },
+  modalButtons: {
+    flexDirection: 'column',
+    gap: responsiveSize(12),
+  },
+  modalButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(24),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  modalCancelButton: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(24),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: colors.background,
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
+  },
+  modalCancelButtonText: {
+    color: colors.textPrimary,
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
   },
 });
 

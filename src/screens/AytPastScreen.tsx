@@ -8,6 +8,8 @@ import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Linking,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
@@ -28,6 +30,11 @@ interface ExamYear {
 const AytPastScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalData, setModalData] = useState<{
+    url: string;
+    year: number;
+  } | null>(null);
   const [examYears, setExamYears] = useState<ExamYear[]>([
     { year: 2025, title: '2025 AYT', questionCount: 160, isAvailable: true },
     { year: 2024, title: '2024 AYT', questionCount: 160, isAvailable: true },
@@ -42,6 +49,86 @@ const AytPastScreen: React.FC = () => {
   const handleYearPress = async (year: number) => {
     if (!examYears.find(ey => ey.year === year)?.isAvailable) {
       Alert.alert('Bilgi', 'Bu yıla ait sınav henüz yüklenmemiş.');
+      return;
+    }
+
+    // 2025 yılı için OSYM PDF linki
+    if (year === 2025) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2025/YKS/TSK/yks_ayt_2025_kitapcik_st12.pdf',
+        year: 2025,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2024 yılı için OSYM PDF linki
+    if (year === 2024) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2024/YKS/TSK/yks_ayt_2024_kitapcik_ts85k.pdf',
+        year: 2024,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2023 yılı için OSYM PDF linki
+    if (year === 2023) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2023/YKS/TSK/yks_ayt_2023_kitapcik_g5A2H.pdf',
+        year: 2023,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2022 yılı için OSYM PDF linki
+    if (year === 2022) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2022/YKS/TSK/yks_2022_ayt.pdf',
+        year: 2022,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2021 yılı için OSYM PDF linki
+    if (year === 2021) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2021/YKS/TSK/ayt_yks_2021.pdf',
+        year: 2021,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2020 yılı için OSYM PDF linki
+    if (year === 2020) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2020/YKS/TSK/ayt_yks_2020.pdf',
+        year: 2020,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2019 yılı için OSYM PDF linki
+    if (year === 2019) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2019/YKS/TSK/ayt_yks_2019_web.pdf',
+        year: 2019,
+      });
+      setShowModal(true);
+      return;
+    }
+
+    // 2018 yılı için OSYM PDF linki
+    if (year === 2018) {
+      setModalData({
+        url: 'https://dokuman.osym.gov.tr/pdfdokuman/2018/YKS/AYT_01072018.pdf',
+        year: 2018,
+      });
+      setShowModal(true);
       return;
     }
 
@@ -71,6 +158,23 @@ const AytPastScreen: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenPDF = async () => {
+    if (modalData) {
+      try {
+        await Linking.openURL(modalData.url);
+      } catch (error) {
+        Alert.alert('Hata', 'PDF açılırken bir hata oluştu.');
+      }
+    }
+    setShowModal(false);
+    setModalData(null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalData(null);
   };
 
   const renderYearCard = (examYear: ExamYear) => (
@@ -155,6 +259,38 @@ const AytPastScreen: React.FC = () => {
 
         <View style={styles.yearsGrid}>{examYears.map(renderYearCard)}</View>
       </ScrollView>
+
+      {/* Modal */}
+      <Modal
+        visible={showModal}
+        transparent={true}
+        animationType='fade'
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>PDF Aç</Text>
+            <Text style={styles.modalMessage}>
+              {modalData?.year} AYT çıkmış sorular PDF'ini açmak istediğinizden
+              emin misiniz?
+            </Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={handleOpenPDF}
+              >
+                <Text style={styles.modalButtonText}>Aç</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalCancelButton}
+                onPress={handleCloseModal}
+              >
+                <Text style={styles.modalCancelButtonText}>İptal</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -267,6 +403,63 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(10),
     color: colors.textSecondary,
     fontStyle: 'italic',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: colors.background,
+    borderRadius: responsiveSize(16),
+    padding: responsiveSize(24),
+    margin: responsiveSize(20),
+    ...shadows.large,
+  },
+  modalTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: 'bold',
+    color: colors.textPrimary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(16),
+  },
+  modalMessage: {
+    fontSize: responsiveFontSize(16),
+    color: colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: responsiveSize(24),
+    lineHeight: responsiveSize(24),
+  },
+  modalButtons: {
+    flexDirection: 'column',
+    gap: responsiveSize(12),
+  },
+  modalButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(24),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  modalCancelButton: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: responsiveSize(12),
+    paddingHorizontal: responsiveSize(24),
+    borderRadius: responsiveSize(8),
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: colors.background,
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
+  },
+  modalCancelButtonText: {
+    color: colors.textPrimary,
+    fontSize: responsiveFontSize(16),
+    fontWeight: '600',
   },
 });
 
