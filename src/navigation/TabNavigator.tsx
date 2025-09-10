@@ -10,6 +10,7 @@ import FenBilimleriScreen from '../screens/FenBilimleriScreen';
 import HedeflerScreen from '../screens/HedeflerScreen';
 import HomeScreen from '../screens/HomeScreen';
 import MatematikScreen from '../screens/MatematikScreen';
+import PdfViewerScreen from '../screens/PdfViewerScreen';
 import PerformansScreen from '../screens/PerformansScreen';
 import ProfilScreen from '../screens/ProfilScreen';
 import QuestionScreen from '../screens/QuestionScreen';
@@ -47,6 +48,7 @@ const HomeStack = () => {
       />
       <Stack.Screen name='QuestionScreen' component={QuestionScreen} />
       <Stack.Screen name='ExamScreen' component={ExamScreen} />
+      <Stack.Screen name='PdfViewerScreen' component={PdfViewerScreen} />
       <Stack.Screen name='ProfilScreen' component={ProfilScreen} />
     </Stack.Navigator>
   );
