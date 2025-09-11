@@ -17,8 +17,17 @@ import {
   View,
 } from 'react-native';
 import ApiService from '../services/apiService';
-import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import { getSafeAreaPadding } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
+import {
+  useAdaptiveFontSize,
+  useAdaptiveSize,
+  useAdaptiveSpacing,
+  useBreakpoint,
+  useDeviceType,
+  useGridColumns,
+  useModalDimensions,
+} from '../utils/useResponsive';
 
 interface ExamYear {
   year: number;
@@ -37,6 +46,22 @@ const TytPastScreen: React.FC = () => {
     message: string;
     pdfUrl: string;
   } | null>(null);
+
+  // Responsive hooks
+  const { isTablet, isSmallDevice, isMediumDevice, isLargeDevice } =
+    useDeviceType();
+  const {
+    current: currentBreakpoint,
+    isXs,
+    isSm,
+    isMd,
+    isLg,
+  } = useBreakpoint();
+  const modalDimensions = useModalDimensions();
+  const safeAreaPadding = getSafeAreaPadding();
+
+  // Grid configuration based on device type
+  const gridConfig = useGridColumns(isTablet ? 3 : 2);
   const [examYears, setExamYears] = useState<ExamYear[]>([
     { year: 2025, title: '2025 TYT', questionCount: 120, isAvailable: true },
     { year: 2024, title: '2024 TYT', questionCount: 120, isAvailable: true },
@@ -212,89 +237,201 @@ const TytPastScreen: React.FC = () => {
     }
   };
 
-  const renderYearCard = (examYear: ExamYear) => (
-    <TouchableOpacity
-      key={examYear.year}
-      style={[styles.yearCard, !examYear.isAvailable && styles.disabledCard]}
-      onPress={() => handleYearPress(examYear.year)}
-      disabled={!examYear.isAvailable || loading}
-      activeOpacity={0.7}
-    >
-      <View style={styles.yearCardHeader}>
-        <Text style={styles.yearText}>{examYear.year}</Text>
-        <Ionicons
-          name='calendar-outline'
-          size={responsiveSize(24)}
-          color={examYear.isAvailable ? colors.primary : colors.textSecondary}
-        />
-      </View>
+  const renderYearCard = (examYear: ExamYear) => {
+    const cardWidth = isTablet ? '30%' : isSmallDevice ? '100%' : '48%';
+    const cardPadding = isTablet
+      ? useAdaptiveSpacing(20)
+      : useAdaptiveSpacing(16);
+    const iconSize = isTablet ? useAdaptiveSize(28) : useAdaptiveSize(24);
+    const yearFontSize = isTablet
+      ? useAdaptiveFontSize(32)
+      : useAdaptiveFontSize(28);
+    const titleFontSize = isTablet
+      ? useAdaptiveFontSize(16)
+      : useAdaptiveFontSize(14);
+    const countFontSize = isTablet
+      ? useAdaptiveFontSize(14)
+      : useAdaptiveFontSize(12);
 
-      <Text
-        style={[styles.yearTitle, !examYear.isAvailable && styles.disabledText]}
+    return (
+      <TouchableOpacity
+        key={examYear.year}
+        style={[
+          styles.yearCard,
+          {
+            width: cardWidth,
+            padding: cardPadding,
+            marginBottom: useAdaptiveSpacing(12),
+            borderRadius: isTablet ? useAdaptiveSize(20) : useAdaptiveSize(16),
+          },
+          !examYear.isAvailable && styles.disabledCard,
+        ]}
+        onPress={() => handleYearPress(examYear.year)}
+        disabled={!examYear.isAvailable || loading}
+        activeOpacity={0.7}
       >
-        {examYear.title}
-      </Text>
+        <View style={styles.yearCardHeader}>
+          <Text style={[styles.yearText, { fontSize: yearFontSize }]}>
+            {examYear.year}
+          </Text>
+          <Ionicons
+            name='calendar-outline'
+            size={iconSize}
+            color={examYear.isAvailable ? colors.primary : colors.textSecondary}
+          />
+        </View>
 
-      <View style={styles.yearCardFooter}>
         <Text
           style={[
-            styles.questionCount,
+            styles.yearTitle,
+            { fontSize: titleFontSize },
             !examYear.isAvailable && styles.disabledText,
           ]}
         >
-          {examYear.questionCount} Soru
+          {examYear.title}
         </Text>
 
-        {examYear.isAvailable ? (
-          <Ionicons
-            name='chevron-forward'
-            size={responsiveSize(20)}
-            color={colors.primary}
-          />
-        ) : (
-          <Text style={styles.comingSoonText}>Yakında</Text>
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+        <View style={styles.yearCardFooter}>
+          <Text
+            style={[
+              styles.questionCount,
+              { fontSize: countFontSize },
+              !examYear.isAvailable && styles.disabledText,
+            ]}
+          >
+            {examYear.questionCount} Soru
+          </Text>
+
+          {examYear.isAvailable ? (
+            <Ionicons
+              name='chevron-forward'
+              size={useAdaptiveSize(20)}
+              color={colors.primary}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.comingSoonText,
+                { fontSize: useAdaptiveFontSize(10) },
+              ]}
+            >
+              Yakında
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: safeAreaPadding.top + useAdaptiveSpacing(20),
+            paddingBottom: useAdaptiveSpacing(20),
+            paddingHorizontal: useAdaptiveSpacing(20),
+          },
+        ]}
+      >
         <TouchableOpacity
-          style={styles.backButton}
+          style={[
+            styles.backButton,
+            {
+              padding: useAdaptiveSpacing(8),
+              borderRadius: useAdaptiveSize(8),
+            },
+          ]}
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
           <Ionicons
             name='arrow-back'
-            size={responsiveSize(24)}
+            size={useAdaptiveSize(24)}
             color={colors.textPrimary}
           />
         </TouchableOpacity>
-        <Text style={styles.title}>TYT Çıkmış Sorular</Text>
-        <View style={styles.placeholder} />
+        <Text
+          style={[
+            styles.title,
+            {
+              fontSize: isTablet
+                ? useAdaptiveFontSize(28)
+                : useAdaptiveFontSize(24),
+            },
+          ]}
+        >
+          TYT Çıkmış Sorular
+        </Text>
+        <View style={{ width: useAdaptiveSize(40) }} />
       </View>
 
       {/* Content */}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.contentContainer}
+        contentContainerStyle={[
+          styles.contentContainer,
+          {
+            paddingTop: useAdaptiveSpacing(8),
+            paddingHorizontal: useAdaptiveSpacing(20),
+            paddingBottom: useAdaptiveSpacing(20),
+          },
+        ]}
       >
-        <Text style={styles.description}>
+        <Text
+          style={[
+            styles.description,
+            {
+              fontSize: isTablet
+                ? useAdaptiveFontSize(18)
+                : useAdaptiveFontSize(16),
+              marginTop: useAdaptiveSpacing(4),
+              marginBottom: useAdaptiveSpacing(4),
+              lineHeight: isTablet ? useAdaptiveSize(26) : useAdaptiveSize(24),
+            },
+          ]}
+        >
           Gerçek TYT sınavlarında çıkan soruları çözün ve kendinizi test edin.
         </Text>
 
         {loading && (
-          <View style={styles.loadingContainer}>
+          <View
+            style={[
+              styles.loadingContainer,
+              { paddingVertical: useAdaptiveSpacing(40) },
+            ]}
+          >
             <ActivityIndicator size='large' color={colors.primary} />
-            <Text style={styles.loadingText}>Sorular yükleniyor...</Text>
+            <Text
+              style={[
+                styles.loadingText,
+                {
+                  marginTop: useAdaptiveSpacing(16),
+                  fontSize: isTablet
+                    ? useAdaptiveFontSize(18)
+                    : useAdaptiveFontSize(16),
+                },
+              ]}
+            >
+              Sorular yükleniyor...
+            </Text>
           </View>
         )}
 
-        <View style={styles.yearsGrid}>{examYears.map(renderYearCard)}</View>
+        <View
+          style={[
+            styles.yearsGrid,
+            {
+              justifyContent: isSmallDevice ? 'center' : 'space-between',
+              gap: useAdaptiveSpacing(12),
+            },
+          ]}
+        >
+          {examYears.map(renderYearCard)}
+        </View>
       </ScrollView>
 
       {/* Custom Modal */}
@@ -305,26 +442,104 @@ const TytPastScreen: React.FC = () => {
         onRequestClose={() => setShowModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{modalData?.title}</Text>
-            <Text style={styles.modalMessage}>{modalData?.message}</Text>
+          <View
+            style={[
+              styles.modalContainer,
+              {
+                width: modalDimensions.width,
+                maxWidth: modalDimensions.maxWidth,
+                maxHeight: modalDimensions.maxHeight,
+                borderRadius: isTablet
+                  ? useAdaptiveSize(20)
+                  : useAdaptiveSize(16),
+                padding: isTablet
+                  ? useAdaptiveSpacing(28)
+                  : useAdaptiveSpacing(24),
+                margin: useAdaptiveSpacing(20),
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.modalTitle,
+                {
+                  fontSize: isTablet
+                    ? useAdaptiveFontSize(24)
+                    : useAdaptiveFontSize(20),
+                },
+              ]}
+            >
+              {modalData?.title}
+            </Text>
+            <Text
+              style={[
+                styles.modalMessage,
+                {
+                  fontSize: isTablet
+                    ? useAdaptiveFontSize(18)
+                    : useAdaptiveFontSize(16),
+                  marginBottom: useAdaptiveSpacing(24),
+                  lineHeight: isTablet
+                    ? useAdaptiveSize(26)
+                    : useAdaptiveSize(22),
+                },
+              ]}
+            >
+              {modalData?.message}
+            </Text>
 
-            <View style={styles.modalButtons}>
+            <View
+              style={[styles.modalButtons, { gap: useAdaptiveSpacing(12) }]}
+            >
               <TouchableOpacity
-                style={styles.modalButton}
+                style={[
+                  styles.modalButton,
+                  {
+                    paddingVertical: useAdaptiveSpacing(14),
+                    paddingHorizontal: useAdaptiveSpacing(24),
+                    borderRadius: useAdaptiveSize(8),
+                  },
+                ]}
                 onPress={handleOpenPdf}
                 activeOpacity={0.7}
               >
-                <Text style={styles.modalButtonText}>Aç</Text>
+                <Text
+                  style={[
+                    styles.modalButtonText,
+                    {
+                      fontSize: isTablet
+                        ? useAdaptiveFontSize(18)
+                        : useAdaptiveFontSize(16),
+                    },
+                  ]}
+                >
+                  Aç
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.modalButton, styles.modalCancelButton]}
+                style={[
+                  styles.modalButton,
+                  styles.modalCancelButton,
+                  {
+                    paddingVertical: useAdaptiveSpacing(14),
+                    paddingHorizontal: useAdaptiveSpacing(24),
+                    borderRadius: useAdaptiveSize(8),
+                  },
+                ]}
                 onPress={() => setShowModal(false)}
                 activeOpacity={0.7}
               >
                 <Text
-                  style={[styles.modalButtonText, styles.modalCancelButtonText]}
+                  style={[
+                    styles.modalButtonText,
+                    styles.modalCancelButtonText,
+                    {
+                      fontSize: isTablet
+                        ? useAdaptiveFontSize(18)
+                        : useAdaptiveFontSize(16),
+                    },
+                  ]}
                 >
                   İptal
                 </Text>
@@ -346,62 +561,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: responsiveSize(20),
-    paddingTop: responsiveSize(20),
-    paddingBottom: responsiveSize(20),
     backgroundColor: colors.background,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
   backButton: {
-    padding: responsiveSize(8),
-    borderRadius: responsiveSize(8),
+    // Dynamic styles applied inline
   },
   title: {
-    fontSize: responsiveFontSize(24),
     fontWeight: 'bold',
     color: colors.textPrimary,
     textAlign: 'center',
-  },
-  placeholder: {
-    width: responsiveSize(40),
   },
   content: {
     flex: 1,
   },
   contentContainer: {
-    paddingTop: responsiveSize(8),
-    paddingHorizontal: responsiveSize(20),
-    paddingBottom: responsiveSize(20),
+    // Dynamic styles applied inline
   },
   description: {
-    fontSize: responsiveFontSize(16),
     color: colors.textSecondary,
     textAlign: 'center',
-    marginTop: responsiveSize(4),
-    marginBottom: responsiveSize(4),
-    lineHeight: responsiveSize(24),
   },
   loadingContainer: {
     alignItems: 'center',
-    paddingVertical: responsiveSize(40),
   },
   loadingText: {
-    marginTop: responsiveSize(16),
-    fontSize: responsiveFontSize(16),
     color: colors.textSecondary,
   },
   yearsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
   },
   yearCard: {
-    width: '48%',
     backgroundColor: colors.cardBackground,
-    borderRadius: responsiveSize(16),
-    padding: responsiveSize(16),
-    marginBottom: responsiveSize(12),
     ...shadows.medium,
     borderWidth: 1,
     borderColor: colors.border,
@@ -415,18 +608,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: responsiveSize(8),
+    marginBottom: 8,
   },
   yearText: {
-    fontSize: responsiveFontSize(28),
     fontWeight: 'bold',
     color: colors.primary,
   },
   yearTitle: {
-    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: colors.textPrimary,
-    marginBottom: responsiveSize(12),
+    marginBottom: 12,
   },
   yearCardFooter: {
     flexDirection: 'row',
@@ -434,7 +625,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   questionCount: {
-    fontSize: responsiveFontSize(12),
     color: colors.textSecondary,
     fontWeight: '500',
   },
@@ -442,7 +632,6 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   comingSoonText: {
-    fontSize: responsiveFontSize(10),
     color: colors.textSecondary,
     fontStyle: 'italic',
   },
@@ -455,34 +644,23 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: colors.background,
-    borderRadius: responsiveSize(16),
-    padding: responsiveSize(24),
-    margin: responsiveSize(20),
-    minWidth: responsiveSize(280),
     ...shadows.medium,
   },
   modalTitle: {
-    fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textPrimary,
     textAlign: 'center',
-    marginBottom: responsiveSize(12),
+    marginBottom: 12,
   },
   modalMessage: {
-    fontSize: responsiveFontSize(16),
     color: colors.textSecondary,
     textAlign: 'center',
-    marginBottom: responsiveSize(24),
-    lineHeight: responsiveSize(22),
   },
   modalButtons: {
-    gap: responsiveSize(12),
+    // Dynamic styles applied inline
   },
   modalButton: {
     backgroundColor: colors.primary,
-    paddingVertical: responsiveSize(14),
-    paddingHorizontal: responsiveSize(24),
-    borderRadius: responsiveSize(8),
     alignItems: 'center',
   },
   modalCancelButton: {
@@ -491,7 +669,6 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   modalButtonText: {
-    fontSize: responsiveFontSize(16),
     fontWeight: '600',
     color: colors.background,
   },
