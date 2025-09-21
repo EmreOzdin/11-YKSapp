@@ -1,11 +1,11 @@
 // Environment Configuration
 // Bu dosyayı kendi MongoDB API adresinize göre güncelleyin
 
-export const ENVIRONMENT = {
+const ENVIRONMENT = {
   // MongoDB Configuration
   MONGODB: {
-    // MongoDB bağlantı URI'si
-    URI: process.env.MONGODB_URI || 'mongodb://localhost:27017',
+    // MongoDB Atlas bağlantı URI'si (kendi URI'nizi buraya yazın)
+    URI: process.env.MONGODB_URI || 'mongodb+srv://username:password@cluster.mongodb.net/yksapp?retryWrites=true&w=majority',
     DATABASE_NAME: 'yksapp',
   },
 
@@ -49,7 +49,7 @@ export const ENVIRONMENT = {
 };
 
 // Development Environment
-export const DEV_ENVIRONMENT = {
+const DEV_ENVIRONMENT = {
   ...ENVIRONMENT,
   MONGODB_API: {
     ...ENVIRONMENT.MONGODB_API,
@@ -62,7 +62,7 @@ export const DEV_ENVIRONMENT = {
 };
 
 // Production Environment
-export const PROD_ENVIRONMENT = {
+const PROD_ENVIRONMENT = {
   ...ENVIRONMENT,
   MONGODB_API: {
     ...ENVIRONMENT.MONGODB_API,
@@ -75,29 +75,41 @@ export const PROD_ENVIRONMENT = {
 };
 
 // Environment detection
-const isDevelopment = __DEV__;
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const isProduction = !isDevelopment;
 
 // Export current environment
-export const CURRENT_ENVIRONMENT = isProduction ? PROD_ENVIRONMENT : DEV_ENVIRONMENT;
+const CURRENT_ENVIRONMENT = isProduction ? PROD_ENVIRONMENT : DEV_ENVIRONMENT;
 
 // Helper functions
-export const getApiBaseUrl = (): string => {
+const getApiBaseUrl = () => {
   return CURRENT_ENVIRONMENT.MONGODB_API.BASE_URL;
 };
 
-export const isMongoDbEnabled = (): boolean => {
+const isMongoDbEnabled = () => {
   return CURRENT_ENVIRONMENT.FEATURES.USE_MONGODB;
 };
 
-export const isOfflineModeEnabled = (): boolean => {
+const isOfflineModeEnabled = () => {
   return CURRENT_ENVIRONMENT.FEATURES.OFFLINE_MODE;
 };
 
-export const isCacheEnabled = (): boolean => {
+const isCacheEnabled = () => {
   return CURRENT_ENVIRONMENT.FEATURES.CACHE_ENABLED;
 };
 
-export const isDebugMode = (): boolean => {
+const isDebugMode = () => {
   return CURRENT_ENVIRONMENT.FEATURES.DEBUG_MODE || false;
+};
+
+module.exports = {
+  ENVIRONMENT,
+  DEV_ENVIRONMENT,
+  PROD_ENVIRONMENT,
+  CURRENT_ENVIRONMENT,
+  getApiBaseUrl,
+  isMongoDbEnabled,
+  isOfflineModeEnabled,
+  isCacheEnabled,
+  isDebugMode
 };

@@ -110,16 +110,18 @@ export const sendUserInteraction = async (
       timestamp: new Date(),
     };
 
-    const response = await apiRequest<InteractionResponse>('/user-interactions', {
-      method: 'POST',
-      body: JSON.stringify(fullInteraction),
-    });
+    const response = await apiRequest<InteractionResponse>(
+      '/user-interactions',
+      {
+        method: 'POST',
+        body: JSON.stringify(fullInteraction),
+      }
+    );
 
     if (!response.success) {
       throw new Error(response.error || 'Failed to send user interaction');
     }
 
-    console.log(`✅ Kullanıcı etkileşimi gönderildi: ${interaction.interactionType}`);
     return true;
   } catch (error) {
     console.error('❌ Kullanıcı etkileşimi gönderilirken hata:', error);
@@ -132,25 +134,34 @@ export const sendBulkUserInteractions = async (
   interactions: Omit<UserInteraction, 'id' | 'timestamp'>[]
 ): Promise<boolean> => {
   try {
-    const fullInteractions: UserInteraction[] = interactions.map(interaction => ({
-      ...interaction,
-      id: generateId(),
-      timestamp: new Date(),
-    }));
+    const fullInteractions: UserInteraction[] = interactions.map(
+      interaction => ({
+        ...interaction,
+        id: generateId(),
+        timestamp: new Date(),
+      })
+    );
 
-    const response = await apiRequest<ApiResponse<{ count: number }>>('/user-interactions/bulk', {
-      method: 'POST',
-      body: JSON.stringify({ interactions: fullInteractions }),
-    });
+    const response = await apiRequest<ApiResponse<{ count: number }>>(
+      '/user-interactions/bulk',
+      {
+        method: 'POST',
+        body: JSON.stringify({ interactions: fullInteractions }),
+      }
+    );
 
     if (!response.success) {
-      throw new Error(response.error || 'Failed to send bulk user interactions');
+      throw new Error(
+        response.error || 'Failed to send bulk user interactions'
+      );
     }
 
-    console.log(`✅ ${fullInteractions.length} kullanıcı etkileşimi toplu olarak gönderildi`);
     return true;
   } catch (error) {
-    console.error('❌ Toplu kullanıcı etkileşimleri gönderilirken hata:', error);
+    console.error(
+      '❌ Toplu kullanıcı etkileşimleri gönderilirken hata:',
+      error
+    );
     return false;
   }
 };
@@ -223,27 +234,33 @@ export const getUserStats = async (
 // ==================== HİBRİT SERVİS (API + LOCAL STORAGE) ====================
 
 // Local storage için etkileşimleri sakla
-const storeInteractionLocally = async (interaction: UserInteraction): Promise<void> => {
+const storeInteractionLocally = async (
+  interaction: UserInteraction
+): Promise<void> => {
   try {
-    const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+    const AsyncStorage = (
+      await import('@react-native-async-storage/async-storage')
+    ).default;
     const key = 'user_interactions';
     const existing = await AsyncStorage.getItem(key);
     const interactions = existing ? JSON.parse(existing) : [];
-    
+
     interactions.push(interaction);
-    
+
     // Son 1000 etkileşimi sakla
     const recentInteractions = interactions.slice(-1000);
     await AsyncStorage.setItem(key, JSON.stringify(recentInteractions));
   } catch (error) {
-    console.error('❌ Etkileşim local storage\'a kaydedilirken hata:', error);
+    console.error("❌ Etkileşim local storage'a kaydedilirken hata:", error);
   }
 };
 
 // Local storage'dan etkileşimleri getir
 const getLocalInteractions = async (): Promise<UserInteraction[]> => {
   try {
-    const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+    const AsyncStorage = (
+      await import('@react-native-async-storage/async-storage')
+    ).default;
     const key = 'user_interactions';
     const existing = await AsyncStorage.getItem(key);
     return existing ? JSON.parse(existing) : [];
@@ -256,7 +273,9 @@ const getLocalInteractions = async (): Promise<UserInteraction[]> => {
 // Local storage'dan etkileşimleri temizle
 const clearLocalInteractions = async (): Promise<void> => {
   try {
-    const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
+    const AsyncStorage = (
+      await import('@react-native-async-storage/async-storage')
+    ).default;
     await AsyncStorage.removeItem('user_interactions');
   } catch (error) {
     console.error('❌ Local etkileşimler temizlenirken hata:', error);
@@ -282,17 +301,19 @@ export const sendUserInteractionHybrid = async (
           return true;
         }
       } catch (apiError) {
-        console.warn('⚠️ API\'ye gönderilemedi, local storage\'a kaydediliyor:', apiError);
+        console.warn(
+          "⚠️ API'ye gönderilemedi, local storage'a kaydediliyor:",
+          apiError
+        );
       }
     }
 
     // API başarısız olursa veya kapalıysa local storage'a kaydet
     try {
       await storeInteractionLocally(fullInteraction);
-      console.log(`📱 Etkileşim local storage'a kaydedildi: ${interaction.interactionType}`);
       return true;
     } catch (storageError) {
-      console.error('❌ Local storage\'a da kaydedilemedi:', storageError);
+      console.error("❌ Local storage'a da kaydedilemedi:", storageError);
       return false;
     }
   } catch (error) {
@@ -305,26 +326,22 @@ export const sendUserInteractionHybrid = async (
 export const syncLocalInteractionsToAPI = async (): Promise<boolean> => {
   try {
     const localInteractions = await getLocalInteractions();
-    
+
     if (localInteractions.length === 0) {
-      console.log('📱 Senkronize edilecek local etkileşim yok');
       return true;
     }
 
     if (!isMongoDbEnabled()) {
-      console.log('⚠️ MongoDB API kapalı, senkronizasyon atlandı');
       return false;
     }
 
     try {
       const success = await sendBulkUserInteractions(localInteractions);
-      
+
       if (success) {
         await clearLocalInteractions();
-        console.log(`✅ ${localInteractions.length} local etkileşim API'ye senkronize edildi`);
         return true;
       } else {
-        console.log('⚠️ API\'ye senkronizasyon başarısız, local etkileşimler korundu');
         return false;
       }
     } catch (apiError) {

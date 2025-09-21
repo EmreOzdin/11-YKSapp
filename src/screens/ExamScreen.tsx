@@ -76,9 +76,7 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
         if (realQuestions.length > 0) {
           setQuestions(realQuestions);
         }
-      } catch (error) {
-        console.log('API soruları yüklenemedi, örnek sorularla devam ediliyor');
-      }
+      } catch (error) {}
     }, 100);
   }, [subject, examType, navigation]);
 
@@ -135,18 +133,14 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
 
   // Sınavı bitirme
   const finishExam = useCallback(() => {
-    console.log('Sınav bitiriliyor...');
-
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
 
     // Sonuçları hesapla ve modal'ı aç
     const result = calculateExamResult();
-    console.log('Sınav sonuçları:', result);
     setExamResult(result);
     setShowResultModal(true);
-    console.log('Modal açılıyor...');
 
     // Sınav durumunu güncelle
     setIsExamFinished(true);

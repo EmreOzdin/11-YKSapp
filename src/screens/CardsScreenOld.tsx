@@ -1,42 +1,36 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import {
-  NavigationProp,
-  ParamListBase,
-  useNavigation,
+    NavigationProp,
+    ParamListBase,
+    useNavigation,
 } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Animated,
-  Dimensions,
-  Easing,
-  FlatList,
-  Image,
-  PanResponder,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Animated,
+    Dimensions,
+    Easing,
+    FlatList,
+    Image,
+    PanResponder,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { CardCategory, MemoryCard } from '../services/asyncStorageService';
 import {
-  getAllCardsFromStorage,
-  getCardsByCategory,
-  getCategoryStats,
-  loadAllCardsToStorage,
-} from '../services/localCardsService';
-import {
-  createSessionId,
-  syncLocalInteractionsToAPI,
-  trackCardFlip,
-  trackCardSwipe,
-  trackCardView,
-  trackCategorySelection,
-  trackExplanationView,
-  trackSessionEnd,
-  trackSessionStart,
+    createSessionId,
+    syncLocalInteractionsToAPI,
+    trackCardFlip,
+    trackCardSwipe,
+    trackCardView,
+    trackCategorySelection,
+    trackExplanationView,
+    trackSessionEnd,
+    trackSessionStart,
 } from '../services/userInteractionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -139,6 +133,31 @@ const CardsScreen: React.FC = () => {
           console.warn('⚠️ Session başlatma etkileşimi kaydedilemedi:', error);
         }
 
+        // MongoDB kartları temizleme işlemi kaldırıldı - kartların yüklenmesini engelliyordu
+
+        // AsyncStorage'dan soruları kontrol et
+        const existingQuestions = await getAllQuestionsFromStorage();
+
+        // Eğer soru yoksa veya yeterli soru yoksa otomatik olarak yükle
+        if (existingQuestions.length === 0 || existingQuestions.length < 18) {
+          const loadResult = await loadQuestionsToStorage();
+        } else {
+        }
+
+        // Matematik kartlarını kontrol et ve yükle
+        const existingMathCards = await getMathCardsFromStorage();
+
+        if (existingMathCards.length === 0) {
+          const mathLoadResult = await loadMathCardsToStorage();
+
+          // Yükleme sonrası tekrar kontrol et
+          const newMathCards = await getMathCardsFromStorage();
+
+          if (newMathCards.length > 0) {
+          }
+        } else {
+        }
+
         // Soruları ve kategorileri yükle
         await loadCategoriesAndCards();
 
@@ -176,9 +195,19 @@ const CardsScreen: React.FC = () => {
   useEffect(() => {
     const getTotalCardsCount = async () => {
       try {
-        // Local dosyalardan toplam kart sayısını al
-        const allCards = await getAllCardsFromStorage();
-        setTotalCardsCount(allCards.length);
+        // Hibrit servis kullanarak toplam kart sayısını al
+        const allQuestions = await getAllCardsHybrid();
+
+        // Matematik kartlarını da dahil et
+        const mathCards = await getMathCardsFromStorage();
+
+        // Tüm kartları birleştir (matematik kartları öncelikli)
+        const combinedCards = [
+          ...mathCards,
+          ...allQuestions.filter(card => card.category !== 'math'),
+        ];
+
+        setTotalCardsCount(combinedCards.length);
       } catch (error) {
         console.error('❌ Toplam kart sayısı alınırken hata:', error);
         // Hata durumunda sessizce devam et
@@ -221,26 +250,68 @@ const CardsScreen: React.FC = () => {
     try {
       setLoading(true);
 
-      // Tüm kartları local dosyalardan yükle
-      const loadResult = await loadAllCardsToStorage();
+      // API health check
+      const isAPIHealthy = await checkAPIHealth();
 
-      // Kategori istatistiklerini al
-      const categoryStats = await getCategoryStats();
+      // Hibrit servis kullanarak tüm kartları al (API öncelikli, fallback AsyncStorage)
+      const allQuestions = await getAllCardsHybrid();
 
-      setCategories(categoryStats);
+      // Matematik kartlarını mathscards.ts'den al ve diğer kartlarla birleştir
+      const mathCards = await getMathCardsFromStorage();
 
-      // Tüm kartları al
-      const allCards = await getAllCardsFromStorage();
-
-      // İlk kartları göster
-      if (allCards.length > 0) {
-        const shuffledCards = shuffleCards(allCards);
-        setCards(shuffledCards);
+      if (mathCards.length > 0) {
       } else {
+        await loadMathCardsToStorage();
+        const newMathCards = await getMathCardsFromStorage();
       }
+
+      // Tüm kartları birleştir (matematik kartları öncelikli)
+      const combinedCards = [
+        ...mathCards,
+        ...allQuestions.filter(card => card.category !== 'math'),
+      ];
+
+      // Hibrit servis kullanarak kategori istatistiklerini al
+      const categoryStats = await getCategoryStatsHybrid();
+
+      // Matematik kategorisi istatistiklerini güncelle
+      const updatedCategoryStats = categoryStats.map(stat => {
+        if (stat.name === 'Matematik' || stat.name === 'math') {
+          return {
+            ...stat,
+            name: 'Matematik',
+            count: mathCards.length,
+            easyCount: mathCards.filter(card => card.difficulty === 'easy')
+              .length,
+            mediumCount: mathCards.filter(card => card.difficulty === 'medium')
+              .length,
+            hardCount: mathCards.filter(card => card.difficulty === 'hard')
+              .length,
+          };
+        }
+        return stat;
+      });
+
+      // Eğer kategori istatistikleri boşsa varsayılan kategorileri kullan
+      if (updatedCategoryStats.length === 0) {
+        setCategories(cardCategories);
+      } else {
+        setCategories(updatedCategoryStats);
+      }
+
+      // Soruları karıştır ve ayarla
+      const shuffledCards = shuffleCards(combinedCards);
+      setCards(shuffledCards);
+
     } catch (error) {
       console.error('❌ Kartlar yüklenirken hata:', error);
-      Alert.alert('Hata', 'Kartlar yüklenirken bir hata oluştu');
+      Alert.alert(
+        'Hata',
+        'Kartlar yüklenirken bir hata oluştu. Lütfen tekrar deneyin.'
+      );
+
+      // Hata durumunda varsayılan kategorileri kullan
+      setCategories(cardCategories);
     } finally {
       setLoading(false);
     }
@@ -261,39 +332,34 @@ const CardsScreen: React.FC = () => {
       if (categoryName === '') {
         // Tüm kartları göster - hibrit servis kullan ve karıştır
         setSelectedCategory(null);
-        const allCards = await getAllCardsFromStorage();
-        const shuffledCards = shuffleCards(allCards);
+        const allQuestions = await getAllCardsHybrid();
+
+        // Matematik kartlarını da dahil et
+        const mathCards = await getMathCardsFromStorage();
+
+        // Tüm kartları birleştir (matematik kartları öncelikli)
+        const combinedCards = [
+          ...mathCards,
+          ...allQuestions.filter(card => card.category !== 'math'),
+        ];
+
+        const shuffledCards = shuffleCards(combinedCards);
         setCards(shuffledCards);
 
         // "Tümü" butonunu orta konuma kaydır
         setTimeout(() => {
           if (categoriesFlatListRef.current && categories.length > 0) {
-            const targetIndex = 0; // "Tümü" butonu 0. index
-
-            // Önce scrollToIndex ile deneyelim
             try {
               categoriesFlatListRef.current.scrollToIndex({
-                index: targetIndex,
+                index: 0,
                 animated: true,
                 viewPosition: 0.5, // 0.5 = orta konum
               });
             } catch (error) {
-              // scrollToOffset kullanarak manuel ortalama
-              const cardWidth = responsiveSize(132); // Kart genişliği + margin
-              const screenCenter = screenWidth / 2;
-              const cardCenter = cardWidth / 2;
-              const paddingLeft = 5; // contentContainerStyle'daki paddingLeft
-
-              // Offset hesaplama: index * cardWidth + paddingLeft - ekranın ortası + kartın ortası
-              const offset =
-                targetIndex * cardWidth +
-                paddingLeft -
-                screenCenter +
-                cardCenter;
-              const finalOffset = Math.max(0, offset);
-
+              console.warn('⚠️ scrollToIndex hatası:', error);
+              // Fallback: scrollToOffset kullan
               categoriesFlatListRef.current.scrollToOffset({
-                offset: finalOffset,
+                offset: 0,
                 animated: true,
               });
             }
@@ -305,42 +371,25 @@ const CardsScreen: React.FC = () => {
 
         let categoryQuestions: MemoryCard[] = [];
 
-        // Kategori adını mapping ile dönüştür
-        const categoryMapping: { [key: string]: string } = {
-          Matematik: 'math',
-          Biyoloji: 'biology',
-          Kimya: 'chemistry',
-          Tarih: 'history',
-          Fizik: 'physics',
-          Türkçe: 'turkish',
-        };
+        // Matematik kategorisi için özel işlem
+        if (categoryName === 'Matematik' || categoryName === 'math') {
+          categoryQuestions = await getMathCardsFromStorage();
 
-        const categoryKey =
-          categoryMapping[categoryName] || categoryName.toLowerCase();
-
-        categoryQuestions = await getCardsByCategory(categoryKey);
+          if (categoryQuestions.length > 0) {
+          } else {
+            await loadMathCardsToStorage();
+            categoryQuestions = await getMathCardsFromStorage();
+          }
+        } else {
+          // Diğer kategoriler için hibrit servis kullan
+          categoryQuestions = await getCardsByCategoryHybrid(categoryName);
+        }
 
         const shuffledCards = shuffleCards(categoryQuestions);
         setCards(shuffledCards);
 
         // Seçilen kategoriyi orta konuma kaydır
-        // Kategori mapping'ini kullanarak doğru index'i bul
-
-        // Kategori ismini mapping ile dönüştür
-        const reverseCategoryMapping: { [key: string]: string } = {
-          math: 'Matematik',
-          biology: 'Biyoloji',
-          chemistry: 'Kimya',
-          history: 'Tarih',
-          physics: 'Fizik',
-          turkish: 'Türkçe',
-        };
-
-        const displayName = reverseCategoryMapping[categoryKey] || categoryName;
-        const categoryIndex = categories.findIndex(
-          cat => cat.name === displayName
-        );
-
+        const categoryIndex = getCategoryIndex(categoryName);
         if (categoryIndex !== -1) {
           setTimeout(() => {
             if (categoriesFlatListRef.current && categories.length > 0) {
@@ -348,7 +397,6 @@ const CardsScreen: React.FC = () => {
               const maxIndex = categories.length; // "Tümü" + kategoriler
 
               if (targetIndex >= 0 && targetIndex <= maxIndex) {
-                // Önce scrollToIndex ile deneyelim
                 try {
                   categoriesFlatListRef.current.scrollToIndex({
                     index: targetIndex,
@@ -356,22 +404,11 @@ const CardsScreen: React.FC = () => {
                     viewPosition: 0.5, // 0.5 = orta konum
                   });
                 } catch (error) {
-                  // scrollToOffset kullanarak manuel ortalama
-                  const cardWidth = responsiveSize(132); // Kart genişliği + margin
-                  const screenCenter = screenWidth / 2;
-                  const cardCenter = cardWidth / 2;
-                  const paddingLeft = 5; // contentContainerStyle'daki paddingLeft
-
-                  // Offset hesaplama: index * cardWidth + paddingLeft - ekranın ortası + kartın ortası
-                  const offset =
-                    targetIndex * cardWidth +
-                    paddingLeft -
-                    screenCenter +
-                    cardCenter;
-                  const finalOffset = Math.max(0, offset);
-
+                  console.warn('⚠️ scrollToIndex hatası:', error);
+                  // Fallback: scrollToOffset kullan
+                  const offset = targetIndex * 132; // Kart genişliği + margin
                   categoriesFlatListRef.current.scrollToOffset({
-                    offset: finalOffset,
+                    offset: offset,
                     animated: true,
                   });
                 }
@@ -414,6 +451,33 @@ const CardsScreen: React.FC = () => {
       ];
     }
     return shuffledCards;
+  };
+
+  // MongoDB'deki tüm kartları temizle
+  const clearAllMongoCards = async () => {
+    try {
+      // API sağlık kontrolü
+      const isHealthy = await checkAPIHealth();
+      if (!isHealthy) {
+        return;
+      }
+
+      // Tüm kartları temizle
+      const { clearAllCardsFromAPI } = await import(
+        '../services/mongoCardsService'
+      );
+      const result = await clearAllCardsFromAPI();
+
+      if (result) {
+      } else {
+      }
+    } catch (error) {
+      // API sunucusu çalışmıyorsa bu normal bir durum
+      if (error.message && error.message.includes('404')) {
+      } else {
+        console.warn('⚠️ MongoDB kartları temizlenirken hata:', error);
+      }
+    }
   };
 
   // Kartı çevir - Optimize edilmiş
@@ -477,7 +541,7 @@ const CardsScreen: React.FC = () => {
 
   // Sonraki kart - Optimize edilmiş
   const nextCard = async () => {
-    if (cards.length > 0) {
+    if (currentCardIndex < cards.length - 1) {
       // Kart kaydırma etkileşimini takip et - async olmadan
       if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
         const currentCard = cards[currentCardIndex];
@@ -520,9 +584,7 @@ const CardsScreen: React.FC = () => {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        // Son karta ulaşıldığında başa dön
-        const newIndex =
-          currentCardIndex < cards.length - 1 ? currentCardIndex + 1 : 0;
+        const newIndex = currentCardIndex + 1;
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
         setShowExplanation(new Set());
@@ -537,7 +599,7 @@ const CardsScreen: React.FC = () => {
 
   // Önceki kart - Optimize edilmiş
   const previousCard = async () => {
-    if (cards.length > 0) {
+    if (currentCardIndex > 0) {
       // Kart kaydırma etkileşimini takip et - async olmadan
       if (sessionId && cards.length > 0 && currentCardIndex < cards.length) {
         const currentCard = cards[currentCardIndex];
@@ -580,9 +642,7 @@ const CardsScreen: React.FC = () => {
           useNativeDriver: true,
         }),
       ]).start(() => {
-        // İlk karta ulaşıldığında sona git
-        const newIndex =
-          currentCardIndex > 0 ? currentCardIndex - 1 : cards.length - 1;
+        const newIndex = currentCardIndex - 1;
         setCurrentCardIndex(newIndex);
         setFlippedCards(new Set());
         setShowExplanation(new Set());
@@ -945,17 +1005,15 @@ const CardsScreen: React.FC = () => {
                     </View>
                   )}
 
-                  {currentCard.tags &&
-                    currentCard.tags.length > 0 &&
-                    !showExplanation.has(currentCard.id) && (
-                      <View style={styles.tagsContainer}>
-                        {currentCard.tags.map((tag, tagIndex) => (
-                          <View key={tagIndex} style={styles.tag}>
-                            <Text style={styles.tagText}>{tag}</Text>
-                          </View>
-                        ))}
-                      </View>
-                    )}
+                  {currentCard.tags && currentCard.tags.length > 0 && (
+                    <View style={styles.tagsContainer}>
+                      {currentCard.tags.map((tag, tagIndex) => (
+                        <View key={tagIndex} style={styles.tag}>
+                          <Text style={styles.tagText}>{tag}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
                 </View>
 
                 <View style={styles.cardFooter}>
@@ -1046,22 +1104,14 @@ const CardsScreen: React.FC = () => {
               ...categories,
             ]}
             renderItem={renderCategoryCard}
-            keyExtractor={(item, index) => `${item.name}-${index}`}
+            keyExtractor={item => item.name}
             horizontal
             showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.categoriesList}
             style={styles.categoriesFlatList}
             snapToInterval={responsiveSize(132)} // Kart genişliği + margin
             decelerationRate='fast'
             snapToAlignment='center'
-            snapToStart={false}
-            snapToEnd={false}
-            contentContainerStyle={[
-              styles.categoriesList,
-              {
-                paddingLeft: 5,
-                paddingRight: 40,
-              },
-            ]}
             getItemLayout={(data, index) => ({
               length: responsiveSize(132), // Kart genişliği + margin
               offset: responsiveSize(132) * index,
@@ -1207,17 +1257,17 @@ const styles = StyleSheet.create({
     ...shadows.medium,
   },
   selectedCategoryCard: {
-    borderWidth: 6,
+    borderWidth: 5,
     borderColor: '#ffffff',
-    elevation: 30,
+    elevation: 25,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 20,
+      height: 15,
     },
-    shadowOpacity: 0.7,
-    shadowRadius: 25,
-    transform: [{ scale: 1.12 }],
+    shadowOpacity: 0.55,
+    shadowRadius: 20,
+    transform: [{ scale: 1.08 }],
   },
   categoryGradient: {
     flex: 1,

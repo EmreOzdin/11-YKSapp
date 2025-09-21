@@ -261,7 +261,7 @@ const TytPastScreen: React.FC = () => {
           {
             width: cardWidth,
             padding: cardPadding,
-            marginBottom: useAdaptiveSpacing(12),
+            marginBottom: 5,
             borderRadius: isTablet ? useAdaptiveSize(20) : useAdaptiveSize(16),
           },
           !examYear.isAvailable && styles.disabledCard,
@@ -330,7 +330,7 @@ const TytPastScreen: React.FC = () => {
         style={[
           styles.header,
           {
-            paddingTop: safeAreaPadding.top + useAdaptiveSpacing(20),
+            paddingTop: 8,
             paddingBottom: useAdaptiveSpacing(20),
             paddingHorizontal: useAdaptiveSpacing(20),
           },
