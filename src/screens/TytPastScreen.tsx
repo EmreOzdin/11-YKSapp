@@ -17,17 +17,14 @@ import {
   View,
 } from 'react-native';
 import ApiService from '../services/apiService';
-import { getSafeAreaPadding } from '../utils/responsive';
-import { colors, shadows } from '../utils/theme';
 import {
-  useAdaptiveFontSize,
-  useAdaptiveSize,
-  useAdaptiveSpacing,
-  useBreakpoint,
-  useDeviceType,
-  useGridColumns,
-  useModalDimensions,
-} from '../utils/useResponsive';
+  getSafeAreaPadding,
+  responsiveFontSize,
+  responsiveSize,
+  screenHeight,
+  screenWidth,
+} from '../utils/responsive';
+import { colors, shadows } from '../utils/theme';
 
 interface ExamYear {
   year: number;
@@ -47,21 +44,15 @@ const TytPastScreen: React.FC = () => {
     pdfUrl: string;
   } | null>(null);
 
-  // Responsive hooks
-  const { isTablet, isSmallDevice, isMediumDevice, isLargeDevice } =
-    useDeviceType();
-  const {
-    current: currentBreakpoint,
-    isXs,
-    isSm,
-    isMd,
-    isLg,
-  } = useBreakpoint();
-  const modalDimensions = useModalDimensions();
+  // Responsive values
+  const isTablet = screenWidth > 768;
+  const isSmallDevice = screenWidth < 375;
+  const isMediumDevice = screenWidth >= 375 && screenWidth < 768;
+  const isLargeDevice = screenWidth >= 768;
   const safeAreaPadding = getSafeAreaPadding();
 
   // Grid configuration based on device type
-  const gridConfig = useGridColumns(isTablet ? 3 : 2);
+  const gridColumns = isTablet ? 3 : 2;
   const [examYears, setExamYears] = useState<ExamYear[]>([
     { year: 2025, title: '2025 TYT', questionCount: 120, isAvailable: true },
     { year: 2024, title: '2024 TYT', questionCount: 120, isAvailable: true },
@@ -239,19 +230,17 @@ const TytPastScreen: React.FC = () => {
 
   const renderYearCard = (examYear: ExamYear) => {
     const cardWidth = isTablet ? '30%' : isSmallDevice ? '100%' : '48%';
-    const cardPadding = isTablet
-      ? useAdaptiveSpacing(20)
-      : useAdaptiveSpacing(16);
-    const iconSize = isTablet ? useAdaptiveSize(28) : useAdaptiveSize(24);
+    const cardPadding = isTablet ? responsiveSize(20) : responsiveSize(16);
+    const iconSize = isTablet ? responsiveSize(28) : responsiveSize(24);
     const yearFontSize = isTablet
-      ? useAdaptiveFontSize(32)
-      : useAdaptiveFontSize(28);
+      ? responsiveFontSize(32)
+      : responsiveFontSize(28);
     const titleFontSize = isTablet
-      ? useAdaptiveFontSize(16)
-      : useAdaptiveFontSize(14);
+      ? responsiveFontSize(16)
+      : responsiveFontSize(14);
     const countFontSize = isTablet
-      ? useAdaptiveFontSize(14)
-      : useAdaptiveFontSize(12);
+      ? responsiveFontSize(14)
+      : responsiveFontSize(12);
 
     return (
       <TouchableOpacity
@@ -262,7 +251,7 @@ const TytPastScreen: React.FC = () => {
             width: cardWidth,
             padding: cardPadding,
             marginBottom: 5,
-            borderRadius: isTablet ? useAdaptiveSize(20) : useAdaptiveSize(16),
+            borderRadius: isTablet ? responsiveSize(20) : responsiveSize(16),
           },
           !examYear.isAvailable && styles.disabledCard,
         ]}
@@ -305,14 +294,14 @@ const TytPastScreen: React.FC = () => {
           {examYear.isAvailable ? (
             <Ionicons
               name='chevron-forward'
-              size={useAdaptiveSize(20)}
+              size={responsiveSize(20)}
               color={colors.primary}
             />
           ) : (
             <Text
               style={[
                 styles.comingSoonText,
-                { fontSize: useAdaptiveFontSize(10) },
+                { fontSize: responsiveFontSize(10) },
               ]}
             >
               Yakında
@@ -331,8 +320,8 @@ const TytPastScreen: React.FC = () => {
           styles.header,
           {
             paddingTop: 8,
-            paddingBottom: useAdaptiveSpacing(20),
-            paddingHorizontal: useAdaptiveSpacing(20),
+            paddingBottom: responsiveSize(20),
+            paddingHorizontal: responsiveSize(20),
           },
         ]}
       >
@@ -340,8 +329,8 @@ const TytPastScreen: React.FC = () => {
           style={[
             styles.backButton,
             {
-              padding: useAdaptiveSpacing(8),
-              borderRadius: useAdaptiveSize(8),
+              padding: responsiveSize(8),
+              borderRadius: responsiveSize(8),
             },
           ]}
           onPress={() => navigation.goBack()}
@@ -349,7 +338,7 @@ const TytPastScreen: React.FC = () => {
         >
           <Ionicons
             name='arrow-back'
-            size={useAdaptiveSize(24)}
+            size={responsiveSize(24)}
             color={colors.textPrimary}
           />
         </TouchableOpacity>
@@ -358,14 +347,14 @@ const TytPastScreen: React.FC = () => {
             styles.title,
             {
               fontSize: isTablet
-                ? useAdaptiveFontSize(28)
-                : useAdaptiveFontSize(24),
+                ? responsiveFontSize(28)
+                : responsiveFontSize(24),
             },
           ]}
         >
           TYT Çıkmış Sorular
         </Text>
-        <View style={{ width: useAdaptiveSize(40) }} />
+        <View style={{ width: responsiveSize(40) }} />
       </View>
 
       {/* Content */}
@@ -375,9 +364,9 @@ const TytPastScreen: React.FC = () => {
         contentContainerStyle={[
           styles.contentContainer,
           {
-            paddingTop: useAdaptiveSpacing(8),
-            paddingHorizontal: useAdaptiveSpacing(20),
-            paddingBottom: useAdaptiveSpacing(20),
+            paddingTop: responsiveSize(8),
+            paddingHorizontal: responsiveSize(20),
+            paddingBottom: responsiveSize(20),
           },
         ]}
       >
@@ -386,11 +375,11 @@ const TytPastScreen: React.FC = () => {
             styles.description,
             {
               fontSize: isTablet
-                ? useAdaptiveFontSize(18)
-                : useAdaptiveFontSize(16),
-              marginTop: useAdaptiveSpacing(4),
-              marginBottom: useAdaptiveSpacing(4),
-              lineHeight: isTablet ? useAdaptiveSize(26) : useAdaptiveSize(24),
+                ? responsiveFontSize(18)
+                : responsiveFontSize(16),
+              marginTop: responsiveSize(4),
+              marginBottom: responsiveSize(4),
+              lineHeight: isTablet ? responsiveSize(26) : responsiveSize(24),
             },
           ]}
         >
@@ -401,7 +390,7 @@ const TytPastScreen: React.FC = () => {
           <View
             style={[
               styles.loadingContainer,
-              { paddingVertical: useAdaptiveSpacing(40) },
+              { paddingVertical: responsiveSize(40) },
             ]}
           >
             <ActivityIndicator size='large' color={colors.primary} />
@@ -409,10 +398,10 @@ const TytPastScreen: React.FC = () => {
               style={[
                 styles.loadingText,
                 {
-                  marginTop: useAdaptiveSpacing(16),
+                  marginTop: responsiveSize(16),
                   fontSize: isTablet
-                    ? useAdaptiveFontSize(18)
-                    : useAdaptiveFontSize(16),
+                    ? responsiveFontSize(18)
+                    : responsiveFontSize(16),
                 },
               ]}
             >
@@ -426,7 +415,7 @@ const TytPastScreen: React.FC = () => {
             styles.yearsGrid,
             {
               justifyContent: isSmallDevice ? 'center' : 'space-between',
-              gap: useAdaptiveSpacing(12),
+              gap: responsiveSize(12),
             },
           ]}
         >
@@ -446,16 +435,14 @@ const TytPastScreen: React.FC = () => {
             style={[
               styles.modalContainer,
               {
-                width: modalDimensions.width,
-                maxWidth: modalDimensions.maxWidth,
-                maxHeight: modalDimensions.maxHeight,
+                width: screenWidth * 0.9,
+                maxWidth: 500,
+                maxHeight: screenHeight * 0.8,
                 borderRadius: isTablet
-                  ? useAdaptiveSize(20)
-                  : useAdaptiveSize(16),
-                padding: isTablet
-                  ? useAdaptiveSpacing(28)
-                  : useAdaptiveSpacing(24),
-                margin: useAdaptiveSpacing(20),
+                  ? responsiveSize(20)
+                  : responsiveSize(16),
+                padding: isTablet ? responsiveSize(28) : responsiveSize(24),
+                margin: responsiveSize(20),
               },
             ]}
           >
@@ -464,8 +451,8 @@ const TytPastScreen: React.FC = () => {
                 styles.modalTitle,
                 {
                   fontSize: isTablet
-                    ? useAdaptiveFontSize(24)
-                    : useAdaptiveFontSize(20),
+                    ? responsiveFontSize(24)
+                    : responsiveFontSize(20),
                 },
               ]}
             >
@@ -476,28 +463,26 @@ const TytPastScreen: React.FC = () => {
                 styles.modalMessage,
                 {
                   fontSize: isTablet
-                    ? useAdaptiveFontSize(18)
-                    : useAdaptiveFontSize(16),
-                  marginBottom: useAdaptiveSpacing(24),
+                    ? responsiveFontSize(18)
+                    : responsiveFontSize(16),
+                  marginBottom: responsiveSize(24),
                   lineHeight: isTablet
-                    ? useAdaptiveSize(26)
-                    : useAdaptiveSize(22),
+                    ? responsiveSize(26)
+                    : responsiveSize(22),
                 },
               ]}
             >
               {modalData?.message}
             </Text>
 
-            <View
-              style={[styles.modalButtons, { gap: useAdaptiveSpacing(12) }]}
-            >
+            <View style={[styles.modalButtons, { gap: responsiveSize(12) }]}>
               <TouchableOpacity
                 style={[
                   styles.modalButton,
                   {
-                    paddingVertical: useAdaptiveSpacing(14),
-                    paddingHorizontal: useAdaptiveSpacing(24),
-                    borderRadius: useAdaptiveSize(8),
+                    paddingVertical: responsiveSize(14),
+                    paddingHorizontal: responsiveSize(24),
+                    borderRadius: responsiveSize(8),
                   },
                 ]}
                 onPress={handleOpenPdf}
@@ -508,8 +493,8 @@ const TytPastScreen: React.FC = () => {
                     styles.modalButtonText,
                     {
                       fontSize: isTablet
-                        ? useAdaptiveFontSize(18)
-                        : useAdaptiveFontSize(16),
+                        ? responsiveFontSize(18)
+                        : responsiveFontSize(16),
                     },
                   ]}
                 >
@@ -522,9 +507,9 @@ const TytPastScreen: React.FC = () => {
                   styles.modalButton,
                   styles.modalCancelButton,
                   {
-                    paddingVertical: useAdaptiveSpacing(14),
-                    paddingHorizontal: useAdaptiveSpacing(24),
-                    borderRadius: useAdaptiveSize(8),
+                    paddingVertical: responsiveSize(14),
+                    paddingHorizontal: responsiveSize(24),
+                    borderRadius: responsiveSize(8),
                   },
                 ]}
                 onPress={() => setShowModal(false)}
@@ -536,8 +521,8 @@ const TytPastScreen: React.FC = () => {
                     styles.modalCancelButtonText,
                     {
                       fontSize: isTablet
-                        ? useAdaptiveFontSize(18)
-                        : useAdaptiveFontSize(16),
+                        ? responsiveFontSize(18)
+                        : responsiveFontSize(16),
                     },
                   ]}
                 >
