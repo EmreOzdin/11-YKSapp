@@ -7,6 +7,10 @@ import { chemistryCards } from '../data/chemistrycards';
 import { historyCards } from '../data/historycards';
 import { mathCards } from '../data/mathscards';
 import { physicsCards } from '../data/phsyicscards';
+import {
+  getAllTYTQuestions,
+  tyt2018Questions,
+} from '../data/questionRepository';
 import { turkishCards } from '../data/turkishcards';
 
 // Storage keys for each category
@@ -17,6 +21,26 @@ const STORAGE_KEYS = {
   history: 'yks_history_cards_data',
   physics: 'yks_physics_cards_data',
   turkish: 'yks_turkish_cards_data',
+  tyt2018: 'yks_tyt2018_questions_data',
+  tyt2019: 'yks_tyt2019_questions_data',
+  tyt2020: 'yks_tyt2020_questions_data',
+  tyt2021: 'yks_tyt2021_questions_data',
+  tyt2022: 'yks_tyt2022_questions_data',
+  tyt2023: 'yks_tyt2023_questions_data',
+  tyt2024: 'yks_tyt2024_questions_data',
+  tyt2025: 'yks_tyt2025_questions_data',
+  tytAll: 'yks_tyt_all_questions_data',
+  ayt2018: 'yks_ayt2018_questions_data',
+  ayt2019: 'yks_ayt2019_questions_data',
+  ayt2020: 'yks_ayt2020_questions_data',
+  ayt2021: 'yks_ayt2021_questions_data',
+  ayt2022: 'yks_ayt2022_questions_data',
+  ayt2023: 'yks_ayt2023_questions_data',
+  ayt2024: 'yks_ayt2024_questions_data',
+  ayt2025: 'yks_ayt2025_questions_data',
+  aytAll: 'yks_ayt_all_questions_data',
+  ydt2018: 'yks_ydt2018_questions_data',
+  ydtAll: 'yks_ydt_all_questions_data',
 };
 
 // Card data mapping
@@ -27,11 +51,50 @@ const CARD_DATA = {
   history: historyCards,
   physics: physicsCards,
   turkish: turkishCards,
+  tyt2018: tyt2018Questions,
+  tyt2019: getAllTYTQuestions().filter(q => q.examYear === 2019),
+  tyt2020: getAllTYTQuestions().filter(q => q.examYear === 2020),
+  tyt2021: getAllTYTQuestions().filter(q => q.examYear === 2021),
+  tyt2022: getAllTYTQuestions().filter(q => q.examYear === 2022),
+  tyt2023: getAllTYTQuestions().filter(q => q.examYear === 2023),
+  tyt2024: getAllTYTQuestions().filter(q => q.examYear === 2024),
+  tyt2025: getAllTYTQuestions().filter(q => q.examYear === 2025),
+  tytAll: getAllTYTQuestions(),
+  ayt2018: getAllTYTQuestions().filter(
+    q => q.examYear === 2018 && q.examType === 'AYT'
+  ),
+  ayt2019: getAllTYTQuestions().filter(
+    q => q.examYear === 2019 && q.examType === 'AYT'
+  ),
+  ayt2020: getAllTYTQuestions().filter(
+    q => q.examYear === 2020 && q.examType === 'AYT'
+  ),
+  ayt2021: getAllTYTQuestions().filter(
+    q => q.examYear === 2021 && q.examType === 'AYT'
+  ),
+  ayt2022: getAllTYTQuestions().filter(
+    q => q.examYear === 2022 && q.examType === 'AYT'
+  ),
+  ayt2023: getAllTYTQuestions().filter(
+    q => q.examYear === 2023 && q.examType === 'AYT'
+  ),
+  ayt2024: getAllTYTQuestions().filter(
+    q => q.examYear === 2024 && q.examType === 'AYT'
+  ),
+  ayt2025: getAllTYTQuestions().filter(
+    q => q.examYear === 2025 && q.examType === 'AYT'
+  ),
+  aytAll: getAllTYTQuestions().filter(q => q.examType === 'AYT'),
+  ydt2018: getAllTYTQuestions().filter(
+    q => q.examYear === 2018 && q.examType === 'YDT'
+  ),
+  ydtAll: getAllTYTQuestions().filter(q => q.examType === 'YDT'),
 };
 
-
 // Load cards to storage for a specific category
-export const loadCardsToStorage = async (category: string): Promise<boolean> => {
+export const loadCardsToStorage = async (
+  category: string
+): Promise<boolean> => {
   try {
     const cards = CARD_DATA[category as keyof typeof CARD_DATA];
     if (!cards) {
@@ -43,6 +106,7 @@ export const loadCardsToStorage = async (category: string): Promise<boolean> => 
     const cardsWithTimestamps: MemoryCard[] = cards.map(card => ({
       ...card,
       tags: card.tags || [],
+      difficulty: card.difficulty as 'easy' | 'medium' | 'hard',
       createdAt: new Date(),
       updatedAt: new Date(),
     }));
@@ -75,19 +139,24 @@ export const loadAllCardsToStorage = async (): Promise<boolean> => {
 };
 
 // Get cards from storage for a specific category
-export const getCardsFromStorage = async (category: string): Promise<MemoryCard[]> => {
+export const getCardsFromStorage = async (
+  category: string
+): Promise<MemoryCard[]> => {
   try {
     const storageKey = STORAGE_KEYS[category as keyof typeof STORAGE_KEYS];
     const jsonValue = await AsyncStorage.getItem(storageKey);
-    
+
     if (jsonValue != null) {
       const cards: MemoryCard[] = JSON.parse(jsonValue);
       return cards;
     }
-    
+
     return [];
   } catch (error) {
-    console.error(`❌ AsyncStorage'dan ${category} kartları getirilirken hata:`, error);
+    console.error(
+      `❌ AsyncStorage'dan ${category} kartları getirilirken hata:`,
+      error
+    );
     return [];
   }
 };
@@ -96,7 +165,7 @@ export const getCardsFromStorage = async (category: string): Promise<MemoryCard[
 export const getAllCardsFromStorage = async (): Promise<MemoryCard[]> => {
   try {
     const allCards: MemoryCard[] = [];
-    
+
     for (const category of Object.keys(CARD_DATA)) {
       const categoryCards = await getCardsFromStorage(category);
       allCards.push(...categoryCards);
@@ -110,10 +179,12 @@ export const getAllCardsFromStorage = async (): Promise<MemoryCard[]> => {
 };
 
 // Get cards by category (with fallback to loading from data)
-export const getCardsByCategory = async (category: string): Promise<MemoryCard[]> => {
+export const getCardsByCategory = async (
+  category: string
+): Promise<MemoryCard[]> => {
   try {
     let cards = await getCardsFromStorage(category);
-    
+
     // If no cards in storage, load from data
     if (cards.length === 0) {
       const loadResult = await loadCardsToStorage(category);
@@ -123,22 +194,37 @@ export const getCardsByCategory = async (category: string): Promise<MemoryCard[]
     }
     return cards;
   } catch (error) {
-    console.error(`❌ ${category} kategorisi kartları getirilirken hata:`, error);
+    console.error(
+      `❌ ${category} kategorisi kartları getirilirken hata:`,
+      error
+    );
     return [];
   }
 };
 
 // Get category statistics
-export const getCategoryStats = async (): Promise<Array<{_id: string, name: string, count: number, easyCount: number, mediumCount: number, hardCount: number, lastAccessed: Date}>> => {
+export const getCategoryStats = async (): Promise<
+  Array<{
+    _id: string;
+    name: string;
+    count: number;
+    easyCount: number;
+    mediumCount: number;
+    hardCount: number;
+    lastAccessed: Date;
+  }>
+> => {
   try {
     const stats = [];
-    
+
     for (const category of Object.keys(CARD_DATA)) {
       const cards = await getCardsFromStorage(category);
       const easyCount = cards.filter(card => card.difficulty === 'easy').length;
-      const mediumCount = cards.filter(card => card.difficulty === 'medium').length;
+      const mediumCount = cards.filter(
+        card => card.difficulty === 'medium'
+      ).length;
       const hardCount = cards.filter(card => card.difficulty === 'hard').length;
-      
+
       stats.push({
         _id: category,
         name: getCategoryDisplayName(category),
@@ -149,7 +235,7 @@ export const getCategoryStats = async (): Promise<Array<{_id: string, name: stri
         lastAccessed: new Date(),
       });
     }
-    
+
     return stats;
   } catch (error) {
     console.error('❌ Kategori istatistikleri getirilirken hata:', error);
@@ -159,7 +245,7 @@ export const getCategoryStats = async (): Promise<Array<{_id: string, name: stri
 
 // Get category display name
 const getCategoryDisplayName = (category: string): string => {
-  const displayNames: {[key: string]: string} = {
+  const displayNames: { [key: string]: string } = {
     math: 'Matematik',
     biology: 'Biyoloji',
     chemistry: 'Kimya',
@@ -167,12 +253,14 @@ const getCategoryDisplayName = (category: string): string => {
     physics: 'Fizik',
     turkish: 'Türkçe',
   };
-  
+
   return displayNames[category] || category;
 };
 
 // Check if cards exist in storage for a category
-export const checkCardsInStorage = async (category: string): Promise<boolean> => {
+export const checkCardsInStorage = async (
+  category: string
+): Promise<boolean> => {
   try {
     const cards = await getCardsFromStorage(category);
     return cards.length > 0;
@@ -187,10 +275,88 @@ export const clearAllCardsFromStorage = async (): Promise<boolean> => {
   try {
     const keys = Object.values(STORAGE_KEYS);
     await Promise.all(keys.map(key => AsyncStorage.removeItem(key)));
-    
+
     return true;
   } catch (error) {
     console.error('❌ Kartlar temizlenirken hata:', error);
     return false;
   }
+};
+
+// Soru deposu için özel fonksiyonlar
+export const getTYT2018Questions = async (): Promise<MemoryCard[]> => {
+  return await getCardsFromStorage('tyt2018');
+};
+
+export const getTYT2018QuestionsBySubject = async (
+  subject: string
+): Promise<MemoryCard[]> => {
+  const allQuestions = await getTYT2018Questions();
+  return allQuestions.filter(q => q.subject === subject);
+};
+
+export const getTYT2018QuestionsByDifficulty = async (
+  difficulty: 'easy' | 'medium' | 'hard'
+): Promise<MemoryCard[]> => {
+  const allQuestions = await getTYT2018Questions();
+  return allQuestions.filter(q => q.difficulty === difficulty);
+};
+
+export const getRandomTYT2018Questions = async (
+  count: number
+): Promise<MemoryCard[]> => {
+  const allQuestions = await getTYT2018Questions();
+  const shuffled = allQuestions.sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
+export const getMockExamQuestions = async (
+  year?: number
+): Promise<MemoryCard[]> => {
+  const allQuestions = year
+    ? await getCardsFromStorage(
+        year === 2018
+          ? 'tyt2018'
+          : year === 2019
+            ? 'tyt2019'
+            : year === 2020
+              ? 'tyt2020'
+              : year === 2021
+                ? 'tyt2021'
+                : year === 2022
+                  ? 'tyt2022'
+                  : year === 2023
+                    ? 'tyt2023'
+                    : year === 2024
+                      ? 'tyt2024'
+                      : year === 2025
+                        ? 'tyt2025'
+                        : 'tytAll'
+      )
+    : await getCardsFromStorage('tytAll');
+
+  // TYT formatına uygun soru dağılımı
+  const subjectDistribution = {
+    Türkçe: 40,
+    Matematik: 40,
+    Fizik: 7,
+    Kimya: 7,
+    Biyoloji: 6,
+    Tarih: 5,
+    Coğrafya: 5,
+    Felsefe: 5,
+    'Din Kültürü': 5,
+  };
+
+  const questions: MemoryCard[] = [];
+
+  // Her dersten belirtilen sayıda soru al
+  Object.entries(subjectDistribution).forEach(([subject, count]) => {
+    const subjectQuestions = allQuestions.filter(q => q.subject === subject);
+    const shuffled = subjectQuestions.sort(() => 0.5 - Math.random());
+    questions.push(...shuffled.slice(0, count));
+  });
+
+  // Deneme sınavı için soruları karıştır
+  return questions.sort(() => 0.5 - Math.random());
 };

@@ -11,6 +11,11 @@ export interface MemoryCard {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  // Soru deposu için ek alanlar
+  examYear?: number;
+  examType?: string;
+  subject?: string;
+  questionNumber?: number;
 }
 
 export interface CardCategory {

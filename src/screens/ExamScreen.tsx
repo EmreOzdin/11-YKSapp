@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { getMockExamQuestions } from '../services/localCardsService';
 import { QuestionService, QuestionType } from '../services/questionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -66,9 +67,46 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     setTimeLeft(45 * 60);
     setLoading(false);
 
-    // Arka planda API'den gerçek soruları dene
+    // Arka planda gerçek soruları dene (önce soru deposundan, sonra API'den)
     setTimeout(async () => {
       try {
+        // Önce soru deposundan TYT sorularını dene
+        if (examType === 'TYT') {
+          const mockQuestions = await getMockExamQuestions();
+          if (mockQuestions.length > 0) {
+            // MemoryCard formatını QuestionType formatına dönüştür
+            const convertedQuestions: QuestionType[] = mockQuestions.map(
+              (card, index) => ({
+                id: card.id,
+                questionText: card.question,
+                options: [
+                  card.answer,
+                  'Yanlış Seçenek 1',
+                  'Yanlış Seçenek 2',
+                  'Yanlış Seçenek 3',
+                ].sort(() => 0.5 - Math.random()), // Seçenekleri karıştır
+                correctAnswer: card.answer,
+                explanation: card.explanation || '',
+                subject: card.subject || subject,
+                difficulty:
+                  card.difficulty === 'easy'
+                    ? 1
+                    : card.difficulty === 'medium'
+                      ? 2
+                      : 3,
+                category: card.category,
+                topic: card.subject || subject,
+                topicId: card.category,
+                examType: examType || 'TYT',
+                isPastQuestion: true,
+              })
+            );
+            setQuestions(convertedQuestions);
+            return;
+          }
+        }
+
+        // Soru deposunda yoksa API'den dene
         const realQuestions = await QuestionService.getExamQuestionsBySubject(
           subject,
           examType

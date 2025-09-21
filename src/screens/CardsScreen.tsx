@@ -24,7 +24,9 @@ import { CardCategory, MemoryCard } from '../services/asyncStorageService';
 import {
   getAllCardsFromStorage,
   getCardsByCategory,
+  getCardsFromStorage,
   getCategoryStats,
+  getTYT2018Questions,
   loadAllCardsToStorage,
 } from '../services/localCardsService';
 import {
@@ -121,6 +123,125 @@ const CardsScreen: React.FC = () => {
       easyCount: 1,
       mediumCount: 1,
       hardCount: 1,
+    },
+    {
+      name: 'TYT 2018',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2019',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2020',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2021',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2022',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2023',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2024',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'TYT 2025',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2018',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2019',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2020',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2021',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2022',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2023',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2024',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'AYT 2025',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
+    },
+    {
+      name: 'YDT 2018',
+      count: 25,
+      easyCount: 8,
+      mediumCount: 12,
+      hardCount: 5,
     },
   ];
 
@@ -305,20 +426,57 @@ const CardsScreen: React.FC = () => {
 
         let categoryQuestions: MemoryCard[] = [];
 
-        // Kategori adını mapping ile dönüştür
-        const categoryMapping: { [key: string]: string } = {
-          Matematik: 'math',
-          Biyoloji: 'biology',
-          Kimya: 'chemistry',
-          Tarih: 'history',
-          Fizik: 'physics',
-          Türkçe: 'turkish',
-        };
+        // TYT kategorileri için özel işlem
+        if (categoryName === 'TYT 2018') {
+          categoryQuestions = await getTYT2018Questions();
+        } else if (categoryName === 'TYT 2019') {
+          categoryQuestions = await getCardsFromStorage('tyt2019');
+        } else if (categoryName === 'TYT 2020') {
+          categoryQuestions = await getCardsFromStorage('tyt2020');
+        } else if (categoryName === 'TYT 2021') {
+          categoryQuestions = await getCardsFromStorage('tyt2021');
+        } else if (categoryName === 'TYT 2022') {
+          categoryQuestions = await getCardsFromStorage('tyt2022');
+        } else if (categoryName === 'TYT 2023') {
+          categoryQuestions = await getCardsFromStorage('tyt2023');
+        } else if (categoryName === 'TYT 2024') {
+          categoryQuestions = await getCardsFromStorage('tyt2024');
+        } else if (categoryName === 'TYT 2025') {
+          categoryQuestions = await getCardsFromStorage('tyt2025');
+        } else if (categoryName === 'AYT 2018') {
+          categoryQuestions = await getCardsFromStorage('ayt2018');
+        } else if (categoryName === 'AYT 2019') {
+          categoryQuestions = await getCardsFromStorage('ayt2019');
+        } else if (categoryName === 'AYT 2020') {
+          categoryQuestions = await getCardsFromStorage('ayt2020');
+        } else if (categoryName === 'AYT 2021') {
+          categoryQuestions = await getCardsFromStorage('ayt2021');
+        } else if (categoryName === 'AYT 2022') {
+          categoryQuestions = await getCardsFromStorage('ayt2022');
+        } else if (categoryName === 'AYT 2023') {
+          categoryQuestions = await getCardsFromStorage('ayt2023');
+        } else if (categoryName === 'AYT 2024') {
+          categoryQuestions = await getCardsFromStorage('ayt2024');
+        } else if (categoryName === 'AYT 2025') {
+          categoryQuestions = await getCardsFromStorage('ayt2025');
+        } else if (categoryName === 'YDT 2018') {
+          categoryQuestions = await getCardsFromStorage('ydt2018');
+        } else {
+          // Kategori adını mapping ile dönüştür
+          const categoryMapping: { [key: string]: string } = {
+            Matematik: 'math',
+            Biyoloji: 'biology',
+            Kimya: 'chemistry',
+            Tarih: 'history',
+            Fizik: 'physics',
+            Türkçe: 'turkish',
+          };
 
-        const categoryKey =
-          categoryMapping[categoryName] || categoryName.toLowerCase();
+          const categoryKey =
+            categoryMapping[categoryName] || categoryName.toLowerCase();
 
-        categoryQuestions = await getCardsByCategory(categoryKey);
+          categoryQuestions = await getCardsByCategory(categoryKey);
+        }
 
         const shuffledCards = shuffleCards(categoryQuestions);
         setCards(shuffledCards);
@@ -336,7 +494,7 @@ const CardsScreen: React.FC = () => {
           turkish: 'Türkçe',
         };
 
-        const displayName = reverseCategoryMapping[categoryKey] || categoryName;
+        const displayName = categoryName;
         const categoryIndex = categories.findIndex(
           cat => cat.name === displayName
         );
@@ -746,6 +904,57 @@ const CardsScreen: React.FC = () => {
     } else if (item.name === 'history' || item.name === 'Tarih') {
       color = '#dc2626'; // Modern koyu kırmızı
       icon = 'castle';
+    } else if (item.name === 'TYT 2018') {
+      color = '#7c3aed'; // Modern mor
+      icon = 'school';
+    } else if (item.name === 'TYT 2019') {
+      color = '#059669'; // Modern yeşil
+      icon = 'school';
+    } else if (item.name === 'TYT 2020') {
+      color = '#dc2626'; // Modern kırmızı
+      icon = 'school';
+    } else if (item.name === 'TYT 2021') {
+      color = '#0891b2'; // Modern cyan
+      icon = 'school';
+    } else if (item.name === 'TYT 2022') {
+      color = '#ea580c'; // Modern orange
+      icon = 'school';
+    } else if (item.name === 'TYT 2023') {
+      color = '#7c2d12'; // Modern brown
+      icon = 'school';
+    } else if (item.name === 'TYT 2024') {
+      color = '#1e40af'; // Modern blue
+      icon = 'school';
+    } else if (item.name === 'TYT 2025') {
+      color = '#be185d'; // Modern pink
+      icon = 'school';
+    } else if (item.name === 'AYT 2018') {
+      color = '#4338ca'; // Modern indigo
+      icon = 'school';
+    } else if (item.name === 'AYT 2019') {
+      color = '#059669'; // Modern green
+      icon = 'school';
+    } else if (item.name === 'AYT 2020') {
+      color = '#dc2626'; // Modern red
+      icon = 'school';
+    } else if (item.name === 'AYT 2021') {
+      color = '#0891b2'; // Modern cyan
+      icon = 'school';
+    } else if (item.name === 'AYT 2022') {
+      color = '#ea580c'; // Modern orange
+      icon = 'school';
+    } else if (item.name === 'AYT 2023') {
+      color = '#7c2d12'; // Modern brown
+      icon = 'school';
+    } else if (item.name === 'AYT 2024') {
+      color = '#1e40af'; // Modern blue
+      icon = 'school';
+    } else if (item.name === 'AYT 2025') {
+      color = '#be185d'; // Modern pink
+      icon = 'school';
+    } else if (item.name === 'YDT 2018') {
+      color = '#7c3aed'; // Modern purple
+      icon = 'language';
     }
 
     // Kategori ismini Türkçe'ye çevir
