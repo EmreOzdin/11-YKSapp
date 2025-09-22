@@ -124,125 +124,6 @@ const CardsScreen: React.FC = () => {
       mediumCount: 1,
       hardCount: 1,
     },
-    {
-      name: 'TYT 2018',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2019',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2020',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2021',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2022',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2023',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2024',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'TYT 2025',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2018',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2019',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2020',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2021',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2022',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2023',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2024',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'AYT 2025',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
-    {
-      name: 'YDT 2018',
-      count: 25,
-      easyCount: 8,
-      mediumCount: 12,
-      hardCount: 5,
-    },
   ];
 
   // Kategorileri ve kartları yükle
@@ -380,46 +261,11 @@ const CardsScreen: React.FC = () => {
       }
 
       if (categoryName === '') {
-        // Tüm kartları göster - hibrit servis kullan ve karıştır
+        // Tüm kartları göster
         setSelectedCategory(null);
         const allCards = await getAllCardsFromStorage();
         const shuffledCards = shuffleCards(allCards);
         setCards(shuffledCards);
-
-        // "Tümü" butonunu orta konuma kaydır
-        setTimeout(() => {
-          if (categoriesFlatListRef.current && categories.length > 0) {
-            const targetIndex = 0; // "Tümü" butonu 0. index
-
-            // Önce scrollToIndex ile deneyelim
-            try {
-              categoriesFlatListRef.current.scrollToIndex({
-                index: targetIndex,
-                animated: true,
-                viewPosition: 0.5, // 0.5 = orta konum
-              });
-            } catch (error) {
-              // scrollToOffset kullanarak manuel ortalama
-              const cardWidth = responsiveSize(132); // Kart genişliği + margin
-              const screenCenter = screenWidth / 2;
-              const cardCenter = cardWidth / 2;
-              const paddingLeft = 5; // contentContainerStyle'daki paddingLeft
-
-              // Offset hesaplama: index * cardWidth + paddingLeft - ekranın ortası + kartın ortası
-              const offset =
-                targetIndex * cardWidth +
-                paddingLeft -
-                screenCenter +
-                cardCenter;
-              const finalOffset = Math.max(0, offset);
-
-              categoriesFlatListRef.current.scrollToOffset({
-                offset: finalOffset,
-                animated: true,
-              });
-            }
-          }
-        }, 100);
       } else {
         // Seçilen kategoriye ait kartları al - hibrit servis kullan ve karıştır
         setSelectedCategory(categoryName);
@@ -817,53 +663,6 @@ const CardsScreen: React.FC = () => {
 
   // Kategori kartını render et
   const renderCategoryCard = ({ item }: { item: CardCategory }) => {
-    // Eğer bu "Tümü" butonu ise
-    if (item.name === 'all' || item.name === 'Tümü') {
-      return (
-        <TouchableOpacity
-          style={[
-            styles.categoryCard,
-            selectedCategory === null && styles.selectedCategoryCard,
-          ]}
-          onPress={() => handleCategorySelect('')}
-          activeOpacity={0.7}
-        >
-          <View
-            style={[
-              styles.categoryGradient,
-              {
-                backgroundColor: '#6366f1', // Modern indigo
-                shadowColor: '#6366f1',
-                shadowOffset: {
-                  width: 0,
-                  height: 4,
-                },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 8,
-              },
-            ]}
-          >
-            <MaterialCommunityIcons
-              name='view-grid'
-              size={responsiveSize(24)}
-              color={colors.textWhite}
-            />
-            <Text style={styles.categoryTitle}>Tümü</Text>
-            <Text style={styles.categoryCount}>
-              {totalCardsCount || 18} kart
-            </Text>
-
-            {/* Seçili kategori göstergesi */}
-            {selectedCategory === null && (
-              <View style={styles.selectedIndicator}>
-                <Ionicons name='checkmark-circle' size={16} color='#ffffff' />
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      );
-    }
     const categoryColors = {
       Matematik: '#FF0000', // Kırmızı
       Fizik: '#0000FF', // Mavi

@@ -7,13 +7,9 @@ import { chemistryCards } from '../data/chemistrycards';
 import { historyCards } from '../data/historycards';
 import { mathCards } from '../data/mathscards';
 import { physicsCards } from '../data/phsyicscards';
-import {
-  getAllTYTQuestions,
-  tyt2018Questions,
-} from '../data/questionRepository';
 import { turkishCards } from '../data/turkishcards';
 
-// Storage keys for each category
+// Storage keys for card categories only
 const STORAGE_KEYS = {
   math: 'yks_math_cards_data',
   biology: 'yks_biology_cards_data',
@@ -21,29 +17,9 @@ const STORAGE_KEYS = {
   history: 'yks_history_cards_data',
   physics: 'yks_physics_cards_data',
   turkish: 'yks_turkish_cards_data',
-  tyt2018: 'yks_tyt2018_questions_data',
-  tyt2019: 'yks_tyt2019_questions_data',
-  tyt2020: 'yks_tyt2020_questions_data',
-  tyt2021: 'yks_tyt2021_questions_data',
-  tyt2022: 'yks_tyt2022_questions_data',
-  tyt2023: 'yks_tyt2023_questions_data',
-  tyt2024: 'yks_tyt2024_questions_data',
-  tyt2025: 'yks_tyt2025_questions_data',
-  tytAll: 'yks_tyt_all_questions_data',
-  ayt2018: 'yks_ayt2018_questions_data',
-  ayt2019: 'yks_ayt2019_questions_data',
-  ayt2020: 'yks_ayt2020_questions_data',
-  ayt2021: 'yks_ayt2021_questions_data',
-  ayt2022: 'yks_ayt2022_questions_data',
-  ayt2023: 'yks_ayt2023_questions_data',
-  ayt2024: 'yks_ayt2024_questions_data',
-  ayt2025: 'yks_ayt2025_questions_data',
-  aytAll: 'yks_ayt_all_questions_data',
-  ydt2018: 'yks_ydt2018_questions_data',
-  ydtAll: 'yks_ydt_all_questions_data',
 };
 
-// Card data mapping
+// Card data mapping - sadece ders kategorileri
 const CARD_DATA = {
   math: mathCards,
   biology: biologyCards,
@@ -51,44 +27,6 @@ const CARD_DATA = {
   history: historyCards,
   physics: physicsCards,
   turkish: turkishCards,
-  tyt2018: tyt2018Questions,
-  tyt2019: getAllTYTQuestions().filter(q => q.examYear === 2019),
-  tyt2020: getAllTYTQuestions().filter(q => q.examYear === 2020),
-  tyt2021: getAllTYTQuestions().filter(q => q.examYear === 2021),
-  tyt2022: getAllTYTQuestions().filter(q => q.examYear === 2022),
-  tyt2023: getAllTYTQuestions().filter(q => q.examYear === 2023),
-  tyt2024: getAllTYTQuestions().filter(q => q.examYear === 2024),
-  tyt2025: getAllTYTQuestions().filter(q => q.examYear === 2025),
-  tytAll: getAllTYTQuestions(),
-  ayt2018: getAllTYTQuestions().filter(
-    q => q.examYear === 2018 && q.examType === 'AYT'
-  ),
-  ayt2019: getAllTYTQuestions().filter(
-    q => q.examYear === 2019 && q.examType === 'AYT'
-  ),
-  ayt2020: getAllTYTQuestions().filter(
-    q => q.examYear === 2020 && q.examType === 'AYT'
-  ),
-  ayt2021: getAllTYTQuestions().filter(
-    q => q.examYear === 2021 && q.examType === 'AYT'
-  ),
-  ayt2022: getAllTYTQuestions().filter(
-    q => q.examYear === 2022 && q.examType === 'AYT'
-  ),
-  ayt2023: getAllTYTQuestions().filter(
-    q => q.examYear === 2023 && q.examType === 'AYT'
-  ),
-  ayt2024: getAllTYTQuestions().filter(
-    q => q.examYear === 2024 && q.examType === 'AYT'
-  ),
-  ayt2025: getAllTYTQuestions().filter(
-    q => q.examYear === 2025 && q.examType === 'AYT'
-  ),
-  aytAll: getAllTYTQuestions().filter(q => q.examType === 'AYT'),
-  ydt2018: getAllTYTQuestions().filter(
-    q => q.examYear === 2018 && q.examType === 'YDT'
-  ),
-  ydtAll: getAllTYTQuestions().filter(q => q.examType === 'YDT'),
 };
 
 // Load cards to storage for a specific category
@@ -243,7 +181,7 @@ export const getCategoryStats = async (): Promise<
   }
 };
 
-// Get category display name
+// Get category display name - sadece ders kategorileri
 const getCategoryDisplayName = (category: string): string => {
   const displayNames: { [key: string]: string } = {
     math: 'Matematik',
