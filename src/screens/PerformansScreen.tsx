@@ -360,6 +360,10 @@ const styles = StyleSheet.create({
       responsiveSize(35) + getSafeAreaPadding().top,
       responsiveSize(35) + getSafeAreaPadding().top
     ),
+    paddingBottom: platformSelect(
+      getSafeAreaPadding().bottom,
+      getSafeAreaPadding().bottom
+    ),
   },
   header: {
     paddingTop: responsiveSize(5),

@@ -1119,6 +1119,10 @@ const styles = StyleSheet.create({
       responsiveSize(35) + getSafeAreaPadding().top,
       responsiveSize(35) + getSafeAreaPadding().top
     ),
+    paddingBottom: platformSelect(
+      getSafeAreaPadding().bottom,
+      getSafeAreaPadding().bottom
+    ),
   },
   loadingContainer: {
     flex: 1,
@@ -1134,7 +1138,7 @@ const styles = StyleSheet.create({
   // Header Styles
   header: {
     paddingTop: platformSelect(responsiveSize(5), responsiveSize(8)),
-    paddingBottom: platformSelect(responsiveSize(-30), responsiveSize(-28)),
+    paddingBottom: platformSelect(responsiveSize(-30), responsiveSize(-145)),
     paddingHorizontal: spacing.md,
     zIndex: 1000,
     elevation: platformSelect(5, 8),
@@ -1152,7 +1156,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backButton: {
-    padding: responsiveSize(8),
+    padding: responsiveSize(14),
   },
   headerTitle: {
     fontSize: responsiveFontSize(20),
@@ -1204,6 +1208,7 @@ const styles = StyleSheet.create({
   categoriesList: {
     paddingHorizontal: responsiveSize(20),
     paddingRight: responsiveSize(60), // Sağ tarafta daha az boşluk
+    marginTop: responsiveSize(5),
   },
   categoryCard: {
     width: responsiveSize(120),
@@ -1255,11 +1260,11 @@ const styles = StyleSheet.create({
   },
   // Cards Section
   cardsSection: {
-    flex: 0.99,
-    marginTop: responsiveSize(12),
+    flex: 1,
+    marginTop: platformSelect(responsiveSize(12), responsiveSize(8)),
     backgroundColor: '#fff',
-    borderRadius: responsiveSize(20),
-    padding: responsiveSize(16),
+    borderRadius: platformSelect(responsiveSize(20), responsiveSize(16)),
+    padding: platformSelect(responsiveSize(16), responsiveSize(12)),
     ...shadows.medium,
   },
   cardsHeader: {
@@ -1307,15 +1312,16 @@ const styles = StyleSheet.create({
   },
 
   cardsContainer: {
-    flex: 1,
+    flex: 0.95,
     minHeight: responsiveSize(450),
   },
 
   // Main Card Styles
   mainCardContainer: {
-    flex: 0.85,
+    flex: platformSelect(0.85, 0.88),
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: platformSelect(responsiveSize(0), responsiveSize(5)),
   },
 
   animatedCard: {
@@ -1325,7 +1331,7 @@ const styles = StyleSheet.create({
 
   mainCard: {
     width: '100%',
-    height: '100%',
+    height: '95%',
     backgroundColor: '#fff',
     borderRadius: responsiveSize(24),
     padding: responsiveSize(24),
@@ -1342,9 +1348,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingVertical: responsiveSize(0),
-    paddingTop: responsiveSize(0),
-    marginTop: responsiveSize(-20),
+    paddingVertical: platformSelect(responsiveSize(0), responsiveSize(5)),
+    paddingTop: platformSelect(responsiveSize(0), responsiveSize(5)),
+    marginTop: platformSelect(responsiveSize(-20), responsiveSize(-15)),
   },
   questionContainerCentered: {
     justifyContent: 'center',

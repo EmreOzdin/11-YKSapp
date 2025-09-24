@@ -835,6 +835,10 @@ const styles = StyleSheet.create({
       responsiveSize(55) + getSafeAreaPadding().top,
       responsiveSize(55) + getSafeAreaPadding().top
     ),
+    paddingBottom: platformSelect(
+      getSafeAreaPadding().bottom,
+      getSafeAreaPadding().bottom
+    ),
   },
   contentContainer: {
     flex: 1,
