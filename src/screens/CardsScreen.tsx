@@ -1134,7 +1134,7 @@ const styles = StyleSheet.create({
   // Header Styles
   header: {
     paddingTop: platformSelect(responsiveSize(5), responsiveSize(8)),
-    paddingBottom: platformSelect(responsiveSize(10), responsiveSize(12)),
+    paddingBottom: platformSelect(responsiveSize(-30), responsiveSize(-28)),
     paddingHorizontal: spacing.md,
     zIndex: 1000,
     elevation: platformSelect(5, 8),
@@ -1255,7 +1255,7 @@ const styles = StyleSheet.create({
   },
   // Cards Section
   cardsSection: {
-    flex: 1,
+    flex: 0.99,
     marginTop: responsiveSize(12),
     backgroundColor: '#fff',
     borderRadius: responsiveSize(20),
@@ -1313,7 +1313,7 @@ const styles = StyleSheet.create({
 
   // Main Card Styles
   mainCardContainer: {
-    flex: 0.9,
+    flex: 0.85,
     alignItems: 'center',
     justifyContent: 'center',
   },
