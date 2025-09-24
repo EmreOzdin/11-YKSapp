@@ -54,10 +54,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
+    paddingTop: responsiveSize(45),
   },
   header: {
-    paddingTop: responsiveSize(10),
-    paddingBottom: responsiveSize(20),
+    paddingTop: responsiveSize(5),
+    paddingBottom: responsiveSize(10),
     paddingHorizontal: responsiveSize(20),
     zIndex: 1000,
     elevation: 5,
@@ -74,6 +75,8 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textWhite,
+    textAlign: 'center',
+    flex: 1,
   },
   placeholder: {
     width: responsiveSize(40),

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { getMockExamQuestions } from '../services/localCardsService';
+import { QuestionRepositoryService } from '../services/questionRepositoryService';
 import { QuestionService, QuestionType } from '../services/questionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -24,16 +24,7 @@ interface ExamResult {
   timeSpent: number; // dakika cinsinden
 }
 
-interface ExamScreenProps {
-  route: {
-    params: {
-      subject: string;
-      examType?: 'TYT' | 'AYT' | 'YDT';
-    };
-  };
-}
-
-const ExamScreen: React.FC<ExamScreenProps> = () => {
+const ExamScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const route = useRoute();
   const { subject, examType } = route.params as {
@@ -70,9 +61,9 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
     // Arka planda gerçek soruları dene (önce soru deposundan, sonra API'den)
     setTimeout(async () => {
       try {
-        // Önce soru deposundan TYT sorularını dene
+        // Önce soru deposundan sınav sorularını dene
         if (examType === 'TYT') {
-          const mockQuestions = await getMockExamQuestions();
+          const mockQuestions = QuestionRepositoryService.getAllTYTQuestions();
           if (mockQuestions.length > 0) {
             // MemoryCard formatını QuestionType formatına dönüştür
             const convertedQuestions: QuestionType[] = mockQuestions.map(
@@ -101,7 +92,44 @@ const ExamScreen: React.FC<ExamScreenProps> = () => {
                 isPastQuestion: true,
               })
             );
-            setQuestions(convertedQuestions);
+            // 45 soru al ve karıştır
+            const shuffled = convertedQuestions.sort(() => 0.5 - Math.random());
+            setQuestions(shuffled.slice(0, 45));
+            return;
+          }
+        } else if (examType === 'AYT') {
+          const mockQuestions = QuestionRepositoryService.getAllAYTQuestions();
+          if (mockQuestions.length > 0) {
+            // MemoryCard formatını QuestionType formatına dönüştür
+            const convertedQuestions: QuestionType[] = mockQuestions.map(
+              (card, index) => ({
+                id: card.id,
+                questionText: card.question,
+                options: [
+                  card.answer,
+                  'Yanlış Seçenek 1',
+                  'Yanlış Seçenek 2',
+                  'Yanlış Seçenek 3',
+                ].sort(() => 0.5 - Math.random()), // Seçenekleri karıştır
+                correctAnswer: card.answer,
+                explanation: card.explanation || '',
+                subject: card.subject || subject,
+                difficulty:
+                  card.difficulty === 'easy'
+                    ? 1
+                    : card.difficulty === 'medium'
+                      ? 2
+                      : 3,
+                category: card.category,
+                topic: card.subject || subject,
+                topicId: card.category,
+                examType: examType || 'AYT',
+                isPastQuestion: true,
+              })
+            );
+            // 40 soru al ve karıştır
+            const shuffled = convertedQuestions.sort(() => 0.5 - Math.random());
+            setQuestions(shuffled.slice(0, 40));
             return;
           }
         }
@@ -667,6 +695,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
+    paddingTop: responsiveSize(45),
   },
   scrollView: {
     flex: 1,

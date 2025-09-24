@@ -328,6 +328,25 @@ export const TOPIC_CATEGORIES: TopicCategory[] = [
 // Soru servisi sınıfı
 export class QuestionService {
   private static readonly QUESTIONS_KEY = 'questions';
+
+  // Subject mapping - uygulamadaki subject'ler ile questionRepository'deki subject'ler arasında eşleştirme
+  private static getSubjectMapping(subject: string): string[] {
+    const mapping: { [key: string]: string[] } = {
+      Türkçe: ['Türkçe'],
+      Matematik: ['Matematik'],
+      Fizik: ['Fizik'],
+      Kimya: ['Kimya'],
+      Biyoloji: ['Biyoloji'],
+      Tarih: ['Tarih'],
+      Coğrafya: ['Coğrafya'],
+      Felsefe: ['Felsefe'],
+      'Din Kültürü': ['Din Kültürü'],
+      'Fen Bilimleri': ['Fizik', 'Kimya', 'Biyoloji'],
+      'Sosyal Bilimler': ['Tarih', 'Coğrafya', 'Felsefe', 'Din Kültürü'],
+    };
+
+    return mapping[subject] || [subject];
+  }
   private static readonly USERS_KEY = 'users';
   private static readonly USER_SELECTIONS_KEY = 'user_selections';
 
@@ -492,7 +511,10 @@ export class QuestionService {
       try {
         mongoQuestions = await Promise.race([apiPromise, timeoutPromise]);
       } catch (timeoutError) {
-        console.warn('API çağrısı timeout oldu, local storage kullanılıyor:', timeoutError);
+        console.warn(
+          'API çağrısı timeout oldu, local storage kullanılıyor:',
+          timeoutError
+        );
         mongoQuestions = [];
       }
 
@@ -518,10 +540,49 @@ export class QuestionService {
     }
   }
 
-  // Derse göre soruları getirme
+  // Derse göre soruları getirme - questionRepository.ts'den
   static async getQuestionsBySubject(subject: string): Promise<QuestionType[]> {
     try {
-      // Timeout ile API çağrısını sınırla (3 saniye)
+      // Önce questionRepository'den dene
+      const { QuestionRepositoryService } = await import(
+        './questionRepositoryService.js'
+      );
+      const repoQuestions =
+        QuestionRepositoryService.getStudyQuestions(subject);
+
+      if (repoQuestions.length > 0) {
+        // MemoryCard formatını QuestionType formatına dönüştür
+        const convertedQuestions: QuestionType[] = repoQuestions.map(
+          (card: any) => ({
+            id: card.id,
+            questionText: card.question,
+            options: [
+              card.answer,
+              'Yanlış Seçenek 1',
+              'Yanlış Seçenek 2',
+              'Yanlış Seçenek 3',
+            ].sort(() => 0.5 - Math.random()),
+            correctAnswer: card.answer,
+            explanation: card.explanation || '',
+            subject: card.subject || subject,
+            difficulty:
+              card.difficulty === 'easy'
+                ? 1
+                : card.difficulty === 'medium'
+                  ? 2
+                  : 3,
+            category: card.category,
+            topic: card.subject || subject,
+            topicId: card.category,
+            examType: 'TYT',
+            isPastQuestion: true,
+          })
+        );
+
+        return convertedQuestions;
+      }
+
+      // Fallback: Timeout ile API çağrısını sınırla (3 saniye)
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error('API timeout')), 1000);
       });
@@ -561,12 +622,69 @@ export class QuestionService {
     }
   }
 
-  // Sınav için ders bazlı soruları getirme (45 soru)
+  // Sınav için ders bazlı soruları getirme - questionRepository.ts'den
   static async getExamQuestionsBySubject(
     subject: string,
     examType?: 'TYT' | 'AYT' | 'YDT'
   ): Promise<QuestionType[]> {
     try {
+      // Önce questionRepository'den dene
+      const { QuestionRepositoryService } = await import(
+        './questionRepositoryService.js'
+      );
+      let repoQuestions: any[] = [];
+
+      if (examType === 'TYT') {
+        repoQuestions = QuestionRepositoryService.getAllTYTQuestions();
+      } else if (examType === 'AYT') {
+        repoQuestions = QuestionRepositoryService.getAllAYTQuestions();
+      } else {
+        repoQuestions = QuestionRepositoryService.getStudyQuestions(subject);
+      }
+
+      // Derse göre filtrele - subject mapping kullan
+      if (subject) {
+        const mappedSubjects = this.getSubjectMapping(subject);
+        repoQuestions = repoQuestions.filter(q =>
+          mappedSubjects.includes(q.subject)
+        );
+      }
+
+      if (repoQuestions.length > 0) {
+        // MemoryCard formatını QuestionType formatına dönüştür
+        const convertedQuestions: QuestionType[] = repoQuestions.map(
+          (card: any) => ({
+            id: card.id,
+            questionText: card.question,
+            options: [
+              card.answer,
+              'Yanlış Seçenek 1',
+              'Yanlış Seçenek 2',
+              'Yanlış Seçenek 3',
+            ].sort(() => 0.5 - Math.random()),
+            correctAnswer: card.answer,
+            explanation: card.explanation || '',
+            subject: card.subject || subject,
+            difficulty:
+              card.difficulty === 'easy'
+                ? 1
+                : card.difficulty === 'medium'
+                  ? 2
+                  : 3,
+            category: card.category,
+            topic: card.subject || subject,
+            topicId: card.category,
+            examType: examType || 'TYT',
+            isPastQuestion: true,
+          })
+        );
+
+        // 45 soru al ve karıştır
+        const shuffled = convertedQuestions.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 45);
+      }
+
+      // Fallback: Eski yöntem
       let questions: QuestionType[] = [];
 
       // Timeout ile API çağrısını sınırla (5 saniye)
@@ -759,15 +877,12 @@ export class QuestionService {
             isPastQuestion: false,
           },
           {
-            questionText: 'Bir dikdörtgenin uzun kenarı 12 cm, kısa kenarı 8 cm ise, bu dikdörtgenin çevresi kaç cm\'dir? Bu soru matematik problemlerini test etmek için tasarlanmıştır.',
-            options: [
-              'A) 20 cm',
-              'B) 40 cm', 
-              'C) 60 cm',
-              'D) 80 cm'
-            ],
+            questionText:
+              "Bir dikdörtgenin uzun kenarı 12 cm, kısa kenarı 8 cm ise, bu dikdörtgenin çevresi kaç cm'dir? Bu soru matematik problemlerini test etmek için tasarlanmıştır.",
+            options: ['A) 20 cm', 'B) 40 cm', 'C) 60 cm', 'D) 80 cm'],
             correctAnswer: 'B) 40 cm',
-            explanation: 'Çevre = 2 × (uzun kenar + kısa kenar) = 2 × (12 + 8) = 2 × 20 = 40 cm',
+            explanation:
+              'Çevre = 2 × (uzun kenar + kısa kenar) = 2 × (12 + 8) = 2 × 20 = 40 cm',
             subject: 'Matematik',
             topic: 'Geometri',
             topicId: 'tyt-matematik-geometri',

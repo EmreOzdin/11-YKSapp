@@ -48,214 +48,321 @@ import { MemoryCard } from './asyncStorageService';
 
 // Soru deposu servisi
 export class QuestionRepositoryService {
-  
   // Tüm TYT sorularını getir
   static getAllTYTQuestions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAllTYTQuestions();
   }
 
+  // Tüm AYT sorularını getir
+  static getAllAYTQuestions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+    return getAllTYTQuestions().filter(q => q.examType === 'AYT');
+  }
+
   // Tüm 2018 TYT sorularını getir
-  static getAllTYT2018Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2018Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2018Questions();
   }
 
   // Tüm 2019 TYT sorularını getir
-  static getAllTYT2019Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2019Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2019Questions();
   }
 
   // Tüm 2020 TYT sorularını getir
-  static getAllTYT2020Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2020Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2020Questions();
   }
 
   // Tüm 2021 TYT sorularını getir
-  static getAllTYT2021Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2021Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2021Questions();
   }
 
   // Tüm 2022 TYT sorularını getir
-  static getAllTYT2022Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2022Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2022Questions();
   }
 
   // Tüm 2023 TYT sorularını getir
-  static getAllTYT2023Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2023Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2023Questions();
   }
 
   // Tüm 2024 TYT sorularını getir
-  static getAllTYT2024Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2024Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2024Questions();
   }
 
   // Tüm 2025 TYT sorularını getir
-  static getAllTYT2025Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllTYT2025Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getTYT2025Questions();
   }
 
   // Tüm 2018 AYT sorularını getir
-  static getAllAYT2018Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2018Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2018Questions();
   }
 
   // Tüm 2019 AYT sorularını getir
-  static getAllAYT2019Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2019Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2019Questions();
   }
 
   // Tüm 2020 AYT sorularını getir
-  static getAllAYT2020Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2020Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2020Questions();
   }
 
   // Tüm 2021 AYT sorularını getir
-  static getAllAYT2021Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2021Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2021Questions();
   }
 
   // Tüm 2022 AYT sorularını getir
-  static getAllAYT2022Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2022Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2022Questions();
   }
 
   // Tüm 2023 AYT sorularını getir
-  static getAllAYT2023Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2023Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2023Questions();
   }
 
   // Tüm 2024 AYT sorularını getir
-  static getAllAYT2024Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2024Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2024Questions();
   }
 
   // Tüm 2025 AYT sorularını getir
-  static getAllAYT2025Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllAYT2025Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getAYT2025Questions();
   }
 
   // Tüm 2018 YDT sorularını getir
-  static getAllYDT2018Questions(): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAllYDT2018Questions(): Omit<
+    MemoryCard,
+    'createdAt' | 'updatedAt'
+  >[] {
     return getYDT2018Questions();
   }
 
   // Belirli bir derse ait 2018 TYT sorularını getir
-  static getTYT2018QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2018QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2018QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2019 TYT sorularını getir
-  static getTYT2019QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2019QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2019QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2020 TYT sorularını getir
-  static getTYT2020QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2020QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2020QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2021 TYT sorularını getir
-  static getTYT2021QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2021QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2021QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2022 TYT sorularını getir
-  static getTYT2022QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2022QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2022QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2023 TYT sorularını getir
-  static getTYT2023QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2023QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2023QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2024 TYT sorularını getir
-  static getTYT2024QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2024QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2024QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2025 TYT sorularını getir
-  static getTYT2025QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYT2025QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYT2025QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2018 AYT sorularını getir
-  static getAYT2018QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2018QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2018QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2019 AYT sorularını getir
-  static getAYT2019QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2019QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2019QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2020 AYT sorularını getir
-  static getAYT2020QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2020QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2020QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2021 AYT sorularını getir
-  static getAYT2021QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2021QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2021QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2022 AYT sorularını getir
-  static getAYT2022QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2022QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2022QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2023 AYT sorularını getir
-  static getAYT2023QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2023QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2023QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2024 AYT sorularını getir
-  static getAYT2024QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2024QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2024QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2025 AYT sorularını getir
-  static getAYT2025QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYT2025QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYT2025QuestionsBySubject(subject);
   }
 
   // Belirli bir derse ait 2018 YDT sorularını getir
-  static getYDT2018QuestionsBySubject(subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getYDT2018QuestionsBySubject(
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getYDT2018QuestionsBySubject(subject);
   }
 
   // Belirli yıl ve derse ait TYT sorularını getir
-  static getTYTQuestionsByYearAndSubject(year: number, subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getTYTQuestionsByYearAndSubject(
+    year: number,
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getTYTQuestionsByYearAndSubject(year, subject);
   }
 
   // Belirli yıl ve derse ait AYT sorularını getir
-  static getAYTQuestionsByYearAndSubject(year: number, subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getAYTQuestionsByYearAndSubject(
+    year: number,
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getAYTQuestionsByYearAndSubject(year, subject);
   }
 
   // Belirli yıl ve derse ait YDT sorularını getir
-  static getYDTQuestionsByYearAndSubject(year: number, subject: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getYDTQuestionsByYearAndSubject(
+    year: number,
+    subject: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getYDTQuestionsByYearAndSubject(year, subject);
   }
 
   // Zorluk seviyesine göre soruları getir
-  static getQuestionsByDifficulty(difficulty: 'easy' | 'medium' | 'hard'): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getQuestionsByDifficulty(
+    difficulty: 'easy' | 'medium' | 'hard'
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getQuestionsByDifficulty(difficulty);
   }
 
   // Rastgele sorular getir
-  static getRandomQuestions(count: number): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getRandomQuestions(
+    count: number
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getRandomQuestions(count);
   }
 
   // Kategoriye göre soruları getir
-  static getQuestionsByCategory(category: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getQuestionsByCategory(
+    category: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getQuestionsByCategory(category);
   }
 
   // Sınav yılı ve tipine göre soruları getir
-  static getQuestionsByExam(examYear: number, examType: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getQuestionsByExam(
+    examYear: number,
+    examType: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return getQuestionsByExam(examYear, examType);
   }
 
@@ -264,54 +371,90 @@ export class QuestionRepositoryService {
     return getQuestionStats();
   }
 
+  // Subject mapping - uygulamadaki subject'ler ile questionRepository'deki subject'ler arasında eşleştirme
+  private static getSubjectMapping(subject: string): string[] {
+    const mapping: { [key: string]: string[] } = {
+      Türkçe: ['Türkçe'],
+      Matematik: ['Matematik'],
+      Fizik: ['Fizik'],
+      Kimya: ['Kimya'],
+      Biyoloji: ['Biyoloji'],
+      Tarih: ['Tarih'],
+      Coğrafya: ['Coğrafya'],
+      Felsefe: ['Felsefe'],
+      'Din Kültürü': ['Din Kültürü'],
+      'Fen Bilimleri': ['Fizik', 'Kimya', 'Biyoloji'],
+      'Sosyal Bilimler': ['Tarih', 'Coğrafya', 'Felsefe', 'Din Kültürü'],
+    };
+
+    return mapping[subject] || [subject];
+  }
+
   // Çalışma soruları için optimize edilmiş sorular getir
-  static getStudyQuestions(subject?: string, difficulty?: 'easy' | 'medium' | 'hard', year?: number): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
-    let questions = year ? this.getQuestionsByExam(year, 'TYT') : this.getAllTYTQuestions();
-    
+  static getStudyQuestions(
+    subject?: string,
+    difficulty?: 'easy' | 'medium' | 'hard',
+    year?: number
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+    let questions = year
+      ? this.getQuestionsByExam(year, 'TYT')
+      : this.getAllTYTQuestions();
+
     if (subject) {
-      questions = questions.filter(q => q.subject === subject);
+      const mappedSubjects = this.getSubjectMapping(subject);
+      questions = questions.filter(q =>
+        mappedSubjects.includes(q.subject || '')
+      );
     }
-    
+
     if (difficulty) {
       questions = questions.filter(q => q.difficulty === difficulty);
     }
-    
+
     // Çalışma için soruları karıştır
     return this.shuffleArray(questions);
   }
 
   // Çıkmış sorular için optimize edilmiş sorular getir
-  static getPastExamQuestions(examYear: number, examType: string, subject?: string): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getPastExamQuestions(
+    examYear: number,
+    examType: string,
+    subject?: string
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     let questions = this.getQuestionsByExam(examYear, examType);
-    
+
     if (subject) {
       questions = questions.filter(q => q.subject === subject);
     }
-    
+
     // Çıkmış sorular için sıralı getir (soru numarasına göre)
-    return questions.sort((a, b) => (a.questionNumber || 0) - (b.questionNumber || 0));
+    return questions.sort(
+      (a, b) => (a.questionNumber || 0) - (b.questionNumber || 0)
+    );
   }
 
   // Deneme sınavı için optimize edilmiş sorular getir
-  static getMockExamQuestions(year?: number): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getMockExamQuestions(
+    year?: number
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     const questions: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [];
-    
+
     // TYT formatına uygun soru dağılımı
     const subjectDistribution = {
-      'Türkçe': 40,
-      'Matematik': 40,
-      'Fizik': 7,
-      'Kimya': 7,
-      'Biyoloji': 6,
-      'Tarih': 5,
-      'Coğrafya': 5,
-      'Felsefe': 5,
-      'Din Kültürü': 5
+      Türkçe: 40,
+      Matematik: 40,
+      Fizik: 7,
+      Kimya: 7,
+      Biyoloji: 6,
+      Tarih: 5,
+      Coğrafya: 5,
+      Felsefe: 5,
+      'Din Kültürü': 5,
     };
 
     // Her dersten belirtilen sayıda soru al
     Object.entries(subjectDistribution).forEach(([subject, count]) => {
-      const subjectQuestions = year 
+      const subjectQuestions = year
         ? this.getTYTQuestionsByYearAndSubject(year, subject)
         : this.getQuestionsByCategory(subject.toLowerCase());
       const shuffled = this.shuffleArray(subjectQuestions);
@@ -323,8 +466,12 @@ export class QuestionRepositoryService {
   }
 
   // Belirli bir ders için deneme sınavı soruları getir
-  static getSubjectMockExamQuestions(subject: string, questionCount: number, year?: number): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
-    const subjectQuestions = year 
+  static getSubjectMockExamQuestions(
+    subject: string,
+    questionCount: number,
+    year?: number
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+    const subjectQuestions = year
       ? this.getTYTQuestionsByYearAndSubject(year, subject)
       : this.getQuestionsByCategory(subject.toLowerCase());
     const shuffled = this.shuffleArray(subjectQuestions);
@@ -344,26 +491,34 @@ export class QuestionRepositoryService {
     const questions = [
       ...this.shuffleArray(easyQuestions).slice(0, easyCount),
       ...this.shuffleArray(mediumQuestions).slice(0, mediumCount),
-      ...this.shuffleArray(hardQuestions).slice(0, hardCount)
+      ...this.shuffleArray(hardQuestions).slice(0, hardCount),
     ];
 
     return this.shuffleArray(questions);
   }
 
   // Soru arama fonksiyonu
-  static searchQuestions(query: string, year?: number): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static searchQuestions(
+    query: string,
+    year?: number
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     const lowercaseQuery = query.toLowerCase();
-    const questions = year ? this.getQuestionsByExam(year, 'TYT') : this.getAllTYTQuestions();
-    return questions.filter(q => 
-      q.question.toLowerCase().includes(lowercaseQuery) ||
-      q.answer.toLowerCase().includes(lowercaseQuery) ||
-      (q.explanation?.toLowerCase().includes(lowercaseQuery)) ||
-      q.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
+    const questions = year
+      ? this.getQuestionsByExam(year, 'TYT')
+      : this.getAllTYTQuestions();
+    return questions.filter(
+      q =>
+        q.question.toLowerCase().includes(lowercaseQuery) ||
+        q.answer.toLowerCase().includes(lowercaseQuery) ||
+        q.explanation?.toLowerCase().includes(lowercaseQuery) ||
+        q.tags.some(tag => tag.toLowerCase().includes(lowercaseQuery))
     );
   }
 
   // Favori sorular için (gelecekte kullanılabilir)
-  static getFavoriteQuestions(favoriteIds: string[]): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
+  static getFavoriteQuestions(
+    favoriteIds: string[]
+  ): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] {
     return this.getAllTYTQuestions().filter(q => favoriteIds.includes(q.id));
   }
 
@@ -389,7 +544,7 @@ export class QuestionRepositoryService {
       easy: stats.byDifficulty.easy || 0,
       medium: stats.byDifficulty.medium || 0,
       hard: stats.byDifficulty.hard || 0,
-      total: stats.total
+      total: stats.total,
     };
   }
 

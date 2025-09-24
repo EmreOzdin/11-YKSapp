@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
+    paddingTop: responsiveSize(45),
   },
   backButton: {
     position: 'absolute',

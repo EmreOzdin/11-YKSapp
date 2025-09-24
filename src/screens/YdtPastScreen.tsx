@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ApiService } from '../services/apiService';
+import ApiService from '../services/apiService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
@@ -134,8 +134,7 @@ const YdtPastScreen: React.FC = () => {
 
     setLoading(true);
     try {
-      const apiService = new ApiService();
-      const questions = await apiService.getQuestionsByYearAndExamType(
+      const questions = await ApiService.getQuestionsByYearAndExamType(
         year,
         'YDT'
       );
@@ -299,6 +298,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingTop: responsiveSize(45),
   },
   header: {
     flexDirection: 'row',
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
   },
   yearCard: {
     width: '48%',
-    backgroundColor: colors.white,
+    backgroundColor: colors.textWhite,
     borderRadius: responsiveSize(16),
     padding: responsiveSize(16),
     marginBottom: responsiveSize(12),

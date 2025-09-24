@@ -137,7 +137,7 @@ const QuestionScreen: React.FC = () => {
     );
   }
 
-  if (questions.length === 0) {
+  if (!questions || questions.length === 0) {
     return (
       <View style={styles.emptyContainer}>
         <Text style={styles.emptyText}>Henüz soru bulunmuyor</Text>
@@ -155,7 +155,7 @@ const QuestionScreen: React.FC = () => {
     );
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = questions?.[currentQuestionIndex];
 
   const handleAnswerSelect = (answer: string) => {
     if (isAnswered) return;
@@ -163,7 +163,7 @@ const QuestionScreen: React.FC = () => {
     setSelectedAnswer(answer);
     setIsAnswered(true);
 
-    const isAnswerCorrect = answer === currentQuestion.correctAnswer;
+    const isAnswerCorrect = answer === currentQuestion?.correctAnswer;
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
@@ -216,7 +216,7 @@ const QuestionScreen: React.FC = () => {
       ];
     }
 
-    const correctAnswer = currentQuestion.correctAnswer;
+    const correctAnswer = currentQuestion?.correctAnswer;
     const optionLetter = String.fromCharCode(65 + index);
 
     if (optionLetter === correctAnswer) {
@@ -236,7 +236,7 @@ const QuestionScreen: React.FC = () => {
       ];
     }
 
-    const correctAnswer = currentQuestion.correctAnswer;
+    const correctAnswer = currentQuestion?.correctAnswer;
     const optionLetter = String.fromCharCode(65 + index);
 
     if (optionLetter === correctAnswer) {
@@ -301,42 +301,50 @@ const QuestionScreen: React.FC = () => {
       {/* Question Card */}
       <View style={styles.questionCard}>
         <View style={styles.questionHeader}>
-          <Text style={styles.questionTitle}>
-            Soru #{currentQuestionIndex + 1}
-          </Text>
+          <View style={styles.questionTitleContainer}>
+            <Text style={styles.questionTitle}>
+              Soru #{(currentQuestionIndex || 0) + 1}
+            </Text>
+            {currentQuestion?.isPastQuestion && (
+              <View style={styles.pastQuestionBadge}>
+                <Text style={styles.pastQuestionText}>Çıkmış Soru</Text>
+              </View>
+            )}
+          </View>
           <View style={styles.questionMeta}>
-            <Text style={styles.subjectText}>{currentQuestion.subject}</Text>
+            <Text style={styles.subjectText}>{currentQuestion?.subject}</Text>
             <Text
               style={[
                 styles.difficultyText,
-                { color: getDifficultyColor(currentQuestion.difficulty) },
+                { color: getDifficultyColor(currentQuestion?.difficulty) },
               ]}
             >
-              {getDifficultyText(currentQuestion.difficulty)}
+              {getDifficultyText(currentQuestion?.difficulty)}
             </Text>
           </View>
         </View>
 
-        <Text style={styles.questionText}>{currentQuestion.questionText}</Text>
-        <Text style={styles.topicText}>Konu: {currentQuestion.topic}</Text>
+        <Text style={styles.questionText}>{currentQuestion?.questionText}</Text>
+        <Text style={styles.topicText}>Konu: {currentQuestion?.topic}</Text>
       </View>
 
       {/* Options */}
       <View style={styles.optionsContainer}>
-        {currentQuestion.options.map((option, index) => {
-          const optionLetter = String.fromCharCode(65 + index);
-          return (
-            <TouchableOpacity
-              key={index}
-              style={getOptionStyle(option, index)}
-              onPress={() => handleAnswerSelect(optionLetter)}
-              disabled={isAnswered}
-            >
-              <Text style={styles.optionLetter}>{optionLetter})</Text>
-              <Text style={getOptionTextStyle(option, index)}>{option}</Text>
-            </TouchableOpacity>
-          );
-        })}
+        {currentQuestion?.options &&
+          currentQuestion.options.map((option, index) => {
+            const optionLetter = String.fromCharCode(65 + index);
+            return (
+              <TouchableOpacity
+                key={index}
+                style={getOptionStyle(option, index)}
+                onPress={() => handleAnswerSelect(optionLetter)}
+                disabled={isAnswered}
+              >
+                <Text style={styles.optionLetter}>{optionLetter})</Text>
+                <Text style={getOptionTextStyle(option, index)}>{option}</Text>
+              </TouchableOpacity>
+            );
+          })}
       </View>
 
       {/* Answer Feedback */}
@@ -358,7 +366,7 @@ const QuestionScreen: React.FC = () => {
             </Text>
             {!isCorrect && (
               <Text style={styles.correctAnswerText}>
-                Doğru cevap: {currentQuestion.correctAnswer}
+                Doğru cevap: {currentQuestion?.correctAnswer}
               </Text>
             )}
           </View>
@@ -417,7 +425,7 @@ const QuestionScreen: React.FC = () => {
             <ScrollView style={styles.modalBody}>
               <View style={styles.explanationSection}>
                 <Text style={styles.explanationText}>
-                  {currentQuestion.explanation || 'Açıklama bulunmuyor.'}
+                  {currentQuestion?.explanation || 'Açıklama bulunmuyor.'}
                 </Text>
               </View>
             </ScrollView>
@@ -456,6 +464,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
+    paddingTop: responsiveSize(45),
   },
   scrollContent: {
     paddingTop: responsiveSize(-8),
@@ -538,10 +547,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: responsiveSize(10),
   },
+  questionTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   questionTitle: {
     fontSize: responsiveFontSize(16),
     fontWeight: 'bold',
     color: colors.textSecondary,
+    marginRight: responsiveSize(8),
+  },
+  pastQuestionBadge: {
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: responsiveSize(8),
+    paddingVertical: responsiveSize(4),
+    borderRadius: responsiveSize(12),
+  },
+  pastQuestionText: {
+    fontSize: responsiveFontSize(10),
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   questionMeta: {
     alignItems: 'flex-end',

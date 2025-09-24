@@ -1,5 +1,10 @@
 import { MemoryCard } from '../services/asyncStorageService';
 
+// Türkçe sorularını filtreleyen fonksiyon
+export const getTurkishQuestions = (): Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] => {
+  return tyt2018Questions.filter(question => question.subject === 'Türkçe');
+};
+
 // 2018 TYT Sınavında Çıkmış Sorular
 export const tyt2018Questions: Omit<MemoryCard, 'createdAt' | 'updatedAt'>[] = [
   {

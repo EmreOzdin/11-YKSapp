@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     padding: responsiveSize(24),
+    paddingTop: responsiveSize(69),
   },
   headerRow: {
     flexDirection: 'row',

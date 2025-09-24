@@ -47,10 +47,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
+    paddingTop: responsiveSize(45),
   },
   backButton: {
     position: 'absolute',
-    top: responsiveSize(20),
+    top: responsiveSize(70),
     left: responsiveSize(20),
     padding: responsiveSize(8),
     borderRadius: responsiveSize(8),

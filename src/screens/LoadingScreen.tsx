@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { colors } from '../utils/theme';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { responsiveSize } from '../utils/responsive';
+import { colors } from '../utils/theme';
 
 const LoadingScreen: React.FC = () => {
   return (
@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: responsiveSize(45),
   },
 });
 

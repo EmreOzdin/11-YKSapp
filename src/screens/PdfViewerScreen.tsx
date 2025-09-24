@@ -5,12 +5,7 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import React, { memo } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors } from '../utils/theme';
 
@@ -29,7 +24,7 @@ const PdfViewerScreen: React.FC<PdfViewerScreenProps> = memo(() => {
           activeOpacity={0.7}
         >
           <Ionicons
-            name="arrow-back"
+            name='arrow-back'
             size={responsiveSize(24)}
             color={colors.textPrimary}
           />
@@ -44,7 +39,7 @@ const PdfViewerScreen: React.FC<PdfViewerScreenProps> = memo(() => {
       <View style={styles.content}>
         <View style={styles.infoContainer}>
           <Ionicons
-            name="document-outline"
+            name='document-outline'
             size={responsiveSize(80)}
             color={colors.primary}
           />
@@ -68,6 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+    paddingTop: responsiveSize(45),
   },
   header: {
     flexDirection: 'row',

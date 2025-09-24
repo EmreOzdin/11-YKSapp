@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingHorizontal: responsiveSize(24),
+    paddingTop: responsiveSize(45),
   },
   logoContainer: {
     height: screenHeight / 3,

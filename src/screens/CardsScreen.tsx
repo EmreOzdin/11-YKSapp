@@ -982,26 +982,6 @@ const CardsScreen: React.FC = () => {
             )}
           </TouchableOpacity>
         </Animated.View>
-
-        {/* Swipe İpuçları */}
-        <View style={styles.swipeHints}>
-          <View style={styles.swipeHint}>
-            <Ionicons
-              name='arrow-back'
-              size={16}
-              color={colors.textSecondary}
-            />
-            <Text style={styles.swipeHintText}>Önceki kart</Text>
-          </View>
-          <View style={styles.swipeHint}>
-            <Text style={styles.swipeHintText}>Sonraki kart</Text>
-            <Ionicons
-              name='arrow-forward'
-              size={16}
-              color={colors.textSecondary}
-            />
-          </View>
-        </View>
       </View>
     );
   };
@@ -1129,6 +1109,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
+    paddingTop: responsiveSize(45),
   },
   loadingContainer: {
     flex: 1,
@@ -1143,8 +1124,8 @@ const styles = StyleSheet.create({
   },
   // Header Styles
   header: {
-    paddingTop: responsiveSize(10),
-    paddingBottom: responsiveSize(20),
+    paddingTop: responsiveSize(5),
+    paddingBottom: responsiveSize(10),
     paddingHorizontal: responsiveSize(20),
     zIndex: 1000,
     elevation: 5,
@@ -1161,6 +1142,8 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(20),
     fontWeight: 'bold',
     color: colors.textWhite,
+    textAlign: 'center',
+    flex: 1,
   },
   headerRight: {
     width: responsiveSize(40),
@@ -1481,29 +1464,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     marginLeft: responsiveSize(4),
   },
-
-  // Swipe Hints
-  swipeHints: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: responsiveSize(16),
-    width: screenWidth - responsiveSize(80),
-  },
-  swipeHint: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
-    paddingHorizontal: responsiveSize(12),
-    paddingVertical: responsiveSize(6),
-    borderRadius: responsiveSize(15),
-  },
-  swipeHintText: {
-    fontSize: responsiveFontSize(11),
-    color: colors.textSecondary,
-    fontWeight: '500',
-    marginHorizontal: responsiveSize(4),
-  },
-
   // Empty State
   emptyContainer: {
     flex: 1,

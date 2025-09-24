@@ -1,0 +1,15 @@
+// Custom build script to fix React Native 0.79.x Kotlin compilation issues
+allprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            freeCompilerArgs += [
+                "-Xno-param-assertions",
+                "-Xno-call-assertions", 
+                "-Xno-receiver-assertions",
+                "-Xjvm-default=all",
+                "-Xsuppress-version-warnings",
+                "-Xallow-any-scripts-in-source-roots"
+            ]
+        }
+    }
+}

@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingTop: responsiveSize(45),
   },
   header: {
     width: '100%',

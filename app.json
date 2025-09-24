@@ -3,25 +3,7 @@
     "name": "YKSapp",
     "slug": "yksapp",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/logo.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.mrzdn.yksapp"
-    },
     "web": {
       "favicon": "./assets/logo.png"
     },
@@ -30,6 +12,9 @@
         "projectId": "15174915-556d-4ce7-a005-8eee29692797"
       }
     },
-    "plugins": []
+    "plugins": ["expo-asset", "expo-font"],
+    "android": {
+      "package": "com.mrzdn.yksapp"
+    }
   }
 }

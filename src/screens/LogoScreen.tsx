@@ -6,7 +6,7 @@ import {
 import React, { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { useAuthStore } from '../../store/authStore';
-import { screenWidth } from '../utils/responsive';
+import { responsiveSize, screenWidth } from '../utils/responsive';
 import { colors } from '../utils/theme';
 
 const LogoScreen: React.FC = () => {
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: responsiveSize(45),
   },
   logo: {
     width: screenWidth * 0.5,

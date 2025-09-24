@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
+import 'react-native-url-polyfill/auto';
 import { UserProvider, useUser } from './src/context/UserContext';
 import TabNavigator from './src/navigation/TabNavigator';
 import AytPastScreen from './src/screens/AytPastScreen';
