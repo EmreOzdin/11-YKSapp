@@ -6,7 +6,12 @@ import {
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { QuestionService } from '../services/questionService';
-import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import {
+  getSafeAreaPadding,
+  platformSelect,
+  responsiveFontSize,
+  responsiveSize,
+} from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
 const TytScreen: React.FC = () => {
@@ -98,7 +103,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundTertiary,
-    paddingTop: responsiveSize(45),
+    paddingTop: platformSelect(
+      responsiveSize(35) + getSafeAreaPadding().top,
+      responsiveSize(35) + getSafeAreaPadding().top
+    ),
   },
   backButton: {
     position: 'absolute',

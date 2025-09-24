@@ -23,10 +23,15 @@ import {
 import Swiper from 'react-native-deck-swiper';
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
-import { responsiveSize } from '../utils/responsive';
+import {
+  getSafeAreaPadding,
+  platformSelect,
+  responsiveFontSize,
+  responsiveHeight,
+  responsiveSize,
+} from '../utils/responsive';
 
 import DefaultAvatar, { getDefaultAvatarUrl } from '../utils/defaultAvatar';
-import { responsiveFontSize, responsiveHeight } from '../utils/responsive';
 import { capitalizeFirstLetter } from '../utils/stringUtils';
 import { colors, shadows } from '../utils/theme';
 
@@ -826,7 +831,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: responsiveSize(65),
+    paddingTop: platformSelect(
+      responsiveSize(55) + getSafeAreaPadding().top,
+      responsiveSize(55) + getSafeAreaPadding().top
+    ),
   },
   contentContainer: {
     flex: 1,

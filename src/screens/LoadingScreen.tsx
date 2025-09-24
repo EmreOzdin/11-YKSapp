@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: responsiveSize(45),
+    paddingTop: responsiveSize(35),
   },
 });
 

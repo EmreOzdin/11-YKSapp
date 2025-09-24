@@ -24,7 +24,12 @@ import {
 import { useAuthStore } from '../../store/authStore';
 import { useUser } from '../context/UserContext';
 import DefaultAvatar, { getDefaultAvatarUrl } from '../utils/defaultAvatar';
-import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import {
+  getSafeAreaPadding,
+  platformSelect,
+  responsiveFontSize,
+  responsiveSize,
+} from '../utils/responsive';
 import { capitalizeFirstLetter } from '../utils/stringUtils';
 import { colors, shadows } from '../utils/theme';
 
@@ -761,7 +766,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
-    paddingTop: responsiveSize(45),
+    paddingTop: platformSelect(
+      responsiveSize(35) + getSafeAreaPadding().top,
+      responsiveSize(35) + getSafeAreaPadding().top
+    ),
   },
   header: {
     paddingTop: responsiveSize(5),

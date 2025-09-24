@@ -13,7 +13,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import {
+  getSafeAreaPadding,
+  platformSelect,
+  responsiveFontSize,
+  responsiveSize,
+} from '../utils/responsive';
 import { colors } from '../utils/theme';
 
 const HedeflerScreen: React.FC = () => {
@@ -54,7 +59,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
-    paddingTop: responsiveSize(45),
+    paddingTop: platformSelect(
+      responsiveSize(35) + getSafeAreaPadding().top,
+      responsiveSize(35) + getSafeAreaPadding().top
+    ),
   },
   header: {
     paddingTop: responsiveSize(5),

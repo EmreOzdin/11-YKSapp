@@ -40,7 +40,13 @@ import {
   trackSessionEnd,
   trackSessionStart,
 } from '../services/userInteractionService';
-import { responsiveFontSize, responsiveSize } from '../utils/responsive';
+import {
+  getSafeAreaPadding,
+  platformSelect,
+  responsiveFontSize,
+  responsiveSize,
+  spacing,
+} from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -1109,7 +1115,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundSecondary,
-    paddingTop: responsiveSize(45),
+    paddingTop: platformSelect(
+      responsiveSize(35) + getSafeAreaPadding().top,
+      responsiveSize(35) + getSafeAreaPadding().top
+    ),
   },
   loadingContainer: {
     flex: 1,
@@ -1124,11 +1133,18 @@ const styles = StyleSheet.create({
   },
   // Header Styles
   header: {
-    paddingTop: responsiveSize(5),
-    paddingBottom: responsiveSize(10),
-    paddingHorizontal: responsiveSize(20),
+    paddingTop: platformSelect(responsiveSize(5), responsiveSize(8)),
+    paddingBottom: platformSelect(responsiveSize(10), responsiveSize(12)),
+    paddingHorizontal: spacing.md,
     zIndex: 1000,
-    elevation: 5,
+    elevation: platformSelect(5, 8),
+    shadowColor: platformSelect('#000', 'transparent'),
+    shadowOffset: platformSelect(
+      { width: 0, height: 2 },
+      { width: 0, height: 0 }
+    ),
+    shadowOpacity: platformSelect(0.1, 0),
+    shadowRadius: platformSelect(4, 0),
   },
   headerContent: {
     flexDirection: 'row',

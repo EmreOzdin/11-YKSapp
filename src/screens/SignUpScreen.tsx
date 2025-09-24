@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingTop:
-      Platform.OS === 'android' ? responsiveSize(65) : responsiveSize(45),
+      Platform.OS === 'android' ? responsiveSize(55) : responsiveSize(35),
     justifyContent: 'flex-start',
   },
   headerRow: {
