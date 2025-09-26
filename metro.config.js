@@ -10,7 +10,8 @@ config.resolver.alias = {
 
 // Metro export hatalarını çözmek için resolver ayarları
 config.resolver.platforms = ['ios', 'android', 'native', 'web'];
-config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'jsx'];
+// Use Expo's default sourceExts instead of overriding
+// config.resolver.sourceExts = ['js', 'json', 'ts', 'tsx', 'jsx'];
 
 // Metro export hatalarını bypass etmek için
 config.resolver.resolverMainFields = ['react-native', 'browser', 'main'];

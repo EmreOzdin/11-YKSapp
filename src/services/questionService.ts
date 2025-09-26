@@ -32,6 +32,7 @@ export interface QuestionType {
   examType: 'TYT' | 'AYT' | 'YDT';
   isPastQuestion: boolean;
   year?: number;
+  examYear?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }

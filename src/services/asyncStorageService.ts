@@ -16,6 +16,7 @@ export interface MemoryCard {
   examType?: string;
   subject?: string;
   questionNumber?: number;
+  options?: string[]; // Çoktan seçmeli sorular için seçenekler
 }
 
 export interface CardCategory {

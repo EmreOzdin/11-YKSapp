@@ -11,10 +11,6 @@
       "eas": {
         "projectId": "15174915-556d-4ce7-a005-8eee29692797"
       }
-    },
-    "plugins": ["expo-asset", "expo-font"],
-    "android": {
-      "package": "com.mrzdn.yksapp"
     }
   }
 }

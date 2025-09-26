@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PastQuestionBadge from '../components/PastQuestionBadge';
 import { QuestionService, QuestionType } from '../services/questionService';
 import { responsiveFontSize, responsiveSize } from '../utils/responsive';
 import { colors, shadows } from '../utils/theme';
@@ -157,13 +158,18 @@ const QuestionScreen: React.FC = () => {
 
   const currentQuestion = questions?.[currentQuestionIndex];
 
-  const handleAnswerSelect = (answer: string) => {
+  const handleAnswerSelect = (optionLetter: string) => {
     if (isAnswered) return;
 
-    setSelectedAnswer(answer);
+    // Seçilen seçeneğin index'ini bul
+    const optionIndex = optionLetter.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
+    const selectedOption = currentQuestion?.options[optionIndex];
+
+    setSelectedAnswer(optionLetter);
     setIsAnswered(true);
 
-    const isAnswerCorrect = answer === currentQuestion?.correctAnswer;
+    // Seçilen seçeneğin içeriği ile doğru cevabı karşılaştır
+    const isAnswerCorrect = selectedOption === currentQuestion?.correctAnswer;
     setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
@@ -212,18 +218,25 @@ const QuestionScreen: React.FC = () => {
     if (!isAnswered) {
       return [
         styles.optionButton,
-        selectedAnswer === option && styles.selectedOption,
+        selectedAnswer === String.fromCharCode(65 + index) &&
+          styles.selectedOption,
       ];
     }
 
     const correctAnswer = currentQuestion?.correctAnswer;
     const optionLetter = String.fromCharCode(65 + index);
+    const isSelectedOption = selectedAnswer === optionLetter;
 
-    if (optionLetter === correctAnswer) {
+    // Doğru cevap ise yeşil
+    if (option === correctAnswer) {
       return [styles.optionButton, styles.correctOption];
-    } else if (selectedAnswer === option && optionLetter !== correctAnswer) {
+    }
+    // Kullanıcının seçtiği ama yanlış olan seçenek ise kırmızı
+    else if (isSelectedOption && option !== correctAnswer) {
       return [styles.optionButton, styles.incorrectOption];
-    } else {
+    }
+    // Diğer seçenekler normal
+    else {
       return [styles.optionButton, styles.disabledOption];
     }
   };
@@ -232,18 +245,25 @@ const QuestionScreen: React.FC = () => {
     if (!isAnswered) {
       return [
         styles.optionText,
-        selectedAnswer === option && styles.selectedOptionText,
+        selectedAnswer === String.fromCharCode(65 + index) &&
+          styles.selectedOptionText,
       ];
     }
 
     const correctAnswer = currentQuestion?.correctAnswer;
     const optionLetter = String.fromCharCode(65 + index);
+    const isSelectedOption = selectedAnswer === optionLetter;
 
-    if (optionLetter === correctAnswer) {
+    // Doğru cevap ise yeşil metin
+    if (option === correctAnswer) {
       return [styles.optionText, styles.correctOptionText];
-    } else if (selectedAnswer === option && optionLetter !== correctAnswer) {
+    }
+    // Kullanıcının seçtiği ama yanlış olan seçenek ise kırmızı metin
+    else if (isSelectedOption && option !== correctAnswer) {
       return [styles.optionText, styles.incorrectOptionText];
-    } else {
+    }
+    // Diğer seçenekler normal
+    else {
       return [styles.optionText, styles.disabledOptionText];
     }
   };
@@ -272,6 +292,22 @@ const QuestionScreen: React.FC = () => {
       default:
         return colors.textSecondary;
     }
+  };
+
+  const getCorrectAnswerLetter = () => {
+    if (!currentQuestion?.options || !currentQuestion?.correctAnswer) {
+      return 'Bilinmiyor';
+    }
+
+    const correctAnswerIndex = currentQuestion.options.findIndex(
+      option => option === currentQuestion.correctAnswer
+    );
+
+    if (correctAnswerIndex === -1) {
+      return 'Bilinmiyor';
+    }
+
+    return String.fromCharCode(65 + correctAnswerIndex); // A, B, C, D
   };
 
   return (
@@ -305,10 +341,8 @@ const QuestionScreen: React.FC = () => {
             <Text style={styles.questionTitle}>
               Soru #{(currentQuestionIndex || 0) + 1}
             </Text>
-            {currentQuestion?.isPastQuestion && (
-              <View style={styles.pastQuestionBadge}>
-                <Text style={styles.pastQuestionText}>Çıkmış Soru</Text>
-              </View>
+            {currentQuestion?.isPastQuestion && currentQuestion?.examYear && (
+              <PastQuestionBadge year={currentQuestion.examYear} size='small' />
             )}
           </View>
           <View style={styles.questionMeta}>
@@ -366,7 +400,7 @@ const QuestionScreen: React.FC = () => {
             </Text>
             {!isCorrect && (
               <Text style={styles.correctAnswerText}>
-                Doğru cevap: {currentQuestion?.correctAnswer}
+                Doğru cevap: {getCorrectAnswerLetter()}
               </Text>
             )}
           </View>
@@ -557,17 +591,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.textSecondary,
     marginRight: responsiveSize(8),
-  },
-  pastQuestionBadge: {
-    backgroundColor: '#FF6B35',
-    paddingHorizontal: responsiveSize(8),
-    paddingVertical: responsiveSize(4),
-    borderRadius: responsiveSize(12),
-  },
-  pastQuestionText: {
-    fontSize: responsiveFontSize(10),
-    fontWeight: 'bold',
-    color: '#FFFFFF',
   },
   questionMeta: {
     alignItems: 'flex-end',
